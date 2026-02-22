@@ -1,13 +1,9 @@
-import Register from './pages/Register'
-
 function App() {
-
   return (
-    <>
-           <Register />
-
-    </>
-  )
+    <div>
+      <h1 className="text-3xl font-bold underline">start work here</h1>
+    </div>
+  );
 }
 
-export default App
+export default App;
