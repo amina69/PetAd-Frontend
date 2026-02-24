@@ -4,6 +4,7 @@
 import { useState, type InputHTMLAttributes } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthModal } from "../ui/authModal";
+import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
 
 // ─── Reusable: FormInput ──────────────────────────────────────────────────────
 
@@ -290,6 +291,7 @@ export function RegisterForm() {
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
   const navigate = useNavigate();
 
   const validate = (): boolean => {
@@ -341,8 +343,8 @@ export function RegisterForm() {
   };
 
   const handleGoogle = () => {
-    // TODO: wire to Google OAuth
-    console.log("Google sign up");
+    // Show Identity Modal for testing purposes
+    setShowIdentityModal(true);
   };
 
   return (
@@ -425,6 +427,12 @@ export function RegisterForm() {
         description="Your Petad account has been created successfully"
         buttonText="Proceed To Sign In"
         onAction={() => navigate("/login")}
+      />
+
+      <IdentityVerificationModal
+        isOpen={showIdentityModal}
+        onClose={() => setShowIdentityModal(false)}
+        onSuccess={() => setShowIdentityModal(false)}
       />
     </div>
   );
