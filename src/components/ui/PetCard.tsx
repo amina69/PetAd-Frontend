@@ -1,3 +1,5 @@
+import mockOwnerImg from "../../assets/mockownder.png";
+
 export interface Pet {
     id: string;
     name: string;
@@ -73,7 +75,7 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested }: PetCardP
                 {/* User avatar mockup overlay (bottom right of image) */}
                 <div className="absolute bottom-4 right-4">
                     <div className="w-8 h-8 rounded-full bg-white p-[2px] shadow-sm">
-                        <img src="/src/assets/logo.svg" alt="Lister" className="w-full h-full rounded-full bg-[#0D1B2A] object-contain p-1" />
+                        <img src={mockOwnerImg} alt="Lister" className="w-full h-full rounded-full object-cover" />
                     </div>
                 </div>
             </div>

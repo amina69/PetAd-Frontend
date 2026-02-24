@@ -1,4 +1,5 @@
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
+import { PetListingSection } from "../components/home/PetListingSection";
 import { ListingModal } from "../components/listings/ListingModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -42,7 +43,8 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Rest of the page goes here later */}
+            {/* ── Available For Adoption Listing ── */}
+            <PetListingSection />
 
             <ListingModal
                 isOpen={isListingModalOpen}
