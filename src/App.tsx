@@ -5,8 +5,9 @@ import ResetPasswordPage from "./pages/resetPasswordPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
-import InterestsPage from "./pages/InterestsPage";
+import FavouritePage from "./pages/FavouritePage";
 import ListingsPage from "./pages/ListingsPage";
+import InterestPage from "./pages/interestPage";
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         {/* Main App Routes */}
         <Route path="/home" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/interests" element={<InterestsPage />} />
+        <Route path="/favourites" element={<FavouritePage />} />
+        <Route path="/interests" element={<InterestPage />} />
         <Route path="/listings" element={<ListingsPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
-import { PetCard, type Pet } from "../components/ui/PetCard";
 import { FormSelect } from "../components/ui/formSelect";
 
 // Import images provided by user
 import dogImg from "../assets/dog.png";
 import parrotImg from "../assets/parrot.png";
 import catImg from "../assets/cat.png";
+import { InterestPetCard, type Pet } from "../components/ui/InterestPetCard";
 
 // Mock Data
 const MOCK_PETS: Pet[] = [
@@ -19,6 +19,8 @@ const MOCK_PETS: Pet[] = [
         imageUrl: dogImg,
         isFavourite: true,
         isInterested: false,
+        consent: "awaiting",
+        adoption: false,
     },
     {
         id: "2",
@@ -30,6 +32,8 @@ const MOCK_PETS: Pet[] = [
         imageUrl: parrotImg,
         isFavourite: true,
         isInterested: false,
+        consent: "granted",
+        adoption: false,
     },
     {
         id: "3",
@@ -41,6 +45,8 @@ const MOCK_PETS: Pet[] = [
         imageUrl: catImg,
         isFavourite: true,
         isInterested: false,
+        consent: "granted",
+        adoption: true,
     },
 ];
 
@@ -51,7 +57,7 @@ const CATEGORY_OPTIONS = [
     { value: "bird", label: "Bird" },
 ];
 
-export default function InterestsPage() {
+export default function InterestPage() {
     const [pets, setPets] = useState<Pet[]>(MOCK_PETS);
     const [locationFilter, setLocationFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
@@ -74,15 +80,6 @@ export default function InterestsPage() {
             return matchesCategory && matchesLocation;
         });
     }, [pets, locationFilter, categoryFilter]);
-
-    // Action Handlers
-    const handleToggleFavourite = (id: string) => {
-        setPets((prev) =>
-            prev.map((p) =>
-                p.id === id ? { ...p, isFavourite: !p.isFavourite } : p
-            )
-        );
-    };
 
     const handleToggleInterested = (id: string) => {
         setPets((prev) =>
@@ -107,7 +104,7 @@ export default function InterestsPage() {
                 {/* Page Header & Filters */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <h1 className="text-[22px] font-bold text-[#0D162B]">
-                        Favourites ({filteredPets.length})
+                        Interest ({filteredPets.length})
                     </h1>
 
                     <div className="flex flex-wrap items-center gap-3">
@@ -158,10 +155,9 @@ export default function InterestsPage() {
                 {filteredPets.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredPets.map((pet) => (
-                            <PetCard
+                            <InterestPetCard
                                 key={pet.id}
                                 pet={pet}
-                                onToggleFavourite={handleToggleFavourite}
                                 onToggleInterested={handleToggleInterested}
                             />
                         ))}
