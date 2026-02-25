@@ -1,11 +1,15 @@
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
+import { PetListingSection } from "../components/home/PetListingSection";
 import { ListingModal } from "../components/listings/ListingModal";
+import { PetOwnerModal } from "../components/ui/PetOwnerModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import mockOwnerImg from "../assets/mockownder.png";
 
 export default function HomePage() {
     const navigate = useNavigate();
     const [isListingModalOpen, setIsListingModalOpen] = useState(false);
+    const [showOwnerModal, setShowOwnerModal] = useState(false);
 
     return (
         <div className="min-h-screen bg-white">
@@ -42,11 +46,18 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Rest of the page goes here later */}
+            {/* ── Available For Adoption Listing ── */}
+            <PetListingSection onOwnerClick={() => setShowOwnerModal(true)} />
 
             <ListingModal
                 isOpen={isListingModalOpen}
                 onClose={() => setIsListingModalOpen(false)}
+            />
+
+            <PetOwnerModal
+                isOpen={showOwnerModal}
+                onClose={() => setShowOwnerModal(false)}
+                ownerImage={mockOwnerImg}
             />
         </div>
     );
