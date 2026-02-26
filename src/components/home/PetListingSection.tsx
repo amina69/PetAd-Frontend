@@ -154,7 +154,11 @@ const CATEGORY_OPTIONS = [
     { value: "bird", label: "Bird" },
 ];
 
-export function PetListingSection() {
+interface PetListingSectionProps {
+    onOwnerClick?: () => void;
+}
+
+export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
     const [pets, setPets] = useState<Pet[]>(MOCK_LISTINGS);
     const [locationFilter, setLocationFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
@@ -255,6 +259,7 @@ export function PetListingSection() {
                                 pet={pet}
                                 onToggleFavourite={handleToggleFavourite}
                                 onToggleInterested={handleToggleInterested}
+                                onOwnerClick={onOwnerClick}
                             />
                         ))}
                     </div>

@@ -1,12 +1,15 @@
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
 import { PetListingSection } from "../components/home/PetListingSection";
 import { ListingModal } from "../components/listings/ListingModal";
+import { PetOwnerModal } from "../components/ui/PetOwnerModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import mockOwnerImg from "../assets/mockownder.png";
 
 export default function HomePage() {
     const navigate = useNavigate();
     const [isListingModalOpen, setIsListingModalOpen] = useState(false);
+    const [showOwnerModal, setShowOwnerModal] = useState(false);
 
     return (
         <div className="min-h-screen bg-white">
@@ -14,6 +17,8 @@ export default function HomePage() {
 
             {/* ── Hero Section ── */}
             <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#FFF2E5] to-white lg:min-h-[500px] flex items-center">
+                
+                {/* ── Background Section ── */}
                 <HeroBackgroundPaws />
 
                 <div className="max-w-[1240px] w-full mx-auto px-6 lg:px-12 py-16 lg:py-24 relative z-10 flex flex-col justify-center">
@@ -44,11 +49,17 @@ export default function HomePage() {
             </section>
 
             {/* ── Available For Adoption Listing ── */}
-            <PetListingSection />
+            <PetListingSection onOwnerClick={() => setShowOwnerModal(true)} />
 
             <ListingModal
                 isOpen={isListingModalOpen}
                 onClose={() => setIsListingModalOpen(false)}
+            />
+
+            <PetOwnerModal
+                isOpen={showOwnerModal}
+                onClose={() => setShowOwnerModal(false)}
+                ownerImage={mockOwnerImg}
             />
         </div>
     );

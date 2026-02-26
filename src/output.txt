@@ -1,0 +1,45 @@
+C:\Users\USER\OneDrive\Desktop\Open Source Projects\PetAd-Frontend\src
+├── api
+|  ├── adoptionService.ts
+|  ├── custodyService.ts
+|  └── petService.ts
+├── App.tsx
+├── assets
+|  ├── cat.png
+|  ├── cat_1.png
+|  ├── cat_2.png
+|  ├── dog.png
+|  ├── dog_1.png
+|  ├── golden_retriever.png
+|  ├── logo.svg
+|  ├── mockownder.png
+|  ├── owner.png
+|  ├── parrot.png
+|  ├── parrot_1.png
+|  ├── paws.svg
+|  ├── pet.png
+|  ├── pet_2.png
+|  ├── signinpet.png
+|  ├── tabby_cat.png
+|  └── white_puppy.png
+├── components
+|  ├── auth
+|  ├── home
+|  ├── listings
+|  └── ui
+├── index.css
+├── main.tsx
+└── pages
+   ├── FavouritePage.tsx
+   ├── forgetPasswordPage.tsx
+   ├── HomePage.tsx
+   ├── interestPage.tsx
+   ├── ListingsPage.tsx
+   ├── LoginPage.tsx
+   ├── notificationPage.tsx
+   ├── ProfilePage.tsx
+   ├── RegisterPage.tsx
+   └── resetPasswordPage.tsx
+
+directory: 8 file: 33
+

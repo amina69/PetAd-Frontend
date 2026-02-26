@@ -16,9 +16,11 @@ interface PetCardProps {
     pet: Pet;
     onToggleFavourite: (id: string) => void;
     onToggleInterested: (id: string) => void;
+    onOwnerClick?: () => void;
 }
 
-export function PetCard({ pet, onToggleFavourite, onToggleInterested }: PetCardProps) {
+export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerClick }: PetCardProps) {
+
     return (
         <div className="flex flex-col bg-white rounded-[20px] overflow-hidden border border-gray-100 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
             {/* Image container with aspect ratio */}
@@ -73,11 +75,13 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested }: PetCardP
                 </div>
 
                 {/* User avatar mockup overlay (bottom right of image) */}
-                <div className="absolute bottom-4 right-4">
-                    <div className="w-8 h-8 rounded-full bg-white p-[2px] shadow-sm">
-                        <img src={mockOwnerImg} alt="Lister" className="w-full h-full rounded-full object-cover" />
-                    </div>
-                </div>
+                <button
+                    onClick={onOwnerClick}
+                    className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-white p-[2px] shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-[#0D1B2A]/50"
+                    aria-label="View Pet Owner Information"
+                >
+                    <img src={mockOwnerImg} alt="Lister" className="w-full h-full rounded-full object-cover" />
+                </button>
             </div>
 
             {/* Content Area */}
