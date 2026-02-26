@@ -415,7 +415,7 @@ const AddImagesStep = ({
   );
 };
 
-// ─── STEP 3: Success ──────────────────────────────────────────────────────────
+
 const SuccessModal = ({
   onClose, onViewListing,
 }: {
