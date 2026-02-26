@@ -1,0 +1,161 @@
+C:\Users\USER\OneDrive\Desktop\Open Source Projects\PetAd-Frontend
+├── design.txt
+├── eslint.config.js
+├── index.html
+├── node_modules
+|  ├── @babel
+|  ├── @esbuild
+|  ├── @eslint
+|  ├── @eslint-community
+|  ├── @humanfs
+|  ├── @humanwhocodes
+|  ├── @jridgewell
+|  ├── @rolldown
+|  ├── @rollup
+|  ├── @tailwindcss
+|  ├── @types
+|  ├── @typescript-eslint
+|  ├── @vitejs
+|  ├── acorn
+|  ├── acorn-jsx
+|  ├── ajv
+|  ├── ansi-styles
+|  ├── argparse
+|  ├── balanced-match
+|  ├── baseline-browser-mapping
+|  ├── brace-expansion
+|  ├── browserslist
+|  ├── callsites
+|  ├── caniuse-lite
+|  ├── chalk
+|  ├── color-convert
+|  ├── color-name
+|  ├── concat-map
+|  ├── convert-source-map
+|  ├── cookie
+|  ├── cross-spawn
+|  ├── csstype
+|  ├── debug
+|  ├── deep-is
+|  ├── detect-libc
+|  ├── electron-to-chromium
+|  ├── enhanced-resolve
+|  ├── esbuild
+|  ├── escalade
+|  ├── escape-string-regexp
+|  ├── eslint
+|  ├── eslint-plugin-react-hooks
+|  ├── eslint-plugin-react-refresh
+|  ├── eslint-scope
+|  ├── eslint-visitor-keys
+|  ├── espree
+|  ├── esquery
+|  ├── esrecurse
+|  ├── estraverse
+|  ├── esutils
+|  ├── fast-deep-equal
+|  ├── fast-json-stable-stringify
+|  ├── fast-levenshtein
+|  ├── fdir
+|  ├── file-entry-cache
+|  ├── find-up
+|  ├── flat-cache
+|  ├── flatted
+|  ├── gensync
+|  ├── glob-parent
+|  ├── globals
+|  ├── graceful-fs
+|  ├── has-flag
+|  ├── hermes-estree
+|  ├── hermes-parser
+|  ├── ignore
+|  ├── import-fresh
+|  ├── imurmurhash
+|  ├── is-extglob
+|  ├── is-glob
+|  ├── isexe
+|  ├── jiti
+|  ├── js-tokens
+|  ├── js-yaml
+|  ├── jsesc
+|  ├── json-buffer
+|  ├── json-schema-traverse
+|  ├── json-stable-stringify-without-jsonify
+|  ├── json5
+|  ├── keyv
+|  ├── levn
+|  ├── lightningcss
+|  ├── lightningcss-win32-x64-msvc
+|  ├── locate-path
+|  ├── lodash.merge
+|  ├── lru-cache
+|  ├── magic-string
+|  ├── minimatch
+|  ├── ms
+|  ├── nanoid
+|  ├── natural-compare
+|  ├── node-releases
+|  ├── optionator
+|  ├── p-limit
+|  ├── p-locate
+|  ├── parent-module
+|  ├── path-exists
+|  ├── path-key
+|  ├── picocolors
+|  ├── picomatch
+|  ├── postcss
+|  ├── prelude-ls
+|  ├── punycode
+|  ├── react
+|  ├── react-dom
+|  ├── react-refresh
+|  ├── react-router
+|  ├── react-router-dom
+|  ├── resolve-from
+|  ├── rollup
+|  ├── scheduler
+|  ├── semver
+|  ├── set-cookie-parser
+|  ├── shebang-command
+|  ├── shebang-regex
+|  ├── source-map-js
+|  ├── strip-json-comments
+|  ├── supports-color
+|  ├── tailwindcss
+|  ├── tapable
+|  ├── tinyglobby
+|  ├── ts-api-utils
+|  ├── type-check
+|  ├── typescript
+|  ├── typescript-eslint
+|  ├── undici-types
+|  ├── update-browserslist-db
+|  ├── uri-js
+|  ├── vite
+|  ├── which
+|  ├── word-wrap
+|  ├── yallist
+|  ├── yocto-queue
+|  ├── zod
+|  └── zod-validation-error
+├── package-lock.json
+├── package.json
+├── pnpm-lock.yaml
+├── public
+|  └── vite.svg
+├── README.md
+├── src
+|  ├── api
+|  ├── App.tsx
+|  ├── assets
+|  ├── components
+|  ├── index.css
+|  ├── main.tsx
+|  └── pages
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+directory: 142 file: 15
+
