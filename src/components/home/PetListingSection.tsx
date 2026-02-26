@@ -285,6 +285,8 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                     </div>
                 )}
             </div>
+            
+            {/* Footer here */}
         </section>
     );
 }
