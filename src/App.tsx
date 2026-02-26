@@ -9,6 +9,7 @@ import FavouritePage from "./pages/FavouritePage";
 import ListingsPage from "./pages/ListingsPage";
 import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
+import ListingDetailsPage from "./pages/ListingDetailsPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/favourites" element={<FavouritePage />} />
         <Route path="/interests" element={<InterestPage />} />
         <Route path="/listings" element={<ListingsPage />} />
+        <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
       </Routes>
     </BrowserRouter>
