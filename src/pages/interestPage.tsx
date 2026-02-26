@@ -1,53 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FormSelect } from "../components/ui/formSelect";
-import { InterestPetCard, type Pet } from "../components/ui/InterestPetCard";
-import { StartAdoptionModal } from "../components/modals/StartAdoptionModal";
-
-import dogImg from "../assets/dog.png";
-import parrotImg from "../assets/parrot.png";
-import catImg from "../assets/cat.png";
-
-const MOCK_PETS: Pet[] = [
-    {
-        id: "1",
-        name: "Pet For Adoption",
-        breed: "Dog, German Shepard",
-        category: "dog",
-        age: "4yrs old",
-        location: "Mainland, Lagos Nigeria",
-        imageUrl: dogImg,
-        isFavourite: false,
-        isInterested: true,
-        consent: "awaiting",
-        adoption: false,
-    },
-    {
-        id: "2",
-        name: "Pet For Adoption",
-        breed: "Parrot",
-        category: "bird",
-        age: "4yrs old",
-        location: "Mainland, Lagos Nigeria",
-        imageUrl: parrotImg,
-        isFavourite: false,
-        isInterested: true,
-        consent: "granted",
-        adoption: false,
-    },
-    {
-        id: "3",
-        name: "Pet For Adoption",
-        breed: "Cat, Persian",
-        category: "cat",
-        age: "4yrs old",
-        location: "Mainland, Lagos Nigeria",
-        imageUrl: catImg,
-        isFavourite: false,
-        isInterested: true,
-        consent: "granted",
-        adoption: true,
-    },
-];
+import { InterestPetCard } from "../components/ui/InterestPetCard";
+import type { InterestPet } from "../types";
+import { interestService } from "../api/interestService";
 
 const CATEGORY_OPTIONS = [
     { value: "all", label: "Category: All" },
@@ -57,9 +12,29 @@ const CATEGORY_OPTIONS = [
 ];
 
 export default function InterestPage() {
-    const [pets, setPets] = useState<Pet[]>(MOCK_PETS);
+    const [pets, setPets] = useState<InterestPet[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [locationFilter, setLocationFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
+
+    useEffect(() => {
+        const fetchInterests = async () => {
+            try {
+                setIsLoading(true);
+                const data = await interestService.getInterests();
+                setPets(data);
+                setError(null);
+            } catch (err) {
+                console.error("Failed to fetch interests:", err);
+                setError("Failed to load interests.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchInterests();
+    }, []);
 
     const filteredPets = useMemo(() => {
         return pets.filter((pet) => {
@@ -76,31 +51,37 @@ export default function InterestPage() {
         });
     }, [pets, locationFilter, categoryFilter]);
 
-    const handleRemove = (id: string) => {
+    const handleRemove = async (id: string) => {
+        // Optimistic update
         setPets((prev) =>
             prev.map((p) =>
                 p.id === id ? { ...p, isInterested: false } : p
             )
         );
+        try {
+            await interestService.removeInterest(id);
+        } catch (error) {
+            console.error("Failed to remove interest", error);
+            // Revert on error could be implemented here
+        }
     };
 
     const handleViewDetails = (_id: string) => {
         // placeholder for navigation to listing detail page
     };
 
-    const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-
-    const handleStartAdoption = (id: string) => {
-        const pet = pets.find((p) => p.id === id) ?? null;
-        setSelectedPet(pet);
-    };
-
-    const handleConfirmAdoption = (id: string) => {
+    const handleStartAdoption = async (id: string) => {
+        // Optimistic update
         setPets((prev) =>
             prev.map((p) =>
                 p.id === id ? { ...p, adoption: true } : p
             )
         );
+        try {
+            await interestService.startAdoption(id);
+        } catch (error) {
+            console.error("Failed to start adoption", error);
+        }
     };
 
     const handleCancelAdoption = () => {
@@ -115,6 +96,22 @@ export default function InterestPage() {
         setLocationFilter("");
         setCategoryFilter("all");
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center text-red-500">
+                {error}
+            </div>
+        );
+    }
 
     return (
         <>

@@ -1,16 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ClockIcon, CheckCircleIcon, EditIcon, TrashIcon } from '../icons/StatusIcons';
-
-interface Listing {
-  id: number;
-  name: string;
-  species: string;
-  breed: string;
-  age: string;
-  status: string;
-  interests: number;
-  imageUrl: string;
-}
+import type { Listing } from '../../types';
 
 interface ListingCardProps {
   listing: Listing;
