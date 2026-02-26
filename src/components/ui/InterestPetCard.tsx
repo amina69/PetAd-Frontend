@@ -1,20 +1,8 @@
-export interface Pet {
-    id: string;
-    name: string;
-    breed: string;
-    age: string;
-    location: string;
-    category: string;
-    imageUrl: string;
-    isFavourite: boolean;
-    isInterested: boolean;
-    consent: "awaiting" | "granted";
-    adoption: boolean;
-}
+import type { InterestPet } from "../../types";
 
 type InterestStatus = "awaiting" | "granted" | "in-progress";
 
-function getInterestStatus(pet: Pet): InterestStatus {
+function getInterestStatus(pet: InterestPet): InterestStatus {
     if (pet.consent === "awaiting") return "awaiting";
     if (pet.consent === "granted" && !pet.adoption) return "granted";
     return "in-progress";
@@ -45,7 +33,7 @@ const STATUS_MAP: Record<
 };
 
 interface InterestPetCardProps {
-    pet: Pet;
+    pet: InterestPet;
     onRemove: (id: string) => void;
     onViewDetails: (id: string) => void;
     onStartAdoption: (id: string) => void;
