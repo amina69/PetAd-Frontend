@@ -12,12 +12,10 @@ import NotificationPage from "./pages/notificationPage";
 import ListingDetailsPage from "./pages/ListingDetailsPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 
+
 function App() {
   return (
-    <>
-      <RegisterPage />
-      
-    </>
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
