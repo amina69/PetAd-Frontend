@@ -11,6 +11,7 @@ import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
 import ListingDetailsPage from "./pages/ListingDetailsPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
+import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
 
         {/* Preview Routes */}
         <Route path="/preview-modal" element={<ModalPreview />} />
+        <Route path="/adoption-completion-demo" element={<AdoptionCompletionDemo />} />
 
         {/* Test Route */}
       </Routes>
