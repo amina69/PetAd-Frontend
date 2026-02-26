@@ -2,6 +2,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import TopNav from '../navigation/TopNav';
+import Footer from '../footer/Footer';
 
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -20,11 +21,12 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
       <TopNav user={user} onLogout={handleLogout} />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 };
