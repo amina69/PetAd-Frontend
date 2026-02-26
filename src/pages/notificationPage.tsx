@@ -1,71 +1,6 @@
-import { useState } from "react";
-
-type NotificationType = "success" | "adoption" | "reminder";
-
-type Notification = {
-    id: number;
-    type: NotificationType;
-    title: string;
-    message: string | React.ReactNode;
-    time: string;
-    hasArrow: boolean;
-};
-
-const notifications: Notification[] = [
-    {
-        id: 1,
-        type: "success",
-        title: "Verification Status",
-        message:
-            "Your NIN verification is confirmed & successful. You can proceed with to list or show interest to adopt a pet",
-        time: "2 min ago",
-        hasArrow: false,
-    },
-    {
-        id: 2,
-        type: "adoption",
-        title: "New Adoption Interest",
-        message: "A user has indicated interest on your listed open adoption",
-        time: "2 min ago",
-        hasArrow: true,
-    },
-    {
-        id: 3,
-        type: "success",
-        title: "Payment Successful",
-        message: (
-            <>
-                Your payment for the system management service has been confirmed.{" "}
-                <strong>Amount: 5000 Naira, Ref ID: 1092751375</strong>. You can now
-                contact the Pet Owner for receive the pet
-            </>
-        ),
-        time: "2 min ago",
-        hasArrow: false,
-    },
-    {
-        id: 4,
-        type: "success",
-        title: "Adoption Request Approved",
-        message:
-            "The pet owner has approved your request to adopt their pet. You can proceed to the next step",
-        time: "2 min ago",
-        hasArrow: true,
-    },
-    {
-        id: 5,
-        type: "reminder",
-        title: "Reminder",
-        message: (
-            <>
-                This is a reminder to confirm completion of adoption with{" "}
-                <strong>ID: 10927</strong>
-            </>
-        ),
-        time: "2 min ago",
-        hasArrow: true,
-    },
-];
+import { useState, useEffect } from "react";
+import type { Notification } from "../types";
+import { notificationService } from "../api/notificationService";
 
 const SuccessIcon = () => (
     <div
@@ -162,7 +97,55 @@ const getIcon = (type: "success" | "adoption" | "reminder") => {
 };
 
 const NotificationPage = () => {
-    const [items, setItems] = useState(notifications);
+    const [items, setItems] = useState<Notification[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                setIsLoading(true);
+                const data = await notificationService.getNotifications();
+                setItems(data);
+                setError(null);
+            } catch (err) {
+                console.error("Failed to fetch notifications:", err);
+                setError("Failed to load notifications.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    const handleClearAll = async () => {
+        // Optimistic update
+        setItems([]);
+        try {
+            await notificationService.clearAll();
+        } catch (error) {
+            console.error("Failed to clear notifications", error);
+            // Optionally reload notifications here if failed
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", color: "red" }}>
+                {error}
+            </div>
+        );
+    }
+
     return (
         <div
             style={{
@@ -194,7 +177,7 @@ const NotificationPage = () => {
                 </h1>
                 {items.length > 0 && (
                     <button
-                        onClick={() => setItems([])}
+                        onClick={handleClearAll}
                         style={{
                             background: "none",
                             border: "none",
@@ -266,6 +249,13 @@ const NotificationPage = () => {
                                         }}
                                     >
                                         {notif.message}
+                                        {notif.meta && (
+                                            <span style={{ display: 'block', marginTop: '4px', fontWeight: 500 }}>
+                                                {notif.meta.amount && ` Amount: ${notif.meta.amount}`}
+                                                {notif.meta.refId && `, Ref ID: ${notif.meta.refId}`}
+                                                {notif.meta.adoptionId && ` ID: ${notif.meta.adoptionId}`}
+                                            </span>
+                                        )}
                                     </p>
                                     <span style={{ fontSize: 12, color: "#9ca3af" }}>
                                         {notif.time}

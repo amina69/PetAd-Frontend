@@ -9,6 +9,7 @@ import FavouritePage from "./pages/FavouritePage";
 import ListingsPage from "./pages/ListingsPage";
 import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
+import MainLayout from "./components/layout/MainLayout";
 
 function App() {
   return (
@@ -21,12 +22,14 @@ function App() {
         <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
         {/* Main App Routes */}
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/favourites" element={<FavouritePage />} />
-        <Route path="/interests" element={<InterestPage />} />
-        <Route path="/listings" element={<ListingsPage />} />
-        <Route path="/notifications" element={<NotificationPage />} />
+        <Route element={<MainLayout />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/favourites" element={<FavouritePage />} />
+          <Route path="/interests" element={<InterestPage />} />
+          <Route path="/listings" element={<ListingsPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
