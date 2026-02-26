@@ -11,8 +11,10 @@ import NotificationPage from "./pages/notificationPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
 
+
 function App() {
   return (
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
