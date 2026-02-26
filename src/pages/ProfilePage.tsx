@@ -228,7 +228,7 @@ export default function ProfilePage() {
                                                     onClick={() => setAdoptionDetailsId(record.id)}
                                                     className="text-[14px] font-semibold text-[#E84D2A] hover:text-[#d4431f] underline underline-offset-2 shrink-0"
                                                 >
-                                                    View Details
+                                                    View Adoption Details
                                                 </button>
                                             </div>
                                         </div>
