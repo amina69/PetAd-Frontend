@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { PetCard, type Pet } from "../ui/PetCard";
 import { FormSelect } from "../ui/formSelect";
 
+//Import pictures
 // Import images
 import dogImg from "../../assets/dog.png";
 import dog1Img from "../../assets/dog_1.png";
@@ -284,6 +285,8 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                     </div>
                 )}
             </div>
+            
+            {/* Footer here */}
         </section>
     );
 }
