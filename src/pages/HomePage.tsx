@@ -1,6 +1,5 @@
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
 import { PetListingSection } from "../components/home/PetListingSection";
-import { ListingModal } from "../components/listings/ListingModal";
 import { PetOwnerModal } from "../components/ui/PetOwnerModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -8,12 +7,10 @@ import mockOwnerImg from "../assets/mockownder.png";
 
 export default function HomePage() {
     const navigate = useNavigate();
-    const [isListingModalOpen, setIsListingModalOpen] = useState(false);
     const [showOwnerModal, setShowOwnerModal] = useState(false);
 
     return (
         <div className="min-h-screen bg-white">
-            {/* ── Navbar Placeholder (if you have one later, it goes here) ── */}
 
             {/* ── Hero Section ── */}
             <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#FFF2E5] to-white lg:min-h-[500px] flex items-center">
@@ -32,7 +29,7 @@ export default function HomePage() {
 
                         <div className="flex flex-col sm:flex-row gap-4">
                             <button
-                                onClick={() => setIsListingModalOpen(true)}
+                                onClick={() => navigate("/list-for-adoption")}
                                 className="bg-[#E84D2A] text-white font-semibold py-3.5 px-8 rounded-lg hover:bg-[#d4431f] transition-colors focus:ring-4 focus:ring-[#E84D2A]/20 active:scale-[0.98] whitespace-nowrap"
                             >
                                 List For Adoption
@@ -50,11 +47,6 @@ export default function HomePage() {
 
             {/* ── Available For Adoption Listing ── */}
             <PetListingSection onOwnerClick={() => setShowOwnerModal(true)} />
-
-            <ListingModal
-                isOpen={isListingModalOpen}
-                onClose={() => setIsListingModalOpen(false)}
-            />
 
             <PetOwnerModal
                 isOpen={showOwnerModal}
