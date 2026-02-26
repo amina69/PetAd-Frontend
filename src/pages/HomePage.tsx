@@ -17,6 +17,8 @@ export default function HomePage() {
 
             {/* ── Hero Section ── */}
             <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#FFF2E5] to-white lg:min-h-[500px] flex items-center">
+                
+                {/* ── Background Section ── */}
                 <HeroBackgroundPaws />
 
                 <div className="max-w-[1240px] w-full mx-auto px-6 lg:px-12 py-16 lg:py-24 relative z-10 flex flex-col justify-center">
