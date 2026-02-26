@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgetPasswordPage from "./pages/forgetPasswordPage";
 import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
+import ListingDetailsPage from "./pages/ListingDetailsPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/favourites" element={<FavouritePage />} />
         <Route path="/interests" element={<InterestPage />} />
         <Route path="/listings" element={<ListingsPage />} />
+        <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
 
         {/* Preview Routes */}
