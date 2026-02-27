@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { MainLayout } from "./components/layout/MainLayout";
 import FavouritePage from "./pages/FavouritePage";
 import HomePage from "./pages/HomePage";
 import ListingsPage from "./pages/ListingsPage";
@@ -10,20 +11,21 @@ import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
-
+import EditAdoptionListing from "./pages/EditAdoptionListing";
+import ListingDetailsPage from "./pages/ListingDetailsPage";
 
 function App() {
   return (
-    
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/reset" element={<ResetPasswordPage />} />
-        <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+    <Routes>
+      {/* Auth Routes - No Navbar/Footer */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/reset" element={<ResetPasswordPage />} />
+      <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
-        {/* Main App Routes */}
+      {/* Main App Routes - With Navbar/Footer */}
+      <Route element={<MainLayout />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/favourites" element={<FavouritePage />} />
@@ -31,8 +33,10 @@ function App() {
         <Route path="/listings" element={<ListingsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/listings/:id" element={<PetListingDetailsPage />} />
-      </Routes>
-    </BrowserRouter>
+        <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
+        <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
+      </Route>
+    </Routes>
   );
 }
 
