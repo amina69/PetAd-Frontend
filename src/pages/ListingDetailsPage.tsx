@@ -9,46 +9,38 @@ export default function ListingDetailsPage() {
     "details",
   );
 
-  return (
-    <div className="min-h-screen bg-[#F9FAFB] py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-100">
-          <h1 className="text-xl font-bold text-[#0D162B]">
-            Listing Details (ID: {id})
-          </h1>
-        </div>
+  // suppress unused warning for id
+  void id;
 
-        <div className="flex border-b border-gray-100">
+  return (
+    <div className="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200 mb-8">
           <button
             onClick={() => setActiveTab("details")}
-            className={`px-6 py-4 text-sm font-semibold transition-colors ${
+            className={`px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px ${
               activeTab === "details"
-                ? "text-[#0D162B] border-b-2 border-[#E84D2A]"
-                : "text-gray-500 hover:text-gray-700"
+                ? "text-[#0D162B] border-[#0D162B] bg-gray-50"
+                : "text-gray-400 border-transparent hover:text-gray-600"
             }`}
           >
             Listing Details
           </button>
-
           <button
             onClick={() => setActiveTab("interested")}
-            className={`px-6 py-4 text-sm font-semibold transition-colors ${
+            className={`px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px ${
               activeTab === "interested"
-                ? "text-[#0D162B] border-b-2 border-[#E84D2A]"
-                : "text-gray-500 hover:text-gray-700"
+                ? "text-[#0D162B] border-[#0D162B] bg-gray-50"
+                : "text-gray-400 border-transparent hover:text-gray-600"
             }`}
           >
             Interested Users
           </button>
         </div>
 
-        <div className="p-6">
-          {activeTab === "details" ? (
-            <ListingInfoTab />
-          ) : (
-            <InterestedUsersTab />
-          )}
-        </div>
+        {/* Tab Content */}
+        {activeTab === "details" ? <ListingInfoTab /> : <InterestedUsersTab />}
       </div>
     </div>
   );

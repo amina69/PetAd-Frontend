@@ -10,7 +10,7 @@ export default function HomePage() {
     const [showOwnerModal, setShowOwnerModal] = useState(false);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen max-w-screen overflow-x-hidden bg-white">
 
             {/* ── Hero Section ── */}
             <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#FFF2E5] to-white lg:min-h-[500px] flex items-center">
@@ -23,7 +23,7 @@ export default function HomePage() {
                         <h1 className="text-[36px] lg:text-[44px] font-black leading-[1.15] tracking-[0.04em] text-[#0D162B] mb-5">
                             WELCOME PET LOVER!
                         </h1>
-                        <p className="text-[17px] leading-[1.6] text-gray-700 font-medium mb-10 max-w-[480px]">
+                        <p className="text-[20px] leading-[1.6] text-gray-700 font-medium mb-10 max-w-[480px]">
                             Research has shown that - those who keep pets for emotional support or companionship tend to live a longer life.
                         </p>
 

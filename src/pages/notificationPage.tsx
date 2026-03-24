@@ -1,15 +1,6 @@
 import { useState } from "react";
 
-type NotificationType = "success" | "adoption" | "reminder";
-
-type Notification = {
-    id: number;
-    type: NotificationType;
-    title: string;
-    message: string | React.ReactNode;
-    time: string;
-    hasArrow: boolean;
-};
+import type { Notification, NotificationType } from "../types/notifications";
 
 const notifications: Notification[] = [
     {

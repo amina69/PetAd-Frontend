@@ -1,74 +1,132 @@
 import { useState } from "react";
 import InfoRow from "./InfoRow";
 import StatusInfo from "./StatusInfo";
+import dogImage from "../../assets/dog.png";
+
+const mockListing = {
+  name: "Pet For Adoption",
+  category: "ABSOLUTE ADOPTION",
+  species: "Dog",
+  breed: "German Shepard",
+  age: "4 Years Old",
+  gender: "Female",
+  vaccinated: "Yes",
+  status: "Pending Consent",
+  images: [dogImage, dogImage, dogImage, dogImage],
+};
 
 export default function ListingInfoTab() {
-  const mockListing = {
-    name: "Pet For Adoption",
-    category: "ABSOLUTE ADOPTION",
-    species: "Dog",
-    breed: "German Shepard",
-    age: "4 Years Old",
-    gender: "Female",
-    vaccinated: "Yes",
-    status: "Pending Consent",
-    images: [
-      "/src/assets/dog.png",
-      "/src/assets/dog.png",
-      "/src/assets/dog.png",
-      "/src/assets/dog.png",
-    ],
-  };
-
   const [activeImage, setActiveImage] = useState(0);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[120px_1fr_1fr] gap-8">
-      <div className="hidden lg:flex flex-col gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-6 lg:items-start">
+      {/* Thumbnails — same height as main image, each thumb takes equal share */}
+      <div className="hidden lg:flex flex-col gap-2 h-[520px]">
         {mockListing.images.map((img, i) => (
-          <img
+          <button
             key={i}
-            src={img}
             onClick={() => setActiveImage(i)}
-            className={`w-24 h-24 object-cover rounded-lg cursor-pointer border-2 ${
-              activeImage === i ? "border-[#E84D2A]" : "border-transparent"
+            className={`flex-1 w-full overflow-hidden border-2 transition-all ${
+              activeImage === i
+                ? "border-[#E84D2A]"
+                : "border-transparent hover:border-gray-300"
             }`}
-          />
+          >
+            <img
+              src={img}
+              alt={`Pet image ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </button>
         ))}
       </div>
 
-      <div className="rounded-xl overflow-hidden">
+      {/* Main image */}
+      <div className="overflow-hidden bg-gray-100 h-[520px]">
         <img
           src={mockListing.images[activeImage]}
-          className="w-full h-[420px] object-cover rounded-xl"
+          alt={mockListing.name}
+          className="w-full h-full object-cover"
         />
+        {/* Mobile thumbnails */}
+        <div className="flex gap-2 p-3 lg:hidden">
+          {mockListing.images.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveImage(i)}
+              className={`w-14 h-14 overflow-hidden border-2 transition-all ${
+                activeImage === i ? "border-[#E84D2A]" : "border-transparent"
+              }`}
+            >
+              <img src={img} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="flex flex-col gap-6">
+      {/* Info panel */}
+      <div className="flex flex-col gap-5">
+        {/* Title */}
         <div>
-          <h2 className="text-3xl font-bold text-[#0D162B]">
+          <h2 className="text-2xl font-bold text-[#0D162B]">
             {mockListing.name}
           </h2>
-          <p className="text-sm text-gray-400 mt-1 tracking-wide">
+          <p className="text-xs font-medium tracking-widest text-gray-400 uppercase mt-1">
             {mockListing.category}
           </p>
         </div>
 
-        <div className="bg-gray-50 rounded-xl p-6 space-y-4 border border-gray-100">
-          <InfoRow label="Pet Type" value={mockListing.species} />
-          <InfoRow label="Breed" value={mockListing.breed} />
-          <InfoRow label="Age" value={mockListing.age} />
-          <InfoRow label="Gender" value={mockListing.gender} />
-          <InfoRow label="Vaccinated Status" value={mockListing.vaccinated} />
+        {/* Divider */}
+        <hr className="border-gray-100" />
+
+        {/* Pet details */}
+        <div className="bg-gray-50 rounded-xl border border-gray-100 divide-y divide-gray-100">
+          <InfoRow label="Pet Type:" value={mockListing.species} />
+          <InfoRow label="Breed:" value={mockListing.breed} />
+          <InfoRow label="Age:" value={mockListing.age} />
+          <InfoRow label="Gender:" value={mockListing.gender} />
+          <InfoRow
+            label="Vaccinated Status:"
+            value={mockListing.vaccinated}
+            last
+          />
         </div>
 
+        {/* Status */}
         <StatusInfo status={mockListing.status} />
 
-        <div className="flex gap-4 mt-4">
-          <button className="flex-1 py-3 rounded-lg bg-red-50 text-red-600 font-semibold">
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-500 font-semibold text-sm hover:bg-red-100 transition-colors">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
             Delete Listing
           </button>
-          <button className="flex-1 py-3 rounded-lg border border-gray-300 font-semibold">
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-300 font-semibold text-sm text-[#0D162B] hover:bg-gray-50 transition-colors">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
+            </svg>
             Edit Details
           </button>
         </div>
