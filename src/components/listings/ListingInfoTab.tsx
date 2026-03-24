@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import InfoRow from "./InfoRow";
 import StatusInfo from "./StatusInfo";
 import dogImage from "../../assets/dog.png";
@@ -12,10 +11,7 @@ const mockListing = {
   age: "4 Years Old",
   gender: "Female",
   vaccinated: "Yes",
-  location: "Mainland, Lagos Nigeria",
   status: "Pending Consent",
-  description:
-    "A friendly and energetic German Shepherd looking for a loving forever home. She is well-trained, great with kids, and loves outdoor activities. She has been fully vaccinated and is in excellent health.",
   images: [dogImage, dogImage, dogImage, dogImage],
 };
 
@@ -23,69 +19,87 @@ export default function ListingInfoTab() {
   const [activeImage, setActiveImage] = useState(0);
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Main content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr_1fr] gap-6">
-        {/* Thumbnail column */}
-        <div className="hidden lg:flex flex-col gap-3">
+    <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-6">
+      {/* Thumbnails */}
+      <div className="hidden lg:flex flex-col gap-3">
+        {mockListing.images.map((img, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveImage(i)}
+            className={`w-[152px] h-[120px] rounded-xl overflow-hidden border-2 transition-all ${
+              activeImage === i
+                ? "border-[#E84D2A]"
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <img
+              src={img}
+              alt={`Pet image ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </button>
+        ))}
+      </div>
+
+      {/* Main image */}
+      <div className="rounded-2xl overflow-hidden bg-gray-100">
+        <img
+          src={mockListing.images[activeImage]}
+          alt={mockListing.name}
+          className="w-full h-[420px] object-cover"
+        />
+        {/* Mobile thumbnails */}
+        <div className="flex gap-2 p-3 lg:hidden">
           {mockListing.images.map((img, i) => (
             <button
               key={i}
               onClick={() => setActiveImage(i)}
-              className={`w-[72px] h-[72px] rounded-xl overflow-hidden border-2 transition-all ${
-                activeImage === i
-                  ? "border-[#E84D2A] shadow-sm"
-                  : "border-gray-100 hover:border-gray-300"
+              className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                activeImage === i ? "border-[#E84D2A]" : "border-transparent"
               }`}
             >
-              <img
-                src={img}
-                alt={`Pet image ${i + 1}`}
-                className="w-full h-full object-cover"
-              />
+              <img src={img} alt="" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Main image */}
-        <div className="rounded-2xl overflow-hidden bg-gray-100">
-          <img
-            src={mockListing.images[activeImage]}
-            alt={mockListing.name}
-            className="w-full h-[380px] lg:h-[420px] object-cover"
-          />
-          {/* Mobile thumbnails */}
-          <div className="flex gap-2 p-3 lg:hidden">
-            {mockListing.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImage(i)}
-                className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
-                  activeImage === i ? "border-[#E84D2A]" : "border-transparent"
-                }`}
-              >
-                <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+      {/* Info panel */}
+      <div className="flex flex-col gap-5">
+        {/* Title */}
+        <div>
+          <h2 className="text-2xl font-bold text-[#0D162B]">
+            {mockListing.name}
+          </h2>
+          <p className="text-xs font-medium tracking-widest text-gray-400 uppercase mt-1">
+            {mockListing.category}
+          </p>
         </div>
 
-        {/* Info panel */}
-        <div className="flex flex-col gap-5">
-          {/* Title */}
-          <div>
-            <h2 className="text-2xl font-bold text-[#0D162B]">
-              {mockListing.name}
-            </h2>
-            <span className="inline-block mt-1.5 text-[11px] font-semibold tracking-widest text-[#E84D2A] uppercase bg-red-50 px-2.5 py-1 rounded-full">
-              {mockListing.category}
-            </span>
-          </div>
+        {/* Divider */}
+        <hr className="border-gray-100" />
 
-          {/* Location */}
-          <div className="flex items-center gap-1.5 text-sm text-gray-500">
+        {/* Pet details */}
+        <div className="bg-gray-50 rounded-xl border border-gray-100 divide-y divide-gray-100">
+          <InfoRow label="Pet Type:" value={mockListing.species} />
+          <InfoRow label="Breed:" value={mockListing.breed} />
+          <InfoRow label="Age:" value={mockListing.age} />
+          <InfoRow label="Gender:" value={mockListing.gender} />
+          <InfoRow
+            label="Vaccinated Status:"
+            value={mockListing.vaccinated}
+            last
+          />
+        </div>
+
+        {/* Status */}
+        <StatusInfo status={mockListing.status} />
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-500 font-semibold text-sm hover:bg-red-100 transition-colors">
             <svg
-              className="w-4 h-4 shrink-0"
+              className="w-4 h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -94,50 +108,28 @@ export default function ListingInfoTab() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
               />
+            </svg>
+            Delete Listing
+          </button>
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-300 font-semibold text-sm text-[#0D162B] hover:bg-gray-50 transition-colors">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
               />
             </svg>
-            {mockListing.location}
-          </div>
-
-          {/* Pet details */}
-          <div className="bg-gray-50 rounded-xl border border-gray-100 divide-y divide-gray-100">
-            <InfoRow label="Pet Type" value={mockListing.species} />
-            <InfoRow label="Breed" value={mockListing.breed} />
-            <InfoRow label="Age" value={mockListing.age} />
-            <InfoRow label="Gender" value={mockListing.gender} />
-            <InfoRow label="Vaccinated" value={mockListing.vaccinated} last />
-          </div>
-
-          {/* Status */}
-          <StatusInfo status={mockListing.status} />
-
-          {/* Actions */}
-          <div className="flex gap-3 mt-auto">
-            <button className="flex-1 py-3 rounded-xl bg-red-50 text-red-600 font-semibold text-sm hover:bg-red-100 transition-colors">
-              Delete Listing
-            </button>
-            <Link
-              to={`/listings/edit`}
-              className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-sm text-[#0D162B] text-center hover:bg-gray-50 transition-colors"
-            >
-              Edit Details
-            </Link>
-          </div>
+            Edit Details
+          </button>
         </div>
-      </div>
-
-      {/* Description */}
-      <div className="border-t border-gray-100 pt-6">
-        <h3 className="text-base font-bold text-[#0D162B] mb-2">Description</h3>
-        <p className="text-sm text-gray-500 leading-relaxed">
-          {mockListing.description}
-        </p>
       </div>
     </div>
   );
