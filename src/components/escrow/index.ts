@@ -5,3 +5,4 @@ export * from "./EscrowProgressStepper";
 export * from "./EscrowStatusBadge";
 export * from "./EscrowStatusCard";
 export * from "./StellarTxLink";
+export * from "./SplitOutcomeChart";
