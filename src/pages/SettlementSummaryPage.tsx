@@ -33,9 +33,11 @@ export function SettlementSummaryPage({
 
         {escrow.status === "FUNDED" ? (
           <EscrowFundedBanner
+            adoptionId={escrow.adoptionId}
+            petName={escrow.petName}
             amount={escrow.amount}
             currency={escrow.currency}
-            escrowId={escrow.escrowId}
+            txHash={escrow.txHash}
           />
         ) : null}
 

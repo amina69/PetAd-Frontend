@@ -2,9 +2,16 @@
 
 @theme {
   --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-slide-down: slide-down 0.5s ease-out;
+
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+
+  @keyframes slide-down {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 }
 
