@@ -1,7 +1,8 @@
 import { cleanup } from "@testing-library/react";
 
 // cleanup DOM after each test
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 afterEach(() => {
   cleanup();
 });

@@ -1,0 +1,185 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'CONFIRMED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-teal-100 text-teal-700"
+    >
+      Confirmed
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Transaction has been confirmed by the parties.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'CREATED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-gray-100 text-gray-700"
+    >
+      Created
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Escrow has been created but not yet funded.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'DISPUTED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-red-100 text-red-700"
+    >
+      Disputed
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        A dispute has been raised for this escrow.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'FUNDED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-blue-100 text-blue-700"
+    >
+      Funded
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Funds have been deposited into escrow.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'NOT_FOUND' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-gray-100 text-gray-700"
+    >
+      Not Found
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Escrow record could not be found.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-green-100 text-green-700"
+    >
+      Settled
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Escrow has been successfully settled.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLEMENT_FAILED' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-red-100 text-red-700"
+    >
+      Settlement Failed
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Settlement failed. Funds were not successfully transferred.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLING' correctly 1`] = `
+<div>
+  <div
+    class="group relative inline-flex"
+  >
+    <span
+      class="px-3 py-1 rounded-full text-[12px] font-medium bg-amber-100 text-amber-700"
+    >
+      Settling
+    </span>
+    <div
+      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+    >
+      <div
+        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+      >
+        Funds are currently being processed for settlement.
+      </div>
+    </div>
+  </div>
+</div>
+`;
