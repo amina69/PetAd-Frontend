@@ -46,6 +46,18 @@ const STATUS_CONFIG: Record<string, {
     bgClass: 'bg-red-100',
     tooltip: 'There is a dispute in the adoption.',
   },
+  COMPLETED: {
+    label: 'Completed',
+    textClass: 'text-emerald-700',
+    bgClass: 'bg-emerald-100',
+    tooltip: 'The adoption has been completed.',
+  },
+  CANCELLED: {
+    label: 'Cancelled',
+    textClass: 'text-slate-700',
+    bgClass: 'bg-slate-100',
+    tooltip: 'The adoption was cancelled.',
+  },
   NOT_FOUND: {
     label: 'Not Found',
     textClass: 'text-gray-700',

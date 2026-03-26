@@ -1,5 +1,10 @@
 import { apiClient } from "../lib/api-client";
-import type { AdoptionTimelineEntry, AdoptionDetails } from "../types/adoption";
+import type {
+  AdoptionTimelineEntry,
+  AdoptionDetails,
+  AdoptionRequest,
+  AdoptionStatus,
+} from "../types/adoption";
 
 export interface AdoptionRating {
   rating: number;
@@ -8,7 +13,24 @@ export interface AdoptionRating {
   petId?: string;
 }
 
+export interface GetAdoptionListParams {
+  status?: AdoptionStatus[];
+}
+
 export const adoptionService = {
+  async getList(params: GetAdoptionListParams = {}): Promise<AdoptionRequest[]> {
+    const searchParams = new URLSearchParams();
+
+    params.status?.forEach((status) => {
+      searchParams.append("status", status);
+    });
+
+    const query = searchParams.toString();
+    const endpoint = `/adoption/requests${query ? `?${query}` : ""}`;
+
+    return apiClient.get(endpoint);
+  },
+
   async getDetails(adoptionId: string): Promise<AdoptionDetails> {
     return apiClient.get(`/adoption/${adoptionId}`);
   },
