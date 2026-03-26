@@ -8,16 +8,27 @@ export type AdoptionStatus =
   | "COMPLETED"
   | "CANCELLED";
 
+export const ADOPTION_STATUS_OPTIONS: AdoptionStatus[] = [
+  "ESCROW_CREATED",
+  "ESCROW_FUNDED",
+  "SETTLEMENT_TRIGGERED",
+  "DISPUTED",
+  "FUNDS_RELEASED",
+  "CUSTODY_ACTIVE",
+  "COMPLETED",
+  "CANCELLED",
+];
+
 export interface AdoptionTimelineEntry {
   id: string;
   adoptionId: string;
   timestamp: string;
   sdkEvent: string;
   message: string;
-  actor?: string;
+  actor: string;
   actorRole?: string;
-  fromStatus?: AdoptionStatus;
-  toStatus?: AdoptionStatus;
+  fromStatus: AdoptionStatus | null;
+  toStatus: AdoptionStatus;
   sdkTxHash?: string;
   isAdminOverride?: boolean;
   reason?: string;
@@ -28,6 +39,21 @@ export interface AdoptionDetails {
   status: AdoptionStatus;
   petId: string;
   adopterId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdoptionRequest {
+  id: string;
+  status: AdoptionStatus;
+  petId: string;
+  petName: string;
+  petBreed: string;
+  petAge: string;
+  petImageUrl: string;
+  adopterId: string;
+  adopterName: string;
+  location: string;
   createdAt: string;
   updatedAt: string;
 }
