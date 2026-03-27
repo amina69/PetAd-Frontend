@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 import { useMutateCompleteAdoption } from "../useMutateCompleteAdoption";
 import { server } from "../../mocks/server";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import type { AdoptionDetails } from "../../types/adoption";
 
@@ -34,114 +34,183 @@ const MOCK_ADOPTION: AdoptionDetails = {
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("useMutateCompleteAdoption", () => {
-  it("optimistic update: cache is set to SETTLEMENT_PENDING status before server responds", async () => {
-    // Use a slow handler so the mutation is still in-flight when we inspect
-    let resolveRequest!: () => void;
-    const requestInflight = new Promise<void>((res) => {
-      resolveRequest = res;
-    });
+  describe("loading state", () => {
+    it("isPending is true while mutation is in-flight", async () => {
+      let resolveRequest!: () => void;
+      const requestInflight = new Promise<void>((res) => {
+        resolveRequest = res;
+      });
 
-    server.use(
-      http.post(
-        "http://localhost:3000/api/adoption/:id/complete",
-        async () => {
+      server.use(
+        http.post("http://localhost:3000/api/adoption/:id/complete", async () => {
           await requestInflight;
-          return HttpResponse.json<AdoptionDetails>({
-            ...MOCK_ADOPTION,
-            status: "SETTLEMENT_TRIGGERED",
-          });
-        },
-      ),
-    );
-
-    const { queryClient, wrapper } = createWrapper();
-    // Seed the cache with the current adoption data
-    queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], MOCK_ADOPTION);
-
-    const { result } = renderHook(
-      () => useMutateCompleteAdoption("adoption-1"),
-      { wrapper },
-    );
-
-    // Apply an optimistic update to the cache before mutation resolves
-    act(() => {
-      queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], (old) =>
-        old ? { ...old, status: "SETTLEMENT_TRIGGERED" } : old,
+          return new HttpResponse(null, { status: 204 });
+        }),
       );
-      result.current.mutateCompleteAdoption();
+
+      const { wrapper } = createWrapper();
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("adoption-1"),
+        { wrapper },
+      );
+
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
+
+      // While in-flight, isPending should be true
+      expect(result.current.isPending).toBe(true);
+      expect(result.current.isError).toBe(false);
+
+      resolveRequest();
+      await waitFor(() => expect(result.current.isPending).toBe(false));
     });
-
-    // While in-flight: cache should reflect optimistic status
-    const optimisticData = queryClient.getQueryData<AdoptionDetails>([
-      "adoption",
-      "adoption-1",
-    ]);
-    expect(optimisticData?.status).toBe("SETTLEMENT_TRIGGERED");
-
-    // Let the request complete
-    resolveRequest();
-    await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.isError).toBe(false);
   });
 
-  it("rollback on error: cache is restored to previous snapshot when mutation fails", async () => {
-    server.use(
-      http.post(
-        "http://localhost:3000/api/adoption/:id/complete",
-        ({ params }) => {
-          if (params.id === "fail") {
-            return HttpResponse.json({ error: "Server error" }, { status: 500 });
-          }
-          return HttpResponse.json<AdoptionDetails>({
-            ...MOCK_ADOPTION,
-            status: "SETTLEMENT_TRIGGERED",
-          });
-        },
-      ),
-    );
+  describe("success state", () => {
+    it("isError is false and isPending becomes false on success", async () => {
+      const { wrapper } = createWrapper();
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("adoption-1"),
+        { wrapper },
+      );
 
-    const { queryClient, wrapper } = createWrapper();
-    // Seed cache with the original adoption state
-    queryClient.setQueryData<AdoptionDetails>(["adoption", "fail"], MOCK_ADOPTION);
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
 
-    const { result } = renderHook(
-      () => useMutateCompleteAdoption("fail"),
-      { wrapper },
-    );
+      await waitFor(() => expect(result.current.isPending).toBe(false));
 
-    act(() => {
-      result.current.mutateCompleteAdoption();
+      expect(result.current.isError).toBe(false);
+      expect(result.current.error).toBeNull();
     });
 
-    await waitFor(() => expect(result.current.isError).toBe(true));
+    it("invalidates the adoption query on success", async () => {
+      const { queryClient, wrapper } = createWrapper();
+      queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], MOCK_ADOPTION);
 
-    // After failure, isError should be true and isPending false
-    expect(result.current.isPending).toBe(false);
-    expect(result.current.isError).toBe(true);
+      const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("adoption-1"),
+        { wrapper },
+      );
+
+      await act(async () => {
+        result.current.mutateCompleteAdoption();
+      });
+
+      await waitFor(() => expect(result.current.isPending).toBe(false));
+
+      expect(result.current.isError).toBe(false);
+      expect(invalidateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ queryKey: ["adoption", "adoption-1"] }),
+      );
+    });
   });
 
-  it("on success: invalidates the adoption query and clears error state", async () => {
-    const { queryClient, wrapper } = createWrapper();
-    queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], MOCK_ADOPTION);
+  describe("error state", () => {
+    it("isError is true and isPending becomes false when server returns 500", async () => {
+      const { wrapper } = createWrapper();
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("fail"),
+        { wrapper },
+      );
 
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
 
-    const { result } = renderHook(
-      () => useMutateCompleteAdoption("adoption-1"),
-      { wrapper },
-    );
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
-    await act(async () => {
-      result.current.mutateCompleteAdoption();
+      expect(result.current.isPending).toBe(false);
+      expect(result.current.error).not.toBeNull();
+    });
+  });
+
+  describe("optimistic update", () => {
+    it("applies optimistic update (SETTLEMENT_TRIGGERED) before server responds", async () => {
+      let resolveRequest!: () => void;
+      const requestInflight = new Promise<void>((res) => {
+        resolveRequest = res;
+      });
+
+      server.use(
+        http.post("http://localhost:3000/api/adoption/:id/complete", async () => {
+          await requestInflight;
+          return new HttpResponse(null, { status: 204 });
+        }),
+      );
+
+      const { queryClient, wrapper } = createWrapper();
+      queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], MOCK_ADOPTION);
+
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("adoption-1"),
+        { wrapper },
+      );
+
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
+
+      // While in-flight: cache should reflect optimistic SETTLEMENT_TRIGGERED status
+      const optimisticData = queryClient.getQueryData<AdoptionDetails>([
+        "adoption",
+        "adoption-1",
+      ]);
+      expect(optimisticData?.status).toBe("SETTLEMENT_TRIGGERED");
+
+      resolveRequest();
+      await waitFor(() => expect(result.current.isPending).toBe(false));
+    });
+  });
+
+  describe("rollback on error", () => {
+    it("restores previous cache state when mutation fails", async () => {
+      const { queryClient, wrapper } = createWrapper();
+      // Seed cache with the original adoption state
+      queryClient.setQueryData<AdoptionDetails>(["adoption", "fail"], MOCK_ADOPTION);
+
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("fail"),
+        { wrapper },
+      );
+
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      // After failure, cache should be restored to original state
+      const restoredData = queryClient.getQueryData<AdoptionDetails>([
+        "adoption",
+        "fail",
+      ]);
+      expect(restoredData?.status).toBe("ESCROW_FUNDED");
+      expect(restoredData?.id).toBe("fail");
     });
 
-    await waitFor(() => expect(result.current.isPending).toBe(false));
+    it("clears optimistic update and shows error state on failure", async () => {
+      const { queryClient, wrapper } = createWrapper();
+      queryClient.setQueryData<AdoptionDetails>(["adoption", "fail"], MOCK_ADOPTION);
 
-    expect(result.current.isError).toBe(false);
-    // useApiMutation's onSuccess calls invalidateQueries for ["adoption", adoptionId]
-    // and useMutateCompleteAdoption also manually calls it in its own onSuccess:
-    expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: ["adoption", "adoption-1"] }),
-    );
+      const { result } = renderHook(
+        () => useMutateCompleteAdoption("fail"),
+        { wrapper },
+      );
+
+      act(() => {
+        result.current.mutateCompleteAdoption();
+      });
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      // Error state should be set correctly
+      expect(result.current.isPending).toBe(false);
+      expect(result.current.isError).toBe(true);
+      expect(result.current.error).not.toBeNull();
+    });
   });
 });
