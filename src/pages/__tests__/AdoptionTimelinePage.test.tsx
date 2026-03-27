@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import AdoptionTimelinePage from "../AdoptionTimelinePage";
 import { useAdoptionTimeline } from "../../hooks/useAdoptionTimeline";
+import type { AdoptionTimelineEntry } from "../../types/adoption";
 
 vi.mock("../../hooks/useAdoptionTimeline", () => ({
   useAdoptionTimeline: vi.fn(),
@@ -11,8 +12,7 @@ vi.mock("../../hooks/useAdoptionTimeline", () => ({
 
 // Mock the TimelineEntry UI component to simplify testing the page's structure and logic
 vi.mock("../../components/ui/TimelineEntry", () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TimelineEntry: ({ entry }: { entry: any }) => (
+  TimelineEntry: ({ entry }: { entry: AdoptionTimelineEntry }) => (
     <div data-testid="mock-timeline-entry">{entry.actor} - {entry.toStatus}</div>
   ),
 }));
@@ -82,8 +82,7 @@ describe("AdoptionTimelinePage", () => {
 
   it("renders entries grouped by date", () => {
     vi.mocked(useAdoptionTimeline).mockReturnValue({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      entries: mockEntries as any,
+      entries: mockEntries as AdoptionTimelineEntry[],
       isLoading: false,
       isError: false,
     });

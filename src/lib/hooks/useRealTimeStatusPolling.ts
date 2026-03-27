@@ -59,14 +59,20 @@ export function useRealTimeStatusPolling(
     }
 
     if (previousStatusRef.current !== currentStatus) {
-      setStatusChanged(true);
       previousStatusRef.current = currentStatus;
 
-      const timer = setTimeout(() => {
+      const markChanged = window.setTimeout(() => {
+        setStatusChanged(true);
+      }, 0);
+
+      const clearChanged = window.setTimeout(() => {
         setStatusChanged(false);
       }, 3000);
 
-      return () => clearTimeout(timer);
+      return () => {
+        window.clearTimeout(markChanged);
+        window.clearTimeout(clearChanged);
+      };
     }
   }, [query.data?.status]);
 

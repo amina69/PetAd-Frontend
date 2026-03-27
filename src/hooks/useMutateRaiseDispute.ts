@@ -29,7 +29,7 @@ export function useMutateRaiseDispute() {
           let errorMsg = "Failed to raise dispute.";
           try {
             const res = JSON.parse(xhr.responseText);
-            if (res.message) errorMsg = res.message;
+            if (res.message) errorMsg = res.message; // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
           } catch (err) {}
           reject(new Error(errorMsg));
         }

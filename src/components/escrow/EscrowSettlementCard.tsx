@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useEscrowStatus } from "../../lib/hooks/useEscrowStatus";
+import { type EscrowStatusData } from "./types";
 import { EscrowStatusBadge } from "./EscrowStatusBadge";
 import { Skeleton } from "../ui/Skeleton";
 import { RefreshCw, AlertCircle } from "lucide-react";
@@ -8,29 +9,37 @@ interface EscrowSettlementCardProps {
   escrowId: string;
 }
 
+interface EscrowSettlementCardData {
+  status?: string;
+  balance?: number | string;
+}
+
 export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
   const { data, isLoading, isError, refetch } = useEscrowStatus(escrowId);
-  const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
+  const lastUpdatedRef = useRef<number>(0);
   const [secondsAgo, setSecondsAgo] = useState<number>(0);
 
-  // Update lastUpdated when data changes
+  // Track last updated time when new data arrives
   useEffect(() => {
     if (data) {
-      setLastUpdated(Date.now());
+      lastUpdatedRef.current = Date.now();
     }
   }, [data]);
 
-  // Update secondsAgo every 10 seconds
+  // Update secondsAgo every 10 seconds after lastUpdated changes
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsAgo(Math.floor((Date.now() - lastUpdated) / 1000));
-    }, 10000);
+    const updateSecondsAgo = () => {
+      if (lastUpdatedRef.current === 0) {
+        return;
+      }
+      setSecondsAgo(Math.floor((Date.now() - lastUpdatedRef.current) / 1000));
+    };
 
-    // Also update immediately when lastUpdated changes
-    setSecondsAgo(Math.floor((Date.now() - lastUpdated) / 1000));
+    updateSecondsAgo();
+    const interval = setInterval(updateSecondsAgo, 10000);
 
     return () => clearInterval(interval);
-  }, [lastUpdated]);
+  }, []);
 
   if (isLoading && !data) {
     return (
@@ -73,7 +82,14 @@ export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
     );
   }
 
-  const balance = (data as any)?.balance || "0";
+  const escrowData = data as EscrowSettlementCardData | undefined;
+  const balance =
+    escrowData?.balance !== undefined && escrowData.balance !== null
+      ? escrowData.balance
+      : "0";
+  const status =
+    (escrowData?.status as EscrowStatusData["status"] | undefined) ??
+    "AWAITING_FUNDS";
 
   return (
     <div className="group relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition-all duration-500 hover:shadow-2xl">
@@ -85,7 +101,7 @@ export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
           <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
             Escrow State
           </span>
-          <EscrowStatusBadge status={(data?.status as any) || "AWAITING_FUNDS"} />
+          <EscrowStatusBadge status={status as EscrowStatusData["status"]} />
         </div>
 
         <div className="mt-8">

@@ -6,7 +6,7 @@ import * as useMutateRaiseDisputeModule from "../hooks/useMutateRaiseDispute";
 
 // Mock the FileUpload component since it's an external dependency
 vi.mock("../components/ui/fileUpload", () => ({
-  FileUpload: ({ id, label, onChange }: any) => (
+  FileUpload: ({ id, label, onChange }: { id: string; label: string; onChange: (file: File | null) => void }) => (
     <div data-testid={`file-upload-${id}`}>
       <label>{label}</label>
       <input
@@ -20,7 +20,7 @@ vi.mock("../components/ui/fileUpload", () => ({
 
 // Mock SubmitButton
 vi.mock("../components/ui/submitButton", () => ({
-  SubmitButton: ({ label, isLoading }: any) => (
+  SubmitButton: ({ label, isLoading }: { label: string; isLoading: boolean }) => (
     <button type="submit" disabled={isLoading} data-testid="submit-btn">
       {isLoading ? "Submitting..." : label}
     </button>
@@ -34,9 +34,9 @@ describe("RaiseDisputeModal", () => {
     targetId: "target-123",
   };
 
-  let mockMutateAsync: any;
+  let mockMutateAsync: vi.Mock;
   let mockProgress = 0;
-  let mockResetProgress: any;
+  let mockResetProgress: vi.Mock;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -81,7 +81,7 @@ describe("RaiseDisputeModal", () => {
     vi.useFakeTimers();
 
     // Setup a delayed promise so we can observe the "submitting" state
-    let resolveMutation: any;
+    let resolveMutation: (value?: unknown) => void;
     mockMutateAsync.mockReturnValue(
       new Promise((resolve) => {
         resolveMutation = resolve;

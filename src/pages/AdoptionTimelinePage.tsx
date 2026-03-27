@@ -96,8 +96,7 @@ export default function AdoptionTimelinePage() {
                         className={`relative z-10 ${isFirstOverall ? 'rounded-lg ring-1 ring-orange-200 bg-orange-50/50' : ''}`}
                         data-testid={`timeline-entry${isFirstOverall ? '-latest' : ''}`}
                       >
-                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                        <TimelineEntry entry={entry as any} />
+                        <TimelineEntry entry={entry as TimelineEntryType} />
                       </div>
                     );
                   })}

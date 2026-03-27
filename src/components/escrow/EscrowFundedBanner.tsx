@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatAmount } from "./types";
 
-export function getEscrowFundedBannerStorageKey(escrowId: string) {
+function getEscrowFundedBannerStorageKey(escrowId: string) {
   return `escrow-funded-banner-dismissed:${escrowId}`;
 }
 

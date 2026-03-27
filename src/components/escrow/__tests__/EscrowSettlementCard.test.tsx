@@ -10,7 +10,7 @@ vi.mock("../../../lib/hooks/useEscrowStatus", () => ({
 
 describe("EscrowSettlementCard", () => {
   it("matches snapshot in loading state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    vi.mocked(useEscrowStatus).mockReturnValue({
       data: null,
       isLoading: true,
       isError: false,
@@ -22,7 +22,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in funded state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    vi.mocked(useEscrowStatus).mockReturnValue({
       data: {
         status: "FUNDED",
         balance: "100.50",
@@ -40,7 +40,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in settled state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    vi.mocked(useEscrowStatus).mockReturnValue({
       data: {
         status: "SETTLED",
         balance: "0.00",
@@ -57,7 +57,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in error state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    vi.mocked(useEscrowStatus).mockReturnValue({
       data: null,
       isLoading: false,
       isError: true,

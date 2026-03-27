@@ -53,8 +53,9 @@ export function RaiseDisputeModal({
         setToast(null);
         handleClose();
       }, 3000);
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      setError(message);
       setIsSubmitting(false);
     }
   };
