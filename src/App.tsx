@@ -18,6 +18,7 @@ import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
 import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
+import DisputeDetailPage from "./pages/DisputeDetailPage";
 <<<<<<< feat/custody-timeline-page
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 =======
@@ -47,6 +48,7 @@ function App() {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/adoption/:adoptionId/settlement" element={<SettlementSummaryPage />} />
         <Route path="/adoption/:adoptionId/timeline" element={<AdoptionTimelinePage />} />
+        <Route path="/dispute/:id" element={<DisputeDetailPage />} />
 
         {/* Custody Routes */}
         <Route path="/custody/:custodyId/timeline" element={<CustodyTimelinePage />} />
