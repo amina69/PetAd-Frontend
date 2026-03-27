@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { stellarExplorerUrl, truncateTxHash } from "../../lib/stellar";
+import {
+  stellarAccountExplorerUrl,
+  stellarExplorerUrl,
+  truncateTxHash,
+} from "../../lib/stellar";
 
 interface StellarTxLinkProps {
   txHash: string;
+  resourceType?: "tx" | "account";
 }
 
-export function StellarTxLink({ txHash }: StellarTxLinkProps) {
+export function StellarTxLink({
+  txHash,
+  resourceType = "tx",
+}: StellarTxLinkProps) {
   const [copied, setCopied] = useState(false);
-  const href = stellarExplorerUrl(txHash);
+  const href = resourceType === "account"
+    ? stellarAccountExplorerUrl(txHash)
+    : stellarExplorerUrl(txHash);
   const label = truncateTxHash(txHash);
 
   async function handleCopy() {

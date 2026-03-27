@@ -20,6 +20,19 @@ export function stellarExplorerUrl(txHash: string): string {
   return `${baseUrl}${txHash}`;
 }
 
+export function stellarAccountExplorerUrl(accountId: string): string {
+  if (!accountId) {
+    throw new Error("Account ID is required");
+  }
+
+  const network = import.meta.env.VITE_STELLAR_NETWORK || "testnet";
+  const baseUrl = network === "mainnet"
+    ? "https://stellar.expert/explorer/public/account/"
+    : "https://stellar.expert/explorer/testnet/account/";
+
+  return `${baseUrl}${accountId}`;
+}
+
 /**
  * Truncates a transaction hash for display purposes
  * Shows first 8 characters + "..." + last 8 characters
