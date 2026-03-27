@@ -18,10 +18,8 @@ import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
 import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
-<<<<<<< feat/custody-timeline-page
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
-=======
->>>>>>> main
+import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 
 function App() {
 
@@ -50,6 +48,9 @@ function App() {
 
         {/* Custody Routes */}
         <Route path="/custody/:custodyId/timeline" element={<CustodyTimelinePage />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
 
         {/* Preview Routes */}
         <Route path="/preview-modal" element={<ModalPreview />} />
