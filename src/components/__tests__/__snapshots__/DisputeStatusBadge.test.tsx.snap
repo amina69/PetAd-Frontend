@@ -1,0 +1,393 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DisputeStatusBadge > renders all status values 1`] = `
+<div>
+  <div>
+    <div
+      class="relative inline-block group"
+    >
+      <span
+        class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-red-100 text-red-800 border-red-200
+          
+        "
+      >
+        Open
+      </span>
+      <div
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+      >
+        <div
+          class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+        >
+          Dispute has been opened and is awaiting review
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+          />
+        </div>
+      </div>
+      <style>
+        
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+      </style>
+    </div>
+    <div
+      class="relative inline-block group"
+    >
+      <span
+        class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-amber-100 text-amber-800 border-amber-200
+          
+        "
+      >
+        Under Review
+      </span>
+      <div
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+      >
+        <div
+          class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+        >
+          Dispute is currently being reviewed by the team
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+          />
+        </div>
+      </div>
+      <style>
+        
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+      </style>
+    </div>
+    <div
+      class="relative inline-block group"
+    >
+      <span
+        class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-green-100 text-green-800 border-green-200
+          
+        "
+      >
+        Resolved
+      </span>
+      <div
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+      >
+        <div
+          class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+        >
+          Dispute has been successfully resolved
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+          />
+        </div>
+      </div>
+      <style>
+        
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+      </style>
+    </div>
+    <div
+      class="relative inline-block group"
+    >
+      <span
+        class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-gray-100 text-gray-800 border-gray-200
+          
+        "
+      >
+        Closed
+      </span>
+      <div
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+      >
+        <div
+          class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+        >
+          Dispute has been closed
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+          />
+        </div>
+      </div>
+      <style>
+        
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+      </style>
+    </div>
+    <div
+      class="relative inline-block group"
+    >
+      <span
+        class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-red-100 text-red-800 border-red-200
+          animate-pulse-subtle
+        "
+      >
+        SLA Breached
+      </span>
+      <div
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+      >
+        <div
+          class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+        >
+          Dispute has exceeded the service level agreement time limit
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+          />
+        </div>
+      </div>
+      <style>
+        
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+      </style>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DisputeStatusBadge > renders correctly for CLOSED status 1`] = `
+<div>
+  <div
+    class="relative inline-block group"
+  >
+    <span
+      class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-gray-100 text-gray-800 border-gray-200
+          
+        "
+    >
+      Closed
+    </span>
+    <div
+      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+    >
+      <div
+        class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+      >
+        Dispute has been closed
+        <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+        />
+      </div>
+    </div>
+    <style>
+      
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+    </style>
+  </div>
+</div>
+`;
+
+exports[`DisputeStatusBadge > renders correctly for OPEN status 1`] = `
+<div>
+  <div
+    class="relative inline-block group"
+  >
+    <span
+      class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-red-100 text-red-800 border-red-200
+          
+        "
+    >
+      Open
+    </span>
+    <div
+      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+    >
+      <div
+        class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+      >
+        Dispute has been opened and is awaiting review
+        <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+        />
+      </div>
+    </div>
+    <style>
+      
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+    </style>
+  </div>
+</div>
+`;
+
+exports[`DisputeStatusBadge > renders correctly for RESOLVED status 1`] = `
+<div>
+  <div
+    class="relative inline-block group"
+  >
+    <span
+      class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-green-100 text-green-800 border-green-200
+          
+        "
+    >
+      Resolved
+    </span>
+    <div
+      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+    >
+      <div
+        class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+      >
+        Dispute has been successfully resolved
+        <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+        />
+      </div>
+    </div>
+    <style>
+      
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+    </style>
+  </div>
+</div>
+`;
+
+exports[`DisputeStatusBadge > renders correctly for SLA_BREACHED status 1`] = `
+<div>
+  <div
+    class="relative inline-block group"
+  >
+    <span
+      class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-red-100 text-red-800 border-red-200
+          animate-pulse-subtle
+        "
+    >
+      SLA Breached
+    </span>
+    <div
+      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+    >
+      <div
+        class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+      >
+        Dispute has exceeded the service level agreement time limit
+        <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+        />
+      </div>
+    </div>
+    <style>
+      
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+    </style>
+  </div>
+</div>
+`;
+
+exports[`DisputeStatusBadge > renders correctly for UNDER_REVIEW status 1`] = `
+<div>
+  <div
+    class="relative inline-block group"
+  >
+    <span
+      class="
+          inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border
+          bg-amber-100 text-amber-800 border-amber-200
+          
+        "
+    >
+      Under Review
+    </span>
+    <div
+      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10"
+    >
+      <div
+        class="bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-nowrap relative"
+      >
+        Dispute is currently being reviewed by the team
+        <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"
+        />
+      </div>
+    </div>
+    <style>
+      
+          @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+          }
+        
+    </style>
+  </div>
+</div>
+`;

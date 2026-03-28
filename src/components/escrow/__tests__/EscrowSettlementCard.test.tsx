@@ -8,9 +8,22 @@ vi.mock("../../../lib/hooks/useEscrowStatus", () => ({
   useEscrowStatus: vi.fn(),
 }));
 
+// Define the return type locally
+type EscrowStatusData = {
+  status: "FUNDED" | "SETTLED" | string;
+  balance: string;
+};
+
+type UseEscrowStatusReturn = {
+  data: EscrowStatusData | null;
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
+};
+
 describe("EscrowSettlementCard", () => {
   it("matches snapshot in loading state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    (useEscrowStatus as unknown as jest.Mock<UseEscrowStatusReturn>).mockReturnValue({
       data: null,
       isLoading: true,
       isError: false,
@@ -22,7 +35,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in funded state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    (useEscrowStatus as unknown as jest.Mock<UseEscrowStatusReturn>).mockReturnValue({
       data: {
         status: "FUNDED",
         balance: "100.50",
@@ -32,7 +45,6 @@ describe("EscrowSettlementCard", () => {
       refetch: vi.fn(),
     });
 
-    // Mock Date.now to keep snapshots consistent
     vi.setSystemTime(new Date("2026-03-25T22:20:00Z"));
 
     const { asFragment } = render(<EscrowSettlementCard escrowId="test-escrow" />);
@@ -40,7 +52,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in settled state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    (useEscrowStatus as unknown as jest.Mock<UseEscrowStatusReturn>).mockReturnValue({
       data: {
         status: "SETTLED",
         balance: "0.00",
@@ -57,7 +69,7 @@ describe("EscrowSettlementCard", () => {
   });
 
   it("matches snapshot in error state", () => {
-    (useEscrowStatus as any).mockReturnValue({
+    (useEscrowStatus as unknown as jest.Mock<UseEscrowStatusReturn>).mockReturnValue({
       data: null,
       isLoading: false,
       isError: true,
