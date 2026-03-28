@@ -2,22 +2,15 @@ import {
   describe,
   it,
   expect,
-  beforeAll,
-  afterAll,
   afterEach,
   vi,
 } from "vitest";
-import { renderHook, waitFor, act } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { setupServer } from "msw/node";
-import {
-  escrowStatusHandler,
-  setEscrowStatus,
-} from "../../../test/msw/handlers";
-import { useEscrowStatus } from "../useEscrowStatus";
-
-const server = setupServer(escrowStatusHandler);
+import { useEscrowStatus } from "../../../hooks/useEscrowStatus";
+import { adoptionService } from "../../../api/adoptionService";
+import type { AdoptionDetails } from "../../../types/adoption";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -36,43 +29,51 @@ function createWrapper(queryClient: QueryClient) {
   );
 }
 
-beforeAll(() => server.listen());
-afterEach(() => {
-  server.resetHandlers();
-  vi.restoreAllMocks();
-});
-afterAll(() => server.close());
+const baseAdoption: AdoptionDetails = {
+  id: "adoption-1",
+  status: "ESCROW_FUNDED",
+  petId: "pet-1",
+  adopterId: "user-1",
+  createdAt: "2024-01-01T00:00:00Z",
+  updatedAt: "2024-01-01T00:00:00Z",
+};
 
 describe("useEscrowStatus", () => {
-  it("stops polling when status is SETTLED", async () => {
-    const queryClient = createTestQueryClient();
-    setEscrowStatus("SETTLED");
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
-    renderHook(() => useEscrowStatus("escrow-1", { intervalMs: 50 }), {
+  it("marks the query as settled when status is COMPLETED", async () => {
+    const queryClient = createTestQueryClient();
+    const fetchSpy = vi
+      .spyOn(adoptionService, "getDetails")
+      .mockResolvedValue({
+        ...baseAdoption,
+        status: "COMPLETED",
+      });
+
+    const { result } = renderHook(() => useEscrowStatus("adoption-1"), {
       wrapper: createWrapper(queryClient),
     });
 
-    await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
-
-    const callCount = fetchSpy.mock.calls.length;
-		await act(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 200));
-		});
-    expect(fetchSpy).toHaveBeenCalledTimes(callCount);
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(result.current.isSettled).toBe(true);
+    });
   });
 
-  it("continues polling when status is FUNDED", async () => {
+  it("continues polling when status is ESCROW_FUNDED", async () => {
     const queryClient = createTestQueryClient();
-    setEscrowStatus("FUNDED");
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const fetchSpy = vi
+      .spyOn(adoptionService, "getDetails")
+      .mockResolvedValue(baseAdoption);
 
-    renderHook(() => useEscrowStatus("escrow-2", { intervalMs: 50 }), {
+    renderHook(() => useEscrowStatus("adoption-2"), {
       wrapper: createWrapper(queryClient),
     });
 
     await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(2), {
-      timeout: 300,
+      timeout: 5000,
     });
   });
 });

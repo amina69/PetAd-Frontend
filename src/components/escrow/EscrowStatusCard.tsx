@@ -3,6 +3,7 @@ import { EscrowStatusBadge } from "./EscrowStatusBadge";
 import { StellarTxLink } from "./StellarTxLink";
 import { usePolling } from "../../lib/hooks/usePolling";
 import { formatAmount, type EscrowStatusData } from "./types";
+import { DisputeBanner } from './DisputeBanner';
 
 interface EscrowStatusCardProps {
   escrowId: string;
@@ -17,15 +18,28 @@ export function EscrowStatusCard({
   fetchStatus,
   pollingIntervalMs = 1000,
 }: EscrowStatusCardProps) {
-  const query = fetchStatus
-    ? usePolling(["escrow-status", escrowId], fetchStatus, {
-        intervalMs: pollingIntervalMs,
-        stopWhen: (data) => data?.status === "SETTLED",
-      })
-    : null;
+  const query = usePolling(
+    ["escrow-status", escrowId],
+    async () => {
+      if (fetchStatus) {
+        return fetchStatus();
+      }
 
-  const isLoading = query ? query.isLoading && !query.data && !initialData : false;
-  const data = (query?.data ?? initialData) || null;
+      if (initialData) {
+        return initialData;
+      }
+
+      throw new Error("No escrow status fetcher provided");
+    },
+    {
+      intervalMs: pollingIntervalMs,
+      stopWhen: (data) => data?.status === "SETTLED",
+      enabled: !!fetchStatus,
+    },
+  );
+
+  const isLoading = query.isLoading && !query.data && !initialData;
+  const data = query.data ?? initialData ?? null;
 
   if (isLoading || !data) {
     return (
@@ -39,6 +53,7 @@ export function EscrowStatusCard({
       </div>
     );
   }
+
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -58,7 +73,15 @@ export function EscrowStatusCard({
       </div>
 
       <div className="mt-6">
-        <EscrowProgressStepper status={data.status} />
+        {data.status === 'DISPUTED' && data.disputeId ? (
+          <DisputeBanner
+            disputeId={data.disputeId}
+            raisedAt={data.disputeRaisedAt ?? data.fundedAt ?? new Date().toISOString()}
+            escrowAccountId={data.escrowId}
+          />
+        ) : (
+          <EscrowProgressStepper status={data.status} />
+        )}
       </div>
 
       <dl className="mt-6 grid gap-4 md:grid-cols-2">

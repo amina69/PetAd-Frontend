@@ -1,0 +1,231 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CustodyStatusBadge > renders 'ACTIVE' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-green-700 bg-green-100"
+    >
+      Active
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody is currently active.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'CANCELLED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100"
+    >
+      Cancelled
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody was cancelled before completion.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'COMPLETED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-green-700 bg-green-100"
+    >
+      Completed
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody has been completed successfully.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'COMPLETING' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-amber-700 bg-amber-100"
+    >
+      Completing
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody is in the completion process.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'DEPOSIT_CONFIRMED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-teal-700 bg-teal-100"
+    >
+      Deposit Confirmed
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody deposit has been confirmed.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'DEPOSIT_PENDING' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-blue-700 bg-blue-100"
+    >
+      Deposit Pending
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody deposit is awaiting payment confirmation.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'DISPUTED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-red-700 bg-red-100"
+    >
+      Disputed
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        A dispute has been raised for this custody.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'EXPIRING_SOON' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-amber-700 bg-amber-100"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-triangle-alert h-3.5 w-3.5"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+        />
+        <path
+          d="M12 9v4"
+        />
+        <path
+          d="M12 17h.01"
+        />
+      </svg>
+      Expiring Soon
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody is close to ending and requires attention.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CustodyStatusBadge > renders 'PENDING' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100"
+    >
+      Pending
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Custody is pending and has not started yet.
+      </div>
+    </div>
+  </div>
+</div>
+`;

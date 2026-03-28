@@ -1,52 +1,71 @@
 import { http, HttpResponse, delay } from "msw";
-import type { AdoptionTimelineEntry } from "../../types/adoption";
+import type {
+  AdoptionDetails,
+} from "../../types/adoption";
 
-const MOCK_TIMELINE: AdoptionTimelineEntry[] = [
+const MOCK_TIMELINE: any[] = [
   {
     id: "1",
     adoptionId: "adoption-1",
+    sdkEvent: "event1",
+    message: "Initial adoption request",
+    fromStatus: undefined,
+    toStatus: "ESCROW_CREATED",
+    actor: "System",
     timestamp: "2026-03-25T10:00:00Z",
-    sdkEvent: "ESCROW_CREATED",
-    message: "Escrow account created.",
-    actor: "system",
+    reason: "Initial adoption request",
   },
   {
-    id: "2",
-    adoptionId: "adoption-1",
-    timestamp: "2026-03-25T10:05:00Z",
-    sdkEvent: "PET_INFO_UPDATED",
-    message: "Pet information updated.",
-    actor: "vet",
+    fromStatus: "ESCROW_CREATED",
+    toStatus: "ESCROW_FUNDED",
+    actor: "Adopter",
+    timestamp: "2026-03-25T11:30:00Z",
+    sdkTxHash: "0x1234...5678",
+    stellarExplorerUrl: "https://stellar.expert/explorer/public/tx/1234",
   },
   {
-    id: "3",
-    adoptionId: "adoption-1",
-    timestamp: "2026-03-25T10:10:00Z",
-    sdkEvent: "ESCROW_FUNDED",
-    message: "Escrow account funded.",
-    actor: "buyer",
-  },
-  {
-    id: "4",
-    adoptionId: "adoption-1",
-    timestamp: "2026-03-25T10:15:00Z",
-    sdkEvent: "VISIT_SCHEDULED",
-    message: "Home visit scheduled.",
-    actor: "inspector",
-  },
-  {
-    id: "5",
-    adoptionId: "adoption-1",
-    timestamp: "2026-03-25T10:20:00Z",
-    sdkEvent: "ESCROW_SETTLEMENT_TRIGGERED",
-    message: "Settlement triggered.",
-    actor: "system",
+    fromStatus: "ESCROW_FUNDED",
+    toStatus: "SETTLEMENT_TRIGGERED",
+    actor: "System",
+    timestamp: "2026-03-26T09:15:00Z",
+    reason: "Auto-settlement after inspection",
   },
 ];
+
+const MOCK_ADOPTION_DETAILS: AdoptionDetails = {
+  id: "adoption-1",
+  status: "ESCROW_FUNDED",
+  petId: "pet-1",
+  adopterId: "user-1",
+  createdAt: "2026-03-25T10:00:00Z",
+  updatedAt: "2026-03-25T10:10:00Z",
+};
 
 export const adoptionHandlers = [
   http.get("/api/adoption/:id/timeline", async () => {
     await delay(100);
     return HttpResponse.json(MOCK_TIMELINE);
+  }),
+  http.get("/api/adoption/:id", async ({ params }) => {
+    await delay(100);
+    const { id } = params;
+
+    if (id === "adoption-1") {
+      return HttpResponse.json(MOCK_ADOPTION_DETAILS);
+    }
+
+    return HttpResponse.json({ error: "Adoption not found" }, { status: 404 });
+  }),
+
+  // POST /api/adoption/:id/complete — trigger settlement completion
+  http.post("/api/adoption/:id/complete", async ({ params }) => {
+    await delay(100);
+    const { id } = params;
+
+    if (id === "fail") {
+      return HttpResponse.json({ error: "Failed to complete adoption" }, { status: 500 });
+    }
+
+    return new HttpResponse(null, { status: 204 });
   }),
 ];

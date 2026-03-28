@@ -11,9 +11,16 @@ export const escrowService = {
    * Retry a failed settlement for the given escrow.
    * @param escrowId - The ID of the escrow to retry settlement for.
    */
-  retrySettlement: async (_escrowId: string): Promise<void> => {
-    // TODO: wire to real API endpoint, e.g.
-    // return apiClient.post(`/escrow/${escrowId}/retry-settlement`);
+  async retrySettlement(escrowId: string): Promise<void> {
+    const response = await fetch(`/api/escrow/${escrowId}/retry-settlement`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      const error = new Error("Failed to retry settlement") as any;
+      error.status = response.status;
+      throw error;
+    }
   },
 
   /**

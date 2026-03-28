@@ -352,6 +352,9 @@ Contributions are welcome! Please follow these steps:
 **Before submitting:**
 
 - fix any issues
+- npm test
+- npm run lint
+- npm run build
 - Ensure `npm run type-check` passes
 - Add tests for new features
 - Update documentation if needed

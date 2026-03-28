@@ -1,0 +1,185 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AdoptionStatusBadge > renders 'CANCELLED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-slate-700 bg-slate-100"
+    >
+      Cancelled
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        The adoption was cancelled before completion.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'COMPLETED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-emerald-700 bg-emerald-100"
+    >
+      Completed
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        The adoption lifecycle has been completed.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'CUSTODY_ACTIVE' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-green-700 bg-green-100"
+    >
+      Custody Active
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Pet custody is currently active.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'DISPUTED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-red-700 bg-red-100"
+    >
+      Disputed
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        There is a dispute in the adoption.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'ESCROW_CREATED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100"
+    >
+      Escrow Created
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Escrow has been created but not funded yet.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'ESCROW_FUNDED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-teal-700 bg-teal-100"
+    >
+      Escrow Funded
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Funds have been deposited into escrow.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'FUNDS_RELEASED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-green-700 bg-green-100"
+    >
+      Funds Released
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Funds have been released successfully.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AdoptionStatusBadge > renders 'SETTLEMENT_TRIGGERED' correctly 1`] = `
+<div>
+  <div
+    class="relative group inline-block"
+  >
+    <span
+      class="px-2 py-1 text-xs font-medium rounded-full text-amber-700 bg-amber-100"
+    >
+      Settlement Triggered
+    </span>
+    <div
+      class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+    >
+      <div
+        class="rounded-md bg-black text-white text-xs px-2 py-1"
+      >
+        Settlement process has started.
+      </div>
+    </div>
+  </div>
+</div>
+`;
