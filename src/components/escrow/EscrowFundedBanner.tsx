@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { formatAmount } from "./types";
-
-export function getEscrowFundedBannerStorageKey(escrowId: string) {
-  return `escrow-funded-banner-dismissed:${escrowId}`;
-}
+import { getEscrowFundedBannerStorageKey } from "./utils"; // relative import
 
 interface EscrowFundedBannerProps {
   escrowId: string;
@@ -21,9 +18,7 @@ export function EscrowFundedBanner({
     () => sessionStorage.getItem(storageKey) === "true",
   );
 
-  if (dismissed) {
-    return null;
-  }
+  if (dismissed) return null;
 
   function dismiss() {
     sessionStorage.setItem(storageKey, "true");
