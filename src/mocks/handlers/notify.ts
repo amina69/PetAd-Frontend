@@ -66,6 +66,14 @@ export const notifyHandlers = [
 	// GET /api/notifications — list all notifications for the current user
 	http.get("/api/notifications", async ({ request }) => {
 		await delay(getDelay(request));
+		const url = new URL(request.url);
+		const status = url.searchParams.get("status");
+		const limit = Number(url.searchParams.get("limit") ?? 0);
+
+		if (status === "UNREAD" && limit === 0) {
+			return HttpResponse.json({ count: MOCK_NOTIFICATIONS.length });
+		}
+
 		return HttpResponse.json<Notification[]>(MOCK_NOTIFICATIONS);
 	}),
 
