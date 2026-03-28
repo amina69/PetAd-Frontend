@@ -128,4 +128,32 @@ export const escrowHandlers = [
 
 		return HttpResponse.json(summary);
 	}),
+
+	// POST /api/escrow/:id/retry-settlement — retry a failed settlement
+	http.post("/api/escrow/:id/retry-settlement", async ({ request, params }) => {
+		await delay(getDelay(request));
+		const id = params.id as string;
+
+		if (id === "fail") {
+			return HttpResponse.json({ error: "Retry settlement failed" }, { status: 500 });
+		}
+
+		return new HttpResponse(null, { status: 204 });
+	}),
+
+	// GET /api/escrow/:id/status — get escrow status (for polling)
+	http.get("/api/escrow/:id/status", async ({ request, params }) => {
+		await delay(getDelay(request));
+		const id = params.id as string;
+
+		if (id === "not-found") {
+			return new HttpResponse(null, { status: 404 });
+		}
+
+		return HttpResponse.json<Escrow>({
+			...BASE_ESCROW,
+			id,
+			status: "FUNDED",
+		});
+	}),
 ];

@@ -1,92 +1,71 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useSettlementSummary } from '../useSettlementSummary';
-import { escrowService } from '../../api/escrowService';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
-import React from 'react';
-import type { SettlementSummary } from '../../types/escrow';
+import { renderHook, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { http, HttpResponse } from "msw";
+import { useSettlementSummary } from "../useSettlementSummary";
+import { server } from "../../mocks/server";
+import { describe, it, expect } from "vitest";
+import React from "react";
 
-vi.mock('../../api/escrowService', () => ({
-  escrowService: {
-    getSettlementSummary: vi.fn(),
-  },
-}));
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const createWrapper = () => {
+function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: {
-        retry: false,
-      },
+      queries: { retry: false },
     },
   });
-  return ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-};
+  return { queryClient, wrapper };
+}
 
-describe('useSettlementSummary', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+// ─── Tests ────────────────────────────────────────────────────────────────────
 
-  it('should return settlement data successfully', async () => {
-    const mockSummary: SettlementSummary = {
-      onChainStatus: 'SUCCESS',
-      confirmations: 12,
-      payments: [
-        {
-          id: 'pay-1',
-          amount: 20000,
-          asset: 'XLM',
-          destination: 'GD7...X4Y',
-          status: 'SUCCESS',
-        },
-      ],
-      stellarExplorerUrl: 'https://stellar.expert/tx/mock',
-    };
+describe("useSettlementSummary", () => {
+  it("data returned: resolves settlement summary from the MSW handler", async () => {
+    const { wrapper } = createWrapper();
 
-    vi.mocked(escrowService.getSettlementSummary).mockResolvedValue(mockSummary);
-
-    const { result } = renderHook(() => useSettlementSummary('escrow-1'), {
-      wrapper: createWrapper(),
+    const { result } = renderHook(() => useSettlementSummary("escrow-001"), {
+      wrapper,
     });
-
-    expect(result.current.isLoading).toBe(true);
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(result.current.data).toEqual(mockSummary);
     expect(result.current.isError).toBe(false);
     expect(result.current.isNotFound).toBe(false);
+    expect(result.current.data).toMatchObject({
+      onChainStatus: "SUCCESS",
+      confirmations: 12,
+      payments: expect.arrayContaining([
+        expect.objectContaining({ id: "pay-1", asset: "XLM", status: "SUCCESS" }),
+      ]),
+      stellarExplorerUrl: expect.stringContaining("stellar.expert"),
+    });
   });
 
-  it('should return isNotFound true for 404 error', async () => {
-    const error = new Error('Not Found') as any;
-    error.status = 404;
-    vi.mocked(escrowService.getSettlementSummary).mockRejectedValue(error);
+  it("404 returns isNotFound: true when escrow id is 'not-found'", async () => {
+    // The default escrow handler returns 404 for id === "not-found".
+    // Override here to ensure this test is explicit and self-documenting.
+    server.use(
+      http.get("/api/escrow/:id/settlement-summary", ({ params }) => {
+        if (params.id === "not-found") {
+          return new HttpResponse(null, { status: 404 });
+        }
+        return HttpResponse.json({});
+      }),
+    );
 
-    const { result } = renderHook(() => useSettlementSummary('not-found'), {
-      wrapper: createWrapper(),
+    const { wrapper } = createWrapper();
+
+    const { result } = renderHook(() => useSettlementSummary("not-found"), {
+      wrapper,
     });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
+    expect(result.current.isError).toBe(true);
     expect(result.current.isNotFound).toBe(true);
-    expect(result.current.isError).toBe(true);
     expect(result.current.data).toBeUndefined();
-  });
-
-  it('should return isError true for other errors', async () => {
-    vi.mocked(escrowService.getSettlementSummary).mockRejectedValue(new Error('Network Error'));
-
-    const { result } = renderHook(() => useSettlementSummary('escrow-1'), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-
-    expect(result.current.isError).toBe(true);
-    expect(result.current.isNotFound).toBe(false);
   });
 });

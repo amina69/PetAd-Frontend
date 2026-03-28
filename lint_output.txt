@@ -1,0 +1,121 @@
+
+> petad@0.0.0 lint
+> eslint .
+
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\public\mockServiceWorker.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\api\escrowService.ts
+  14:27  error  '_escrowId' is defined but never used     @typescript-eslint/no-unused-vars
+  26:74  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\auth\SignInForm.tsx
+  70:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\EscrowFundedBanner.tsx
+  4:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\EscrowSettlementCard.tsx
+  13:58  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\EscrowSettlementCard.tsx:13:58
+  11 | export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
+  12 |   const { data, isLoading, isError, refetch } = useEscrowStatus(escrowId);
+> 13 |   const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
+     |                                                          ^^^^^^^^^^ Cannot call impure function
+  14 |   const [secondsAgo, setSecondsAgo] = useState<number>(0);
+  15 |
+  16 |   // Update lastUpdated when data changes  react-hooks/purity
+  76:28  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-explicit-any
+  88:55  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\EscrowStatusCard.tsx
+  21:7  error  React Hook "usePolling" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\__tests__\EscrowSettlementCard.test.tsx
+  13:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  43:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  60:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\escrow\__tests__\SplitOutcomeChart.test.tsx
+   1:32  error  'vi' is defined but never used                  @typescript-eslint/no-unused-vars
+  46:13  error  'container' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\home\PetListingSection.tsx
+  236:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\ui\favouriteCategorySelect.tsx
+  10:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\components\ui\formSelect.tsx
+  11:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\hooks\__tests__\useAdoptionTimeline.test.tsx
+  50:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\hooks\__tests__\useEscrowTimeline.test.tsx
+  40:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\hooks\__tests__\useSettlementSummary.test.tsx
+  65:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\hooks\useApiQuery.ts
+  21:8  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\hooks\useUrlSync.ts
+   5:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   7:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  15:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  39:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\lib\__tests__\notificationRouter.test.ts
+  79:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\lib\hooks\__tests__\usePolling.test.tsx
+  126:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\lib\hooks\useRealTimeStatusPolling.ts
+  51:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\lib\hooks\useRealTimeStatusPolling.ts:51:7
+  49 |     if (currentStatus && previousStatusRef.current !== currentStatus) {
+  50 |       // Status has changed
+> 51 |       setStatusChanged(true);
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  52 |
+  53 |       // Reset after 3 seconds
+  54 |       const timer = setTimeout(() => {  react-hooks/set-state-in-effect
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\mocks\handlers\adoption.ts
+  3:3  error  'AdoptionTimelineEntry' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\mocks\handlers\escrow.ts
+  107:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\mocks\handlers\notify.ts
+  9:5  error  'MOCK_NOTIFICATIONS' is never reassigned. Use 'const' instead  prefer-const
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\pages\EditAdoptionListing.tsx
+  243:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  257:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\pages\__tests__\AdoptionTimelinePage.test.tsx
+  14:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\HR Gadget\Desktop\PetAd-Frontend\src\types\notifications.ts
+  23:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 37 problems (36 errors, 1 warning)
+  1 error and 1 warning potentially fixable with the `--fix` option.
+
