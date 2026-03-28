@@ -16,23 +16,24 @@ export const adoptionService = {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Mock successful submission
-    return Promise.resolve();
+    return;
   },
 
   async completeAdoption(adoptionId: string): Promise<void> {
-   const response = await apiClient.post(`/adoption/${adoptionId}/complete`);
-    if (!response.ok) {
-        throw new Error("Failed to update adoption");
-    }
-    return response.json();
+    // ✅ apiClient already handles response + errors
+    await apiClient.post(`/adoption/${adoptionId}/complete`);
   },
-  
+
   async getTimeline(adoptionId: string): Promise<AdoptionTimelineEntry[]> {
-    const response = await fetch(`/api/adoption/${adoptionId}/timeline`);
+    // cast fetch response properly
+    const response = (await fetch(
+      `/api/adoption/${adoptionId}/timeline`
+    )) as Response;
+
     if (!response.ok) {
-        throw new Error("Failed to fetch timeline");
+      throw new Error("Failed to fetch timeline");
     }
+
     return response.json();
   },
 };
