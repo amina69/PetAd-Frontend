@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SplitOutcomeChart } from "../SplitOutcomeChart";
 import type { DistributionItem } from "../SplitOutcomeChart";
@@ -43,7 +43,7 @@ describe("SplitOutcomeChart", () => {
   });
 
   it("renders with correct semantic colors", () => {
-    const { container } = render(<SplitOutcomeChart distribution={mockDistribution} />);
+    render(<SplitOutcomeChart distribution={mockDistribution} />);
     
     const shelterSegment = screen.getByTestId("chart-segment-shelter");
     const adopterSegment = screen.getByTestId("chart-segment-adopter");

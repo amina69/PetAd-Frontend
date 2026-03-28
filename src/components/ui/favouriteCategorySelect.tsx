@@ -7,7 +7,7 @@ interface FormSelectProps {
     placeholder?: string;
     className?: string;
     value?: string;
-    onChange?: (e: any) => void;
+    onChange?: (e: { target: { value: string } }) => void;
 }
 
 export function FormSelect({

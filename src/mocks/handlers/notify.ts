@@ -6,7 +6,7 @@ import type { Notification, NotificationType } from "../../types/notifications";
 
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
-let MOCK_NOTIFICATIONS: Notification[] = [
+const MOCK_NOTIFICATIONS: Notification[] = [
 	{
 		id: "notif-001",
 		type: "ESCROW_FUNDED" as NotificationType,

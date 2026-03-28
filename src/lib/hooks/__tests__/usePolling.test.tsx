@@ -123,7 +123,7 @@ describe("usePolling", () => {
 			() =>
 				usePolling(["test-query-stop"], fetchFn, {
 					intervalMs: 100,
-					stopWhen: (data: any) => data?.status === "completed",
+					stopWhen: (data: { status?: string } | undefined) => data?.status === "completed",
 				}),
 			{ wrapper: createWrapper(queryClient) },
 		);

@@ -20,6 +20,6 @@ export interface Notification {
   hasArrow?: boolean;
   metadata?: {
     resourceId: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }

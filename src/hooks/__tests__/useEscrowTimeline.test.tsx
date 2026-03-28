@@ -37,7 +37,7 @@ describe('useEscrowTimeline', () => {
       { id: '4', sdkEvent: 'OTHER_EVENT', message: 'Other' },
     ];
 
-    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline as any);
+    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline);
 
     const { result } = renderHook(() => useEscrowTimeline('adoption-1'), {
       wrapper: createWrapper(),

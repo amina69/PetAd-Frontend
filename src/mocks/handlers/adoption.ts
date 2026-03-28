@@ -1,9 +1,10 @@
 import { http, HttpResponse, delay } from "msw";
 import type {
   AdoptionDetails,
+  AdoptionTimelineEntry,
 } from "../../types/adoption";
 
-const MOCK_TIMELINE: any[] = [
+const MOCK_TIMELINE: AdoptionTimelineEntry[] = [
   {
     id: "1",
     adoptionId: "adoption-1",

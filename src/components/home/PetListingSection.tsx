@@ -233,7 +233,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                                 label=""
                                 options={CATEGORY_OPTIONS}
                                 value={categoryFilter}
-                                onChange={(e: any) => setCategoryFilter(e.target.value)}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
                                 className="!py-2.5"
                             />
                         </div>

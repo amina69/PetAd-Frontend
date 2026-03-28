@@ -47,7 +47,7 @@ describe('useAdoptionTimeline', () => {
       },
     ];
 
-    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline as any);
+    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline);
 
     const { result } = renderHook(() => useAdoptionTimeline('adoption-1'), {
       wrapper: createWrapper(),

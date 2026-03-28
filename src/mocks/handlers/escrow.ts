@@ -104,7 +104,7 @@ export const escrowHandlers = [
 			return new HttpResponse(null, { status: 404 });
 		}
 
-		const summary: any = {
+		const summary = {
 			onChainStatus: "SUCCESS",
 			confirmations: 12,
 			payments: [
