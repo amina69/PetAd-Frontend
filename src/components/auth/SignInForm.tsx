@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
+import { useNavigate } from "react-router-dom";
 
 interface SignInFormData {
     email: string;
@@ -17,6 +18,7 @@ export function SignInForm() {
         email: "",
         password: "",
     });
+    const navigate = useNavigate();
 
     const [errors, setErrors] = useState<SignInFormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +65,7 @@ export function SignInForm() {
                 }, 1500);
             });
             console.log("Sign in successful with:", formData.email);
+            navigate("/home"); // Redirect to homepage after successful sign in
             // NOTE: Here you would typically redirect or dispatch a login action
         } catch (err: any) {
             setErrors((prev) => ({ ...prev, submit: err.message || "Failed to sign in. Please try again." }));

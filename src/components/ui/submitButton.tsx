@@ -17,7 +17,7 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={isLoading || disabled}
-      className="w-full rounded-xl bg-[#001323] py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#d4431f] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#E84D2A]/40 disabled:opacity-70 disabled:cursor-not-allowed"
+      className="w-full rounded-[6px] hover:cursor-pointer hover:bg-[#001323] py-3.5 text-sm font-semibold text-white transition-all bg-[#d4431f] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#E84D2A]/40 disabled:opacity-70 disabled:cursor-not-allowed"
     >
       {isLoading ? (
         <span className="flex items-center justify-center gap-2">

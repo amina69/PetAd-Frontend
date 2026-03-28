@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { adoptionService } from "../api/adoptionService";
-import { FormSelect } from "../components/ui/formSelect";
 import { InterestPetCard, type Pet } from "../components/ui/InterestPetCard";
 import { RatingModal } from "../components/ui/RatingModal";
 
@@ -47,16 +46,10 @@ const MOCK_PETS: Pet[] = [
     isInterested: true,
     consent: "granted",
     adoption: true,
-    completed: true,
+    completed: false,
   },
 ];
 
-const CATEGORY_OPTIONS = [
-  { value: "all", label: "Category: All" },
-  { value: "dog", label: "Dog" },
-  { value: "cat", label: "Cat" },
-  { value: "bird", label: "Bird" },
-];
 
 export default function InterestPage() {
   const [pets, setPets] = useState<Pet[]>(MOCK_PETS);
@@ -138,20 +131,20 @@ export default function InterestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pb-24">
-      <div className="bg-white border-b border-gray-100 h-20 mb-8" />
+    <div className="min-h-screen bg-[white] pb-24" style={{ fontFamily: "Poppins, sans-serif" }}>
+      <div className="bg-white h-6" />
 
-      <div className="max-w-[1240px] mx-auto px-6 lg:px-8">
+      <div className="max-full px-4 lg:px-20">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <h1 className="text-[22px] font-bold text-[#0D162B]">
+            <h1 className="text-[20px] font-semibold text-[#001323]" style={{ lineHeight: "36px" }}>
             Interest ({filteredPets.length})
-          </h1>
+            </h1>
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-full sm:w-[220px]">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <svg
-                  className="w-[18px] h-[18px] text-gray-400"
+                  className="w-4.5 h-4.5 text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -175,21 +168,21 @@ export default function InterestPage() {
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
                 className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
-              />
+              /> */}
             </div>
 
             <div className="w-[160px] relative">
-              <FormSelect
+              {/* <FormSelect
                 id="category-filter"
                 label=""
                 options={CATEGORY_OPTIONS}
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className="!py-2.5"
-              />
+              /> */}
             </div>
 
-            <button
+            {/* <button
               onClick={handleResetFilters}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-100 text-gray-600 font-medium text-[14px] hover:bg-gray-200 transition-colors"
             >
@@ -207,17 +200,17 @@ export default function InterestPage() {
                 />
               </svg>
               Reset
-            </button>
+            </button> */}
           </div>
         </div>
 
         {filteredPets.length > 0 ? (
           <div>
-            <div className="hidden lg:grid grid-cols-[2fr_1.2fr_1.2fr_1.5fr] gap-6 px-6 pb-3 text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
-              <span>Pet Details</span>
+            <div className="hidden lg:grid grid-cols-[2fr_1.2fr_1.2fr_1.5fr] gap-6 pb-3 text-[14px] font-semibold text-[#001323] uppercase tracking-wider">
+              <span>Details</span>
               <span>Location</span>
               <span>Status</span>
-              <span>Actions</span>
+              <span></span>
             </div>
 
             <div className="flex flex-col gap-3">

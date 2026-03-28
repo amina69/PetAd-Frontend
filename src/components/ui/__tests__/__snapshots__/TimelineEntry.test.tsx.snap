@@ -1,0 +1,367 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
+<div>
+  <li
+    aria-label="at 3/26/2024, 11:00:00 AM"
+    class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+  >
+    <div
+      class="flex items-center gap-2 flex-shrink-0"
+    />
+    <div
+      class="flex-1 min-w-0"
+    />
+    <div
+      class="flex-shrink-0 text-right"
+    >
+      <time
+        class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
+        datetime="2024-03-26T10:00:00Z"
+        title="3/26/2024, 11:00:00 AM"
+      >
+        730 days ago
+      </time>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
+<div>
+  <li
+    aria-label="Status changed from ESCROW CREATED to ESCROW FUNDED by John Doe (adopter) Reason: Funds deposited successfully at 3/26/2024, 11:00:00 AM"
+    class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+  >
+    <div
+      class="flex items-center gap-2 flex-shrink-0"
+    >
+      <div
+        class="relative group inline-block"
+      >
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100"
+        >
+          Escrow Created
+        </span>
+        <div
+          class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+        >
+          <div
+            class="rounded-md bg-black text-white text-xs px-2 py-1"
+          >
+            Escrow has been created but not funded yet.
+          </div>
+        </div>
+      </div>
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5 12h14"
+        />
+        <path
+          d="m12 5 7 7-7 7"
+        />
+      </svg>
+      <div
+        class="relative group inline-block"
+      >
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full text-teal-700 bg-teal-100"
+        >
+          Escrow Funded
+        </span>
+        <div
+          class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+        >
+          <div
+            class="rounded-md bg-black text-white text-xs px-2 py-1"
+          >
+            Funds have been deposited into escrow.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex-1 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 mb-1"
+      >
+        <span
+          class="font-medium text-gray-900"
+        >
+          John Doe
+        </span>
+        <span
+          class="text-sm text-gray-500"
+        >
+          (
+          adopter
+          )
+        </span>
+      </div>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Funds deposited successfully
+      </p>
+      <div
+        class="mb-2"
+      >
+        <div
+          class="inline-flex items-center gap-2"
+        >
+          <a
+            aria-label="View transaction on Stellar explorer"
+            class="text-sm font-medium text-[#0A66C2] hover:text-[#084f95] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/30 rounded"
+            href="https://stellar.expert/explorer/testnet/tx/abcd1234567890abcd1234567890abcd12345678"
+            rel="noopener noreferrer"
+            target="_blank"
+            title="abcd1234567890abcd1234567890abcd12345678"
+          >
+            abcd1234…12345678
+          </a>
+          <button
+            aria-label="Copy transaction hash"
+            class="inline-flex h-7 w-7 items-center justify-center rounded border border-[#D6DCE5] text-[#415A77] hover:bg-[#EEF3F8] hover:text-[#2A3F57] focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/30"
+            title="Copy full transaction hash"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-copy"
+              fill="none"
+              height="14"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="14"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="14"
+                rx="2"
+                ry="2"
+                width="14"
+                x="8"
+                y="8"
+              />
+              <path
+                d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex-shrink-0 text-right"
+    >
+      <time
+        class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
+        datetime="2024-03-26T10:00:00Z"
+        title="3/26/2024, 11:00:00 AM"
+      >
+        730 days ago
+      </time>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`TimelineEntry > renders admin override entry correctly 1`] = `
+<div>
+  <li
+    aria-label="Status changed from ESCROW FUNDED to FUNDS RELEASED by Admin User (administrator) Reason: Manual release due to completed custody Admin override at 3/26/2024, 11:00:00 AM"
+    class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+  >
+    <div
+      class="flex items-center gap-2 flex-shrink-0"
+    >
+      <div
+        class="relative group inline-block"
+      >
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full text-teal-700 bg-teal-100"
+        >
+          Escrow Funded
+        </span>
+        <div
+          class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+        >
+          <div
+            class="rounded-md bg-black text-white text-xs px-2 py-1"
+          >
+            Funds have been deposited into escrow.
+          </div>
+        </div>
+      </div>
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5 12h14"
+        />
+        <path
+          d="m12 5 7 7-7 7"
+        />
+      </svg>
+      <div
+        class="relative group inline-block"
+      >
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full text-green-700 bg-green-100"
+        >
+          Funds Released
+        </span>
+        <div
+          class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+        >
+          <div
+            class="rounded-md bg-black text-white text-xs px-2 py-1"
+          >
+            Funds have been released successfully.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex-1 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 mb-1"
+      >
+        <span
+          class="font-medium text-gray-900"
+        >
+          Admin User
+        </span>
+        <span
+          class="text-sm text-gray-500"
+        >
+          (
+          administrator
+          )
+        </span>
+      </div>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Manual release due to completed custody
+      </p>
+      <div
+        class="mb-2"
+      >
+        <span
+          class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800"
+        >
+          Admin override
+        </span>
+      </div>
+    </div>
+    <div
+      class="flex-shrink-0 text-right"
+    >
+      <time
+        class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
+        datetime="2024-03-26T10:00:00Z"
+        title="3/26/2024, 11:00:00 AM"
+      >
+        730 days ago
+      </time>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`TimelineEntry > renders regular entry correctly 1`] = `
+<div>
+  <li
+    aria-label="by John Doe (adopter) Reason: Initial escrow setup at 3/26/2024, 11:00:00 AM"
+    class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+  >
+    <div
+      class="flex items-center gap-2 flex-shrink-0"
+    >
+      <div
+        class="relative group inline-block"
+      >
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full text-gray-700 bg-gray-100"
+        >
+          Escrow Created
+        </span>
+        <div
+          class="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block"
+        >
+          <div
+            class="rounded-md bg-black text-white text-xs px-2 py-1"
+          >
+            Escrow has been created but not funded yet.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex-1 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 mb-1"
+      >
+        <span
+          class="font-medium text-gray-900"
+        >
+          John Doe
+        </span>
+        <span
+          class="text-sm text-gray-500"
+        >
+          (
+          adopter
+          )
+        </span>
+      </div>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Initial escrow setup
+      </p>
+    </div>
+    <div
+      class="flex-shrink-0 text-right"
+    >
+      <time
+        class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
+        datetime="2024-03-26T10:00:00Z"
+        title="3/26/2024, 11:00:00 AM"
+      >
+        730 days ago
+      </time>
+    </div>
+  </li>
+</div>
+`;

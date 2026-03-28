@@ -1,0 +1,427 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EscrowProgressStepper > matches snapshot for AWAITING_FUNDS 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-sky-500 bg-sky-50 text-sky-900"
+        data-state="current"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-slate-200 bg-white text-slate-500"
+        data-state="upcoming"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-slate-200 bg-white text-slate-500"
+        data-state="upcoming"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowProgressStepper > matches snapshot for DISPUTED 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-sky-500 bg-sky-50 text-sky-900"
+        data-state="current"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+    <div
+      class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900"
+      data-testid="escrow-disputed-branch"
+    >
+      The settlement is paused while the dispute is under review.
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowProgressStepper > matches snapshot for FUNDED 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-sky-500 bg-sky-50 text-sky-900"
+        data-state="current"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-slate-200 bg-white text-slate-500"
+        data-state="upcoming"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowProgressStepper > matches snapshot for IN_REVIEW 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-sky-500 bg-sky-50 text-sky-900"
+        data-state="current"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowProgressStepper > matches snapshot for SETTLED 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowProgressStepper > matches snapshot for SETTLEMENT_FAILED 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-3"
+    data-testid="escrow-progress-stepper"
+  >
+    <ol
+      class="grid gap-3 md:grid-cols-3"
+    >
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 1
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Funding
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 2
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Review
+        </p>
+      </li>
+      <li
+        class="rounded-2xl border p-4 border-emerald-500 bg-emerald-50 text-emerald-900"
+        data-state="complete"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em]"
+        >
+          Step 3
+        </p>
+        <p
+          class="mt-2 text-base font-semibold"
+        >
+          Settlement
+        </p>
+      </li>
+    </ol>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for AWAITING_FUNDS 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-amber-100 text-amber-800 border-amber-200"
+    data-testid="escrow-status-badge"
+  >
+    Awaiting Funds
+  </span>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for DISPUTED 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-rose-100 text-rose-800 border-rose-200"
+    data-testid="escrow-status-badge"
+  >
+    Disputed
+  </span>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for FUNDED 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-sky-100 text-sky-800 border-sky-200"
+    data-testid="escrow-status-badge"
+  >
+    Funded
+  </span>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for IN_REVIEW 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-violet-100 text-violet-800 border-violet-200"
+    data-testid="escrow-status-badge"
+  >
+    In Review
+  </span>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for SETTLED 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-emerald-100 text-emerald-800 border-emerald-200"
+    data-testid="escrow-status-badge"
+  >
+    Settled
+  </span>
+</DocumentFragment>
+`;
+
+exports[`EscrowStatusBadge > matches snapshot for SETTLEMENT_FAILED 1`] = `
+<DocumentFragment>
+  <span
+    class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-red-100 text-red-800 border-red-200"
+    data-testid="escrow-status-badge"
+  >
+    Settlement Failed
+  </span>
+</DocumentFragment>
+`;

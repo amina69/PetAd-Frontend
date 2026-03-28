@@ -96,6 +96,7 @@ VITE_API_URL=http://localhost:3000
 ```env
 VITE_APP_NAME=PetAd
 VITE_ENABLE_ANALYTICS=false
+VITE_MSW=true
 ```
 
 ---
@@ -136,8 +137,22 @@ src/
 │   ├── adoption/
 │   └── custody/
 ├── hooks/            # Shared custom hooks
+│   └── __tests__/
+├── lib/              # Core infrastructure (ApiClient, errors)
+│   └── __tests__/
+├── mocks/            # MSW mock API (dev + test)
+│   ├── browser.ts    # Browser ServiceWorker setup
+│   ├── server.ts     # Node server for Vitest
+│   └── handlers/     # One file per domain
+│       ├── escrow.ts
+│       ├── status.ts
+│       ├── approval.ts
+│       ├── dispute.ts
+│       ├── notify.ts
+│       └── files.ts
 ├── pages/            # Route-level components
-├── utils/            # Helper functions and utilities
+├── test/             # Global test setup
+│   └── setup.ts
 ├── types/            # Global TypeScript types
 ├── main.tsx          # Application entry point
 └── App.tsx           # Root component
@@ -148,6 +163,8 @@ src/
 - **`api/`** - Centralized API communication layer
 - **`features/`** - Feature-based architecture (pets, adoption, custody)
 - **`components/`** - Reusable, presentational components
+- **`lib/`** - ApiClient, error classes, shared hooks
+- **`mocks/`** - MSW handlers for offline development and tests
 - **`hooks/`** - Custom React hooks for shared logic
 - **`pages/`** - Top-level route components
 
@@ -222,6 +239,55 @@ type AdoptionFormData = z.infer<typeof adoptionFormSchema>;
 **Important:** Ensure environment variables are configured in your deployment platform:
 
 - `VITE_API_URL` - Backend API endpoint
+
+---
+
+##  Mock API (MSW)
+
+This project uses [Mock Service Worker (MSW)](https://mswjs.io/) to intercept API requests during **development** and **Vitest tests**, so the frontend can be developed without the backend running.
+
+### Enable in development
+
+```bash
+VITE_MSW=true npm run dev
+```
+
+Look for `[MSW] Mocking enabled.` in the browser console to confirm it is active.
+
+### Covered domains
+
+| Domain | File | Status |
+|--------|------|--------|
+| Escrow | `src/mocks/handlers/escrow.ts` | ✅ Matches backend |
+| Adoption status | `src/mocks/handlers/status.ts` | ✅ Matches backend |
+| Documents | `src/mocks/handlers/files.ts` | ✅ Matches backend |
+| Approval | `src/mocks/handlers/approval.ts` | 🔶 Phase 2 stub |
+| Dispute | `src/mocks/handlers/dispute.ts` | 🔶 Phase 2 stub |
+| Notifications | `src/mocks/handlers/notify.ts` | 🔶 Phase 2 stub |
+
+### Simulate slow responses
+
+Append `?delay=<ms>` to any request to simulate network latency:
+
+```bash
+curl "http://localhost:5173/api/notifications?delay=2000"
+```
+
+### Override a handler in a test
+
+```ts
+import { server } from '../mocks/server';
+import { http, HttpResponse } from 'msw';
+
+it('shows disputed state', async () => {
+  server.use(
+    http.get('/api/escrow/:id', () =>
+      HttpResponse.json({ status: 'DISPUTED' }),
+    ),
+  );
+  // ... rest of test
+});
+```
 
 ---
 

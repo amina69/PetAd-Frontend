@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Upload } from "lucide-react";
 export default function EditAdoptionListing() {
   const [isLoading, setIsLoading] = useState(false);
