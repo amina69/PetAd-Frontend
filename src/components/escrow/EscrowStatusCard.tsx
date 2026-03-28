@@ -3,6 +3,7 @@ import { EscrowStatusBadge } from "./EscrowStatusBadge";
 import { StellarTxLink } from "./StellarTxLink";
 import { usePolling } from "../../lib/hooks/usePolling";
 import { formatAmount, type EscrowStatusData } from "./types";
+import { DisputeBanner } from './DisputeBanner';
 
 interface EscrowStatusCardProps {
   escrowId: string;
@@ -53,6 +54,7 @@ export function EscrowStatusCard({
     );
   }
 
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -71,7 +73,15 @@ export function EscrowStatusCard({
       </div>
 
       <div className="mt-6">
-        <EscrowProgressStepper status={data.status} />
+        {data.status === 'DISPUTED' && data.disputeId ? (
+          <DisputeBanner
+            disputeId={data.disputeId}
+            raisedAt={data.disputeRaisedAt ?? data.fundedAt ?? new Date().toISOString()}
+            escrowAccountId={data.escrowId}
+          />
+        ) : (
+          <EscrowProgressStepper status={data.status} />
+        )}
       </div>
 
       <dl className="mt-6 grid gap-4 md:grid-cols-2">

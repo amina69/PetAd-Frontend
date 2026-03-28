@@ -104,10 +104,6 @@ describe("AdminDisputeResolutionForm", () => {
 
     const submitButton = screen.getByRole("button", { name: "Resolve Dispute" });
 
-    // Manually set invalid percentages (this simulates a bug, but in real usage sliders constrain)
-    // For testing, we can assume the sliders work, but let's test the validation
-    // Since sliders auto-adjust, this might not happen, but the validation is there
-
     expect(submitButton).not.toBeDisabled(); // Should be enabled since sliders constrain
   });
 
