@@ -20,6 +20,7 @@ import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
+import NotificationPreferencesPage from './pages/settings/NotificationPreferencesPage';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/adoption/:adoptionId/settlement" element={<SettlementSummaryPage />} />
         <Route path="/adoption/:adoptionId/timeline" element={<AdoptionTimelinePage />} />
+        <Route path="/settings/notifications" element={<NotificationPreferencesPage />} />
 
         {/* Admin Approvals */}
         <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
