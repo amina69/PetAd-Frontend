@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, Bell, ChevronDown } from "lucide-react";
+import { House, Eye, List, Heart, Bell, ChevronDown, Scale } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
+import { DisputeNavBadge } from "../ui/DisputeNavBadge";
+import { useRoleGuard } from "../../hooks/useRoleGuard";
 
-const navLinks = [
+const BASE_NAV_LINKS = [
   { label: "Home", path: "/home", icon: House },
   { label: "Interests", path: "/interests", icon: Eye },
   { label: "Listings", path: "/listings", icon: List },
@@ -11,6 +13,14 @@ const navLinks = [
 
 export function Navbar() {
   const location = useLocation();
+  const { isAdmin } = useRoleGuard();
+
+  const disputesPath = isAdmin ? "/admin/disputes" : "/disputes";
+
+  const navLinks = [
+    ...BASE_NAV_LINKS,
+    { label: "Disputes", path: disputesPath, icon: Scale },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
@@ -36,12 +46,15 @@ export function Navbar() {
             <Link
               key={link.path}
               to={link.path}
-              className={`flex items-center gap-2 text-[15px] font-medium transition-colors ${
+              className={`relative flex items-center gap-2 text-[15px] font-medium transition-colors ${
                 isActive ? "text-[#001323]" : "text-gray-500 hover:text-[#001323]"
               }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               {link.label}
+              {link.label === "Disputes" && (
+                <DisputeNavBadge />
+              )}
             </Link>
           );
         })}
