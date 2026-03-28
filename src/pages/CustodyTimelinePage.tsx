@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { Check, Pause, Plus, Wallet } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { useCustodyTimeline, type CustodyTimelineEventType } from "../lib/hooks/useCustodyTimeline";
+import { useCustodyDetails } from "../lib/hooks/useCustodyDetails";
+import { CustodyExpiringBanner } from "../components/custody";
 import type { CustodyTimelineEvent } from "../api/custodyService";
 
 // ---------------------------------------------------------------------------
@@ -95,10 +97,15 @@ function groupByDate(events: CustodyTimelineEvent[]): DateGroup[] {
 export default function CustodyTimelinePage() {
   const { custodyId } = useParams<{ custodyId: string }>();
   const { data, isLoading, isError } = useCustodyTimeline(custodyId);
+  const { data: custodyDetails } = useCustodyDetails(custodyId);
 
   const groups = data && data.length > 0 ? groupByDate(data) : [];
   const isLatestEvent = (groupIdx: number, eventIdx: number) =>
     groupIdx === 0 && eventIdx === 0;
+
+  const showExpiringBanner =
+    custodyDetails?.status === "EXPIRING_SOON" &&
+    Boolean(custodyDetails.endDate);
 
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-10">
@@ -113,6 +120,14 @@ export default function CustodyTimelinePage() {
             <p className="mt-2 text-sm text-slate-400">ID: {custodyId}</p>
           )}
         </section>
+
+        {/* Expiring Banner */}
+        {showExpiringBanner && custodyId && (
+          <CustodyExpiringBanner
+            custodyId={custodyId}
+            endDate={custodyDetails.endDate!}
+          />
+        )}
 
         {/* Timeline Panel */}
         <section

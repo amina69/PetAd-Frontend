@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { AdoptionTimelineEntry } from "../../types/adoption";
 import { TimelineEntry } from "../TimelineEntry";
 
@@ -39,6 +39,30 @@ const adminOverrideEntry: AdoptionTimelineEntry = {
 };
 
 describe("TimelineEntry", () => {
+  beforeEach(() => {
+    // Mock the current date to March 26, 2025 11:00 AM UTC (exactly 1 year + 1 hour after the test timestamp)
+    // This ensures consistent snapshots regardless of when tests are run
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2025-03-26T11:00:00Z"));
+
+    vi.spyOn(Date.prototype, "toLocaleString").mockImplementation(function () {
+      return new Intl.DateTimeFormat("en-US", {
+        timeZone: "UTC",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      }).format(this);
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
   it("renders regular entry correctly", () => {
     const { container } = render(<TimelineEntry entry={baseEntry} />);
 

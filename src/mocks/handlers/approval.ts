@@ -1,112 +1,96 @@
-// TODO: No backend model yet — align field names when Approval is added to Prisma schema.
 import { http, HttpResponse, delay } from "msw";
 
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type ApprovalDecision = "approve" | "reject" | "pending";
-
-interface Reviewer {
-	id: string;
-	name: string;
-	role: string;
-}
-
-interface ApprovalItem {
-	id: string;
-	adoptionId: string;
-	reviewer: Reviewer;
-	decision: ApprovalDecision;
-	notes: string | null;
-	createdAt: string;
-	resolvedAt: string | null;
-}
-
-// ─── Seed data ────────────────────────────────────────────────────────────────
-
-const MOCK_APPROVALS: ApprovalItem[] = [
-	{
-		id: "approval-001",
-		adoptionId: "adoption-001",
-		reviewer: { id: "reviewer-1", name: "Dr. Sarah Lee", role: "vet_inspector" },
-		decision: "approve",
-		notes: "All documents verified. Pet health records up to date.",
-		createdAt: "2026-03-20T08:00:00.000Z",
-		resolvedAt: "2026-03-20T14:30:00.000Z",
-	},
-	{
-		id: "approval-002",
-		adoptionId: "adoption-001",
-		reviewer: { id: "reviewer-2", name: "Mark Evans", role: "welfare_officer" },
-		decision: "pending",
-		notes: null,
-		createdAt: "2026-03-21T09:00:00.000Z",
-		resolvedAt: null,
-	},
-];
-
-const PENDING_APPROVALS: ApprovalItem[] = [
-	{
-		id: "approval-003",
-		adoptionId: "adoption-002",
-		reviewer: { id: "reviewer-2", name: "Mark Evans", role: "welfare_officer" },
-		decision: "pending",
-		notes: null,
-		createdAt: "2026-03-23T10:00:00.000Z",
-		resolvedAt: null,
-	},
-];
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function getDelay(request: Request): number {
-	return Number(new URL(request.url).searchParams.get("delay") ?? 0);
-}
+const BASE_URL = "http://localhost:3000/api";
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 
 export const approvalHandlers = [
 	// GET /api/adoption/:adoptionId/approvals — list approvals for an adoption
-	http.get("/api/adoption/:adoptionId/approvals", async ({ request, params }) => {
-		await delay(getDelay(request));
-		const results = MOCK_APPROVALS.filter(
-			(a) => a.adoptionId === params.adoptionId || params.adoptionId === "adoption-001",
-		);
-		return HttpResponse.json<ApprovalItem[]>(results);
-	}),
-
-	// POST /api/adoption/:adoptionId/approvals — record an approval decision
-	http.post("/api/adoption/:adoptionId/approvals", async ({ request, params }) => {
-		await delay(getDelay(request));
-		const body = (await request.json()) as {
-			reviewerId: string;
-			reviewerName: string;
-			reviewerRole: string;
-			decision: ApprovalDecision;
-			notes?: string;
-		};
-		const newApproval: ApprovalItem = {
-			id: `approval-${Date.now()}`,
-			adoptionId: params.adoptionId as string,
-			reviewer: {
-				id: body.reviewerId,
-				name: body.reviewerName,
-				role: body.reviewerRole,
+	http.get(`${BASE_URL}/adoption/:adoptionId/approvals`, async () => {
+		await delay(800);
+		return HttpResponse.json([
+			{
+				id: "dec-1",
+				approverName: "Dr. Sarah Lee",
+				approverRole: "Veterinary Inspector",
+				status: "APPROVED",
+				reason: "Health check passed. Vaccinations are up to date and the pet is in excellent condition.",
+				timestamp: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 days ago
+				txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 			},
-			decision: body.decision,
-			notes: body.notes ?? null,
-			createdAt: new Date().toISOString(),
-			resolvedAt: body.decision !== "pending" ? new Date().toISOString() : null,
-		};
-		return HttpResponse.json<ApprovalItem>(newApproval, { status: 201 });
+			{
+				id: "dec-2",
+				approverName: "Mark Evans",
+				approverRole: "Welfare Officer",
+				status: "APPROVED",
+				reason: "Home visit successful. The environment is safe and suitable for a large dog.",
+				timestamp: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+				txHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef12345678"
+			}
+		]);
 	}),
 
-	// GET /api/approvals/pending — get the full pending approvals queue
-	http.get("/api/approvals/pending", async ({ request }) => {
-		await delay(getDelay(request));
-		return HttpResponse.json<ApprovalItem[]>([
-			...PENDING_APPROVALS,
-			...MOCK_APPROVALS.filter((a) => a.decision === "pending"),
-		]);
+	// GET /api/admin/approvals — admin approval queue
+	http.get(`${BASE_URL}/admin/approvals`, async ({ request }: { request: Request }) => {
+		await delay(1000);
+		const url = new URL(request.url);
+		const overdueOnly = url.searchParams.get("overdueOnly") === "true";
+		const shelter = url.searchParams.get("shelter");
+		
+		let items = [
+			{
+				id: "adoption-101",
+				shelter: "Happy Paws Shelter",
+				pet: "Buddy (Golden Retriever)",
+				adopter: "John Doe",
+				submitted: new Date(Date.now() - 86400000 * 4).toISOString(), // 4 days ago
+				shelterApproved: true,
+				daysWaiting: 4,
+				isOverdue: true
+			},
+			{
+				id: "adoption-102",
+				shelter: "Rescue League",
+				pet: "Luna (Siamese Cat)",
+				adopter: "Jane Smith",
+				submitted: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 day ago
+				shelterApproved: true,
+				daysWaiting: 1,
+				isOverdue: false
+			},
+			{
+				id: "adoption-103",
+				shelter: "Happy Paws Shelter",
+				pet: "Max (German Shepherd)",
+				adopter: "Robert Brown",
+				submitted: new Date(Date.now() - 86400000 * 5).toISOString(), // 5 days ago
+				shelterApproved: false,
+				daysWaiting: 5,
+				isOverdue: true
+			},
+			{
+				id: "adoption-104",
+				shelter: "City Animal Center",
+				pet: "Bella (Beagle)",
+				adopter: "Emily White",
+				submitted: new Date(Date.now() - 3600000 * 12).toISOString(), // 12 hours ago
+				shelterApproved: false,
+				daysWaiting: 0,
+				isOverdue: false
+			}
+		];
+
+		if (overdueOnly) {
+			items = items.filter(item => item.isOverdue);
+		}
+		if (shelter && shelter !== "") {
+			// Simulating filtering
+			items = items.filter(item => item.shelter.toLowerCase().includes(shelter.toLowerCase().replace('-', ' ')));
+		}
+
+		return HttpResponse.json({
+			items,
+			nextCursor: null
+		});
 	}),
 ];
