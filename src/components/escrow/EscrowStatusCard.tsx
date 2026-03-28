@@ -17,15 +17,28 @@ export function EscrowStatusCard({
   fetchStatus,
   pollingIntervalMs = 1000,
 }: EscrowStatusCardProps) {
-  const query = fetchStatus
-    ? usePolling(["escrow-status", escrowId], fetchStatus, {
-        intervalMs: pollingIntervalMs,
-        stopWhen: (data) => data?.status === "SETTLED",
-      })
-    : null;
+  const query = usePolling(
+    ["escrow-status", escrowId],
+    async () => {
+      if (fetchStatus) {
+        return fetchStatus();
+      }
 
-  const isLoading = query ? query.isLoading && !query.data && !initialData : false;
-  const data = (query?.data ?? initialData) || null;
+      if (initialData) {
+        return initialData;
+      }
+
+      throw new Error("No escrow status fetcher provided");
+    },
+    {
+      intervalMs: pollingIntervalMs,
+      stopWhen: (data) => data?.status === "SETTLED",
+      enabled: !!fetchStatus,
+    },
+  );
+
+  const isLoading = query.isLoading && !query.data && !initialData;
+  const data = query.data ?? initialData ?? null;
 
   if (isLoading || !data) {
     return (

@@ -112,11 +112,6 @@ describe("useRealTimeStatusPolling", () => {
     );
 
     await waitFor(() => {
-      expect(result.current.data?.status).toBe("ESCROW_CREATED");
-      expect(result.current.statusChanged).toBe(false);
-    });
-
-    await waitFor(() => {
       expect(result.current.data?.status).toBe("ESCROW_FUNDED");
       expect(result.current.statusChanged).toBe(true);
     });

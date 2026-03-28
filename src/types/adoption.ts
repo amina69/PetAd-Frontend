@@ -5,7 +5,19 @@ export type AdoptionStatus =
   | "DISPUTED"
   | "FUNDS_RELEASED"
   | "CUSTODY_ACTIVE"
+  | "EXPIRING_SOON"
   | "COMPLETED"
+  | "CANCELLED";
+
+export type CustodyStatus =
+  | "PENDING"
+  | "DEPOSIT_PENDING"
+  | "DEPOSIT_CONFIRMED"
+  | "ACTIVE"
+  | "EXPIRING_SOON"
+  | "COMPLETING"
+  | "COMPLETED"
+  | "DISPUTED"
   | "CANCELLED";
 
 export interface AdoptionTimelineEntry {
@@ -34,7 +46,7 @@ export interface AdoptionDetails {
 
 export interface CustodyDetails {
   id: string;
-  status: AdoptionStatus;
+  status: CustodyStatus;
   petId: string;
   custodianId: string;
   ownerId: string;
@@ -52,4 +64,27 @@ export interface TimelineEntry {
   sdkTxHash?: string;
   stellarExplorerUrl?: string;
   timestamp: string;
+}
+
+export type DecisionStatus = "APPROVED" | "REJECTED" | "EXPIRED";
+
+export interface ApprovalDecision {
+  id: string;
+  approverName: string;
+  approverRole: string;
+  status: DecisionStatus;
+  reason?: string;
+  timestamp: string;
+  txHash?: string;
+}
+
+export interface AdminApprovalQueueItem {
+  id: string;
+  shelter: string;
+  pet: string;
+  adopter: string;
+  submitted: string;
+  shelterApproved: boolean;
+  daysWaiting: number;
+  isOverdue: boolean;
 }

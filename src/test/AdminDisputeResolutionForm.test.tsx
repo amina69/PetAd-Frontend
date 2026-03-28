@@ -83,6 +83,12 @@ describe("AdminDisputeResolutionForm", () => {
     const noteTextarea = screen.getByPlaceholderText("Enter detailed reasoning for this resolution...");
     fireEvent.change(noteTextarea, { target: { value: "This is a valid admin note with enough characters." } });
 
+    // Still invalid until a resolution type is selected
+    expect(submitButton).toBeDisabled();
+
+    // Select REFUND to complete required form fields
+    fireEvent.click(screen.getByLabelText("REFUND"));
+
     expect(submitButton).not.toBeDisabled();
   });
 
@@ -107,6 +113,8 @@ describe("AdminDisputeResolutionForm", () => {
 
   it("submits form with correct data for REFUND", () => {
     render(<AdminDisputeResolutionForm onSubmit={mockOnSubmit} />);
+
+    fireEvent.click(screen.getByLabelText("REFUND"));
 
     const noteTextarea = screen.getByPlaceholderText("Enter detailed reasoning for this resolution...");
     fireEvent.change(noteTextarea, { target: { value: "This is a valid admin note with enough characters." } });

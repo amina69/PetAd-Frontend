@@ -18,8 +18,8 @@ import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
 import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
-import ShelterApprovalQueuePage from "./pages/ShelterApprovalQueuePage";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 
 function App() {
 
@@ -46,8 +46,8 @@ function App() {
         <Route path="/adoption/:adoptionId/settlement" element={<SettlementSummaryPage />} />
         <Route path="/adoption/:adoptionId/timeline" element={<AdoptionTimelinePage />} />
 
-        {/* Shelter Routes */}
-        <Route path="/shelter/approvals" element={<ShelterApprovalQueuePage />} />
+        {/* Admin Approvals */}
+        <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
 
         {/* Custody Routes */}
         <Route path="/custody/:custodyId/timeline" element={<CustodyTimelinePage />} />
@@ -60,7 +60,6 @@ function App() {
       </Route>
     </Routes>
   );
-
 }
 
 export default App;

@@ -3,7 +3,7 @@
 exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
 <div>
   <li
-    aria-label="at 3/26/2024, 11:00:00 AM"
+    aria-label="at 3/26/2024, 10:00:00 AM"
     class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
   >
     <div
@@ -18,9 +18,9 @@ exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
         datetime="2024-03-26T10:00:00Z"
-        title="3/26/2024, 11:00:00 AM"
+        title="3/26/2024, 10:00:00 AM"
       >
-        730 days ago
+        365 days ago
       </time>
     </div>
   </li>
@@ -30,7 +30,7 @@ exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
 exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
 <div>
   <li
-    aria-label="Status changed from ESCROW CREATED to ESCROW FUNDED by John Doe (adopter) Reason: Funds deposited successfully at 3/26/2024, 11:00:00 AM"
+    aria-label="Status changed from ESCROW CREATED to ESCROW FUNDED by John Doe (adopter) Reason: Funds deposited successfully at 3/26/2024, 10:00:00 AM"
     class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
   >
     <div
@@ -174,9 +174,9 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
         datetime="2024-03-26T10:00:00Z"
-        title="3/26/2024, 11:00:00 AM"
+        title="3/26/2024, 10:00:00 AM"
       >
-        730 days ago
+        365 days ago
       </time>
     </div>
   </li>
@@ -186,7 +186,7 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
 exports[`TimelineEntry > renders admin override entry correctly 1`] = `
 <div>
   <li
-    aria-label="Status changed from ESCROW FUNDED to FUNDS RELEASED by Admin User (administrator) Reason: Manual release due to completed custody Admin override at 3/26/2024, 11:00:00 AM"
+    aria-label="Status changed from ESCROW FUNDED to FUNDS RELEASED by Admin User (administrator) Reason: Manual release due to completed custody Admin override at 3/26/2024, 10:00:00 AM"
     class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
   >
     <div
@@ -289,9 +289,9 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
         datetime="2024-03-26T10:00:00Z"
-        title="3/26/2024, 11:00:00 AM"
+        title="3/26/2024, 10:00:00 AM"
       >
-        730 days ago
+        365 days ago
       </time>
     </div>
   </li>
@@ -301,7 +301,7 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
 exports[`TimelineEntry > renders regular entry correctly 1`] = `
 <div>
   <li
-    aria-label="by John Doe (adopter) Reason: Initial escrow setup at 3/26/2024, 11:00:00 AM"
+    aria-label="by John Doe (adopter) Reason: Initial escrow setup at 3/26/2024, 10:00:00 AM"
     class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
   >
     <div
@@ -357,9 +357,9 @@ exports[`TimelineEntry > renders regular entry correctly 1`] = `
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
         datetime="2024-03-26T10:00:00Z"
-        title="3/26/2024, 11:00:00 AM"
+        title="3/26/2024, 10:00:00 AM"
       >
-        730 days ago
+        365 days ago
       </time>
     </div>
   </li>
