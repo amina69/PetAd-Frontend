@@ -27,6 +27,26 @@ export function EscrowStatusCard({
     }
   );
 
+  const query = usePolling(
+    ["escrow-status", escrowId],
+    async () => {
+      if (fetchStatus) {
+        return fetchStatus();
+      }
+
+      if (initialData) {
+        return initialData;
+      }
+
+      throw new Error("No escrow status fetcher provided");
+    },
+    {
+      intervalMs: pollingIntervalMs,
+      stopWhen: (data) => data?.status === "SETTLED",
+      enabled: !!fetchStatus,
+    },
+  );
+
   const isLoading = query.isLoading && !query.data && !initialData;
   const data = query.data ?? initialData ?? null;
 

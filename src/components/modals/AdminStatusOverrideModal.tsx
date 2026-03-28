@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -21,6 +21,12 @@ export function AdminStatusOverrideModal({
   const [targetStatus, setTargetStatus] = useState("");
   const [reason, setReason] = useState("");
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleClose = useCallback(() => {
+    setTargetStatus("");
+    setReason("");
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -63,15 +69,9 @@ export function AdminStatusOverrideModal({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
-
-  const handleClose = () => {
-    setTargetStatus("");
-    setReason("");
-    onClose();
-  };
 
   const trimmedReason = reason.trim();
   const isReasonValid = trimmedReason.length >= 10;
