@@ -77,6 +77,20 @@ export const notifyHandlers = [
 		return HttpResponse.json<Notification[]>(MOCK_NOTIFICATIONS);
 	}),
 
+	// GET /api/notifications/:id — fetch an individual notification
+	http.get("/api/notifications/:id", async ({ params, request }) => {
+		await delay(getDelay(request));
+		const notification = MOCK_NOTIFICATIONS.find(
+			(item) => item.id === (params.id as string),
+		);
+
+		if (!notification) {
+			return new HttpResponse(null, { status: 404 });
+		}
+
+		return HttpResponse.json<Notification>(notification);
+	}),
+
 	// PATCH /api/notifications/:id/read — mark a single notification as read
 	http.patch("/api/notifications/:id/read", async ({ request }) => {
 		await delay(getDelay(request));

@@ -20,10 +20,13 @@ import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
+import { NotificationDeepLinkHandler } from "./lib/NotificationDeepLinkHandler";
 
 function App() {
   return (
-    <Routes>
+    <>
+      <NotificationDeepLinkHandler />
+      <Routes>
       {/* Auth Routes - No Navbar/Footer */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
