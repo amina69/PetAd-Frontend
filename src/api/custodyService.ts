@@ -9,6 +9,16 @@ export interface CustodyTimelineEvent {
 }
 
 export const custodyService = {
+  async getList(params?: { status?: string[] }): Promise<CustodyDetails[]> {
+    const searchParams = new URLSearchParams();
+    if (params?.status?.length) {
+      searchParams.append('status', params.status.join(','));
+    }
+    const query = searchParams.toString();
+    const url = `/custody${query ? `?${query}` : ''}`;
+    return apiClient.get<CustodyDetails[]>(url);
+  },
+
   async getDetails(custodyId: string): Promise<CustodyDetails> {
     return apiClient.get<CustodyDetails>(`/custody/${custodyId}`);
   },
