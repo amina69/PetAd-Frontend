@@ -20,7 +20,7 @@ exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
         datetime="2024-03-26T10:00:00Z"
         title="3/26/2024, 11:00:00 AM"
       >
-        732 days ago
+        733 days ago
       </time>
     </div>
   </li>
@@ -176,7 +176,7 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
         datetime="2024-03-26T10:00:00Z"
         title="3/26/2024, 11:00:00 AM"
       >
-        732 days ago
+        733 days ago
       </time>
     </div>
   </li>
@@ -291,7 +291,7 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
         datetime="2024-03-26T10:00:00Z"
         title="3/26/2024, 11:00:00 AM"
       >
-        732 days ago
+        733 days ago
       </time>
     </div>
   </li>
@@ -359,7 +359,7 @@ exports[`TimelineEntry > renders regular entry correctly 1`] = `
         datetime="2024-03-26T10:00:00Z"
         title="3/26/2024, 11:00:00 AM"
       >
-        732 days ago
+        733 days ago
       </time>
     </div>
   </li>
