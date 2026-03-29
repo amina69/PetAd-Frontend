@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useApiQuery } from "./useApiQuery";
 import { adoptionApprovalsService } from "../api/adoptionApprovalsService";
-import type { AdoptionApprovalsState } from "../types/adoption";
+import type { AdoptionApprovalsState, ApprovalParty } from "../types/adoption";
 
 interface UseAdoptionApprovalsReturn {
   required: number;
@@ -9,6 +9,7 @@ interface UseAdoptionApprovalsReturn {
   pending: number;
   quorumMet: boolean;
   escrowAccountId: string;
+  parties: ApprovalParty[];
   isLoading: boolean;
   isError: boolean;
 }
@@ -44,6 +45,7 @@ export function useAdoptionApprovals(adoptionId: string): UseAdoptionApprovalsRe
     pending: data?.pending ?? 0,
     quorumMet: data?.quorumMet ?? false,
     escrowAccountId: data?.escrowAccountId ?? "",
+    parties: data?.parties ?? [],
     isLoading,
     isError,
   };
