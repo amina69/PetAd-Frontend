@@ -1,286 +1,245 @@
-import { useState } from "react";
+import { useRef, useEffect, useCallback, useMemo, useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
+import { NotificationItem } from "../components/notifications";
+import { EmptyState } from "../components/ui/emptyState";
+import type { Notification, NotificationFilter } from "../types/notifications";
 
-import type { Notification } from "../types/notifications";
 
-const notifications: Notification[] = [
-    {
-        id: 1,
-        type: "success",
-        title: "Verification Status",
-        message:
-            "Your NIN verification is confirmed & successful. You can proceed with to list or show interest to adopt a pet",
-        time: "2 min ago",
-        hasArrow: false,
-    },
-    {
-        id: 2,
-        type: "adoption",
-        title: "New Adoption Interest",
-        message: "A user has indicated interest on your listed open adoption",
-        time: "2 min ago",
-        hasArrow: true,
-    },
-    {
-        id: 3,
-        type: "success",
-        title: "Payment Successful",
-        message: (
-            <>
-                Your payment for the system management service has been confirmed.{" "}
-                <strong>Amount: 5000 Naira, Ref ID: 1092751375</strong>. You can now
-                contact the Pet Owner for receive the pet
-            </>
-        ),
-        time: "2 min ago",
-        hasArrow: false,
-    },
-    {
-        id: 4,
-        type: "success",
-        title: "Adoption Request Approved",
-        message:
-            "The pet owner has approved your request to adopt their pet. You can proceed to the next step",
-        time: "2 min ago",
-        hasArrow: true,
-    },
-    {
-        id: 5,
-        type: "reminder",
-        title: "Reminder",
-        message: (
-            <>
-                This is a reminder to confirm completion of adoption with{" "}
-                <strong>ID: 10927</strong>
-            </>
-        ),
-        time: "2 min ago",
-        hasArrow: true,
-    },
-];
+export type DateGroupLabel = "Today" | "Yesterday" | "Earlier";
 
-const SuccessIcon = () => (
-    <div
-        style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            backgroundColor: "#d1fae5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-        }}
-    >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path
-                d="M3 8l3.5 3.5L13 4.5"
-                stroke="#10b981"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-        </svg>
-    </div>
-);
-
-const AdoptionIcon = () => (
-    <div
-        style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            backgroundColor: "#e0f2fe",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-        }}
-    >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-                d="M12 2C8.5 2 6 5 6 8c0 5 6 12 6 12s6-7 6-12c0-3-2.5-6-6-6z"
-                stroke="#0ea5e9"
-                strokeWidth="2"
-                strokeLinejoin="round"
-            />
-            <circle cx="12" cy="8" r="2" stroke="#0ea5e9" strokeWidth="2" />
-        </svg>
-    </div>
-);
-
-const ReminderIcon = () => (
-    <div
-        style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            backgroundColor: "#f3f4f6",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-        }}
-    >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-                d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
-                stroke="#6b7280"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-        </svg>
-    </div>
-);
-
-const ChevronRight = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-        <path
-            d="M6 4l4 4-4 4"
-            stroke="#9ca3af"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
-);
-
-const getIcon = (type: string) => {
-    if (type === "success") return <SuccessIcon />;
-    if (type === "adoption") return <AdoptionIcon />;
-    if (type === "reminder") return <ReminderIcon />;
-    return <SuccessIcon />;
-};
-
-const NotificationPage = () => {
-    const [items, setItems] = useState(notifications);
-    return (
-        <div
-            style={{
-                fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
-                maxWidth: 640,
-                margin: "40px auto",
-                padding: "0 16px",
-            }}
-        >
-            {/* Header */}
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 24,
-                }}
-            >
-                <h1
-                    style={{
-                        fontSize: 22,
-                        fontWeight: 700,
-                        color: "#111827",
-                        margin: 0,
-                        letterSpacing: "-0.3px",
-                    }}
-                >
-                    Notifications
-                </h1>
-                {items.length > 0 && (
-                    <button
-                        onClick={() => setItems([])}
-                        style={{
-                            background: "none",
-                            border: "none",
-                            fontSize: 13,
-                            color: "#6b7280",
-                            cursor: "pointer",
-                            padding: "4px 8px",
-                            borderRadius: 6,
-                            transition: "background 0.15s",
-                        }}
-                    >
-                        Clear all
-                    </button>
-                )}
-            </div>
-
-            {/* Notification List */}
-            {items.length === 0 ? (
-                <div
-                    style={{
-                        textAlign: "center",
-                        padding: "60px 0",
-                        color: "#9ca3af",
-                        fontSize: 15,
-                    }}
-                >
-                    You're all caught up!
-                </div>
-            ) : (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    {items.map((notif, index) => (
-                        <div key={notif.id}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                    gap: 14,
-                                    padding: "16px 0",
-                                    cursor: notif.hasArrow ? "pointer" : "default",
-                                    position: "relative",
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (notif.hasArrow)
-                                        e.currentTarget.style.backgroundColor = "#fafafa";
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = "transparent";
-                                }}
-                            >
-                                {getIcon(notif.type)}
-
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <p
-                                        style={{
-                                            margin: "0 0 4px",
-                                            fontSize: 14,
-                                            fontWeight: 600,
-                                            color: "#111827",
-                                        }}
-                                    >
-                                        {notif.title}
-                                    </p>
-                                    <p
-                                        style={{
-                                            margin: "0 0 6px",
-                                            fontSize: 13.5,
-                                            color: "#4b5563",
-                                            lineHeight: 1.55,
-                                        }}
-                                    >
-                                        {notif.message}
-                                    </p>
-                                    <span style={{ fontSize: 12, color: "#9ca3af" }}>
-                                        {notif.time}
-                                    </span>
-                                </div>
-
-                                {notif.hasArrow && <ChevronRight />}
-                            </div>
-
-                            {index < items.length - 1 && (
-                                <div
-                                    style={{
-                                        height: 1,
-                                        backgroundColor: "#f3f4f6",
-                                        margin: "0",
-                                    }}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
+export interface NotificationGroup {
+  label: DateGroupLabel;
+  items: Notification[];
 }
 
-export default NotificationPage;
+export function groupByDate(notifications: Notification[]): NotificationGroup[] {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterdayStart = new Date(todayStart);
+  yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+
+  const groups: Record<DateGroupLabel, Notification[]> = {
+    Today: [],
+    Yesterday: [],
+    Earlier: [],
+  };
+
+  for (const notif of notifications) {
+    const date = new Date(notif.time);
+    if (isNaN(date.getTime())) {
+      groups.Today.push(notif);
+    } else if (date >= todayStart) {
+      groups.Today.push(notif);
+    } else if (date >= yesterdayStart) {
+      groups.Yesterday.push(notif);
+    } else {
+      groups.Earlier.push(notif);
+    }
+  }
+
+  return (["Today", "Yesterday", "Earlier"] as DateGroupLabel[])
+    .map((label) => ({ label, items: groups[label] }))
+    .filter((g) => g.items.length > 0);
+}
+
+
+const TABS: { value: NotificationFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "unread", label: "Unread" },
+  { value: "read", label: "Read" },
+];
+
+function emptyStateProps(filter: NotificationFilter) {
+  if (filter === "unread") {
+    return {
+      title: "No unread notifications",
+      description: "You're all caught up! New notifications will appear here.",
+    };
+  }
+  if (filter === "read") {
+    return {
+      title: "No read notifications",
+      description: "Notifications you've opened will appear here.",
+    };
+  }
+  return {
+    title: "No notifications yet",
+    description: "When activity happens on your adoptions, you'll see updates here.",
+  };
+}
+
+
+function NotificationSkeleton() {
+  return (
+    <div className="flex items-start gap-3 px-4 py-3 animate-pulse">
+      <div className="shrink-0 mt-2 w-2 h-2 rounded-full bg-gray-200" />
+      <div className="shrink-0 w-8 h-8 rounded-full bg-gray-200" />
+      <div className="flex-1 space-y-2 py-0.5">
+        <div className="h-3 bg-gray-200 rounded w-2/5" />
+        <div className="h-3 bg-gray-200 rounded w-4/5" />
+        <div className="h-2 bg-gray-100 rounded w-1/4" />
+      </div>
+    </div>
+  );
+}
+
+
+export default function NotificationsListPage() {
+  const [filter, setFilter] = useState<NotificationFilter>("all");
+
+  const {
+    notifications,
+    total,
+    isLoading,
+    isFetchingNextPage,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+    markRead,
+  } = useNotifications(filter);
+
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.isRead).length,
+    [notifications],
+  );
+
+  const grouped = useMemo(() => groupByDate(notifications), [notifications]);
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const handleIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage],
+  );
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(handleIntersect, { threshold: 0 });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [handleIntersect]);
+
+  return (
+    <div className="max-w-xl mx-auto px-4 py-10">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+            Notifications
+          </h1>
+          {filter === "all" && unreadCount > 0 && (
+            <span
+              aria-label={`${unreadCount} unread`}
+              className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-orange-500 text-white text-xs font-bold"
+            >
+              {unreadCount}
+            </span>
+          )}
+        </div>
+        {total > 0 && (
+          <span className="text-sm text-gray-400">
+            {total} notification{total !== 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
+
+      {/* Filter tabs */}
+      <div
+        role="tablist"
+        aria-label="Notification filters"
+        className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1"
+      >
+        {TABS.map((tab) => (
+          <button
+            key={tab.value}
+            role="tab"
+            aria-selected={filter === tab.value}
+            onClick={() => setFilter(tab.value)}
+            className={[
+              "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
+              filter === tab.value
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700",
+            ].join(" ")}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Body */}
+      {isError ? (
+        <EmptyState
+          title="Something went wrong"
+          description="Failed to load notifications. Please try again."
+        />
+      ) : isLoading ? (
+        <div
+          data-testid="notifications-loading"
+          className="rounded-xl border border-gray-100 overflow-hidden divide-y divide-gray-100"
+        >
+          {Array.from({ length: 4 }).map((_, i) => (
+            <NotificationSkeleton key={i} />
+          ))}
+        </div>
+      ) : notifications.length === 0 ? (
+        <EmptyState {...emptyStateProps(filter)} />
+      ) : (
+        <div
+          role="list"
+          aria-label="Notifications"
+          className="rounded-xl border border-gray-100 overflow-hidden"
+        >
+          {grouped.map((group) => (
+            <div key={group.label}>
+              <div
+                data-testid={`group-header-${group.label.toLowerCase()}`}
+                className="px-4 py-2 bg-gray-50 border-b border-gray-100"
+              >
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  {group.label}
+                </span>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {group.items.map((notif) => (
+                  <div key={notif.id} role="listitem">
+                    <NotificationItem
+                      notification={notif}
+                      isRead={notif.isRead ?? false}
+                      onRead={markRead}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div
+            ref={sentinelRef}
+            data-testid="scroll-sentinel"
+            aria-hidden="true"
+          />
+
+          {isFetchingNextPage && (
+            <div className="divide-y divide-gray-100">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <NotificationSkeleton key={i} />
+              ))}
+            </div>
+          )}
+
+          {!hasNextPage && notifications.length > 0 && (
+            <p className="text-center text-xs text-gray-400 py-4">
+              You've reached the end
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
