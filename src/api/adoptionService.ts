@@ -9,12 +9,6 @@ import type {
   AdminApprovalQueueItem,
 } from "./types/adoption";
 
-import type { 
-  ApprovalDecisionPayload, 
-  AdoptionRating, 
-  AdoptionTimelineEntry 
-} from "../types/adoption";
-
 export interface StatusOverride {
   status: string;
   reason: string;
@@ -38,40 +32,42 @@ export const adoptionService = {
     return;
   },
 
-async approveAdoption(id: string, payload: ApprovalDecisionPayload): Promise<void> {
-  return apiClient.post(`/adoption/${id}/approve`, payload);
-},
+  async approveAdoption(id: string, payload: ApprovalDecisionPayload): Promise<void> {
+    return apiClient.post(`/adoption/${id}/approve`, payload);
+  },
 
-async completeAdoption(adoptionId: string): Promise<void> {
-  await apiClient.post(`/adoption/${adoptionId}/complete`);
-},
+  async completeAdoption(adoptionId: string): Promise<void> {
+    await apiClient.post(`/adoption/${adoptionId}/complete`);
+  },
 
-async getTimeline(adoptionId: string): Promise<AdoptionTimelineEntry[]> {
-  return apiClient.get(`/adoption/${adoptionId}/timeline`);
-},
+  async getTimeline(adoptionId: string): Promise<AdoptionTimelineEntry[]> {
+    return apiClient.get(`/adoption/${adoptionId}/timeline`);
+  },
 
-async editStatus(
-  adoptionId: string,
-  data: StatusOverride
-): Promise<AdoptionTimelineEntry[]> {
-  return apiClient.patch(`/adoption/${adoptionId}/status`, data);
-},
+  async editStatus(
+    adoptionId: string,
+    data: StatusOverride
+  ): Promise<AdoptionTimelineEntry[]> {
+    return apiClient.patch(`/adoption/${adoptionId}/status`, data);
+  },
 
-async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
-  return apiClient.get(`/adoption/${adoptionId}/approvals`);
-},
+  async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
+    return apiClient.get(`/adoption/${adoptionId}/approvals`);
+  },
 
-async getAdminApprovalQueue(
-  filters: AdminApprovalFilters
-): Promise<{ items: AdminApprovalQueueItem[]; nextCursor?: string }> {
-  const params = new URLSearchParams();
-  if (filters.shelter) params.append("shelter", filters.shelter);
-  if (filters.status) params.append("status", filters.status);
-  if (filters.overdueOnly) params.append("overdueOnly", "true");
-  if (filters.cursor) params.append("cursor", filters.cursor);
+  async getAdminApprovalQueue(
+    filters: AdminApprovalFilters
+  ): Promise<{ items: AdminApprovalQueueItem[]; nextCursor?: string }> {
+    const params = new URLSearchParams();
 
-  const queryString = params.toString();
-  const endpoint = `/admin/approvals${queryString ? `?${queryString}` : ""}`;
+    if (filters.shelter) params.append("shelter", filters.shelter);
+    if (filters.status) params.append("status", filters.status);
+    if (filters.overdueOnly) params.append("overdueOnly", "true");
+    if (filters.cursor) params.append("cursor", filters.cursor);
 
-  return apiClient.get(endpoint);
-},
+    const queryString = params.toString();
+    const endpoint = `/admin/approvals${queryString ? `?${queryString}` : ""}`;
+
+    return apiClient.get(endpoint);
+  },
+};
