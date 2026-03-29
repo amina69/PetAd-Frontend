@@ -230,8 +230,11 @@ export function getApiClient(): ApiClient {
 	return apiClientInstance;
 }
 
+const isMockServiceWorkerEnabled = import.meta.env.VITE_MSW === "true";
+const defaultApiUrl = isMockServiceWorkerEnabled ? "/api" : "http://localhost:3000/api";
+
 // Vite environment variable
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL ?? defaultApiUrl;
 
 export const apiClient = createApiClient({
 	baseURL: API_URL,
