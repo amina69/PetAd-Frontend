@@ -1,16 +1,18 @@
-# feat: Add useAdoptionApprovals Hook
+# feat: Implement ApprovalDecisionButtons Component
 
 ## Summary
 
-Hook to fetch and monitor adoption approval state with smart polling that stops once quorum is reached.
+Approve/reject buttons for adoption approvals with rejection reason modal.
 
 ## Changes
 
-- `useAdoptionApprovals(adoptionId)` hook
-- Fetches `GET /adoption/:id/approvals`
-- Polls every 30s, stops when `quorumMet` is true
-- Returns approval counts and state
+- `ApprovalDecisionButtons` component with conditional rendering
+- Approve button (one-click submission)
+- Reject button (opens modal for reason)
+- Toast notifications on success/error
+- `submitApprovalDecision` method in adoptionApprovalsService
+- 18 unit tests
 
 ## Tests
 
-18 tests covering polling behavior and quorum transitions
+All passing - covers visibility, mutations, modals, and accessibility
