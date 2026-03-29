@@ -1,12 +1,8 @@
-import { type ReactNode } from "react";
+import { type PropsWithChildren } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 
-interface MainLayoutProps {
-  children: ReactNode;
-}
-
-export function MainLayout({ children }: MainLayoutProps) {
+export function MainLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
