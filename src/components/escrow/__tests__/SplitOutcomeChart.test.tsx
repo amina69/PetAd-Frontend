@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SplitOutcomeChart } from "../SplitOutcomeChart";
 import type { DistributionItem } from "../SplitOutcomeChart";
@@ -30,9 +30,9 @@ describe("SplitOutcomeChart", () => {
     expect(screen.getByTestId("legend-item-adopter")).toBeInTheDocument();
     expect(screen.getByTestId("legend-item-platform")).toBeInTheDocument();
     
-    expect(screen.getByText(/Shelter: 60.00 USDC \(60%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Adopter: 30.00 USDC \(30%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Platform: 10.00 USDC \(10%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Shelter:\s*60.00\s*USDC\s*\(60%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Adopter:\s*30.00\s*USDC\s*\(30%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Platform:\s*10.00\s*USDC\s*\(10%\)/)).toBeInTheDocument();
   });
 
   it("renders correct total amount", () => {
@@ -43,7 +43,7 @@ describe("SplitOutcomeChart", () => {
   });
 
   it("renders with correct semantic colors", () => {
-    const { container } = render(<SplitOutcomeChart distribution={mockDistribution} />);
+    render(<SplitOutcomeChart distribution={mockDistribution} />);
     
     const shelterSegment = screen.getByTestId("chart-segment-shelter");
     const adopterSegment = screen.getByTestId("chart-segment-adopter");

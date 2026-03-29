@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, Bell, ChevronDown } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { House, Eye, List, Heart, ChevronDown } from "lucide-react";
+import { NotificationBell } from "../notifications/NotificationBell";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
 
@@ -11,6 +12,7 @@ const navLinks = [
 
 export function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
@@ -60,14 +62,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Notification Icon with Red Dot */}
-        <Link
-          to="/notifications"
-          className="relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
-        >
-          <Bell size={20} />
-          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-        </Link>
+        <NotificationBell onClick={() => navigate("/notifications")} />
 
         {/* User Profile */}
         <div className="flex items-center gap-3 ml-2 cursor-pointer group">

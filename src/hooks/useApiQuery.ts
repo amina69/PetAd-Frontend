@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions, type QueryKey } from "@tanstack/react-query";
 import type { ApiError } from "../types/auth";
 
 interface UseApiQueryReturn<T> {
@@ -18,7 +18,7 @@ interface UseApiQueryReturn<T> {
  * - 404 Not Found: Returns isNotFound: true
  */
 export function useApiQuery<T>(
-  key: any[],
+  key: QueryKey,
   fetchFn: () => Promise<T>,
   options?: Omit<UseQueryOptions<T, ApiError>, 'queryKey' | 'queryFn'>
 ): UseApiQueryReturn<T> {

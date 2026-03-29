@@ -14,10 +14,14 @@ import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
 import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
 import EditAdoptionListing from "./pages/EditAdoptionListing";
 import ListingDetailsPage from "./pages/ListingDetailsPage";
+import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
+import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
+import StatusPollingDemo from "./pages/StatusPollingDemo";
+import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 
 function App() {
-
   return (
     <Routes>
       {/* Auth Routes - No Navbar/Footer */}
@@ -38,14 +42,34 @@ function App() {
         <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
         <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
+        <Route
+          path="/adoption/:adoptionId/settlement"
+          element={<SettlementSummaryPage />}
+        />
+        <Route
+          path="/adoption/:adoptionId/timeline"
+          element={<AdoptionTimelinePage />}
+        />
+
+        {/* Admin Approvals */}
+        <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+
+        {/* Custody Routes */}
+        <Route
+          path="/custody/:custodyId/timeline"
+          element={<CustodyTimelinePage />}
+        />
 
         {/* Preview Routes */}
         <Route path="/preview-modal" element={<ModalPreview />} />
-        <Route path="/adoption-completion-demo" element={<AdoptionCompletionDemo />} />
+        <Route
+          path="/adoption-completion-demo"
+          element={<AdoptionCompletionDemo />}
+        />
+        <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
       </Route>
     </Routes>
   );
-  
 }
 
 export default App;

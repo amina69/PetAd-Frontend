@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { StellarTxLink } from "./StellarTxLink";
-import { formatAmount } from "./types";
-
-export function getEscrowFundedBannerStorageKey(adoptionId: string) {
-  return `escrow-funded-banner-dismissed:${adoptionId}`;
-}
+import { formatAmount, getEscrowFundedBannerStorageKey } from "./types";
 
 interface EscrowFundedBannerProps {
   adoptionId: string;
