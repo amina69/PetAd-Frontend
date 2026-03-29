@@ -1,8 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { House, Eye, List, Heart, ChevronDown } from "lucide-react";
+import {
+  House,
+  Eye,
+  List,
+  Heart,
+  Bell,
+  ChevronDown,
+  CheckCircle,
+} from "lucide-react";
 import { NotificationBell } from "../notifications/NotificationBell";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
+import { PendingApprovalBadge } from "./PendingApprovalBadge";
+import { useRoleGuard } from "../../hooks/useRoleGuard";
 
 const navLinks = [
   { label: "Home", path: "/home", icon: House },
@@ -10,9 +20,24 @@ const navLinks = [
   { label: "Listings", path: "/listings", icon: List },
 ];
 
+const roleBasedNavLinks = [
+  {
+    label: "Approvals",
+    path: "/approvals",
+    icon: CheckCircle,
+    roles: ["admin", "shelter"],
+  },
+];
+
 export function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { role } = useRoleGuard();
+
+  // Filter role-based links based on current user role
+  const visibleRoleLinks = roleBasedNavLinks.filter((link) =>
+    link.roles.includes(role || ""),
+  );
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
@@ -39,11 +64,33 @@ export function Navbar() {
               key={link.path}
               to={link.path}
               className={`flex items-center gap-2 text-[15px] font-medium transition-colors ${
-                isActive ? "text-[#001323]" : "text-gray-500 hover:text-[#001323]"
+                isActive
+                  ? "text-[#001323]"
+                  : "text-gray-500 hover:text-[#001323]"
               }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               {link.label}
+            </Link>
+          );
+        })}
+
+        {visibleRoleLinks.map((link) => {
+          const Icon = link.icon;
+          const isActive = location.pathname === link.path;
+          return (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`relative flex items-center gap-2 text-[15px] font-medium transition-colors ${
+                isActive
+                  ? "text-[#001323]"
+                  : "text-gray-500 hover:text-[#001323]"
+              }`}
+            >
+              <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+              {link.label}
+              <PendingApprovalBadge />
             </Link>
           );
         })}
@@ -67,13 +114,24 @@ export function Navbar() {
         {/* User Profile */}
         <div className="flex items-center gap-3 ml-2 cursor-pointer group">
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100">
-            <img src={owner} alt="User Avatar" className="w-full h-full object-cover" />
+            <img
+              src={owner}
+              alt="User Avatar"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="hidden sm:block">
-            <p className="text-[10px] text-gray-400 font-medium">Good Morning!</p>
-            <p className="text-[14px] text-[#001323] font-bold">Scarlet Johnson</p>
+            <p className="text-[10px] text-gray-400 font-medium">
+              Good Morning!
+            </p>
+            <p className="text-[14px] text-[#001323] font-bold">
+              Scarlet Johnson
+            </p>
           </div>
-          <ChevronDown size={18} className="text-gray-400 group-hover:text-gray-600 transition-colors" />
+          <ChevronDown
+            size={18}
+            className="text-gray-400 group-hover:text-gray-600 transition-colors"
+          />
         </div>
       </div>
     </nav>
