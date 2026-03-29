@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgetPasswordPage from "./pages/forgetPasswordPage";
 import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
+import NotificationPreferencesPage from "./pages/NotificationPreferencesPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
 import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
@@ -43,6 +44,10 @@ function App() {
         <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
         <Route
+          path="/notification-preferences"
+          element={<NotificationPreferencesPage />}
+        />
+        <Route
           path="/adoption/:adoptionId/settlement"
           element={<SettlementSummaryPage />}
         />
@@ -52,7 +57,10 @@ function App() {
         />
 
         {/* Admin Approvals */}
-        <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+        <Route
+          path="/admin/approvals"
+          element={<AdminApprovalQueuePage />}
+        />
 
         {/* Custody Routes */}
         <Route

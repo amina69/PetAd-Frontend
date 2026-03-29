@@ -2,7 +2,7 @@
 import { http, HttpResponse, delay } from "msw";
 
 
-import type { Notification, NotificationType } from "../../types/notifications";
+import type { Notification, NotificationType, NotificationPreferences } from "../../types/notifications";
 
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
@@ -54,6 +54,17 @@ const MOCK_NOTIFICATIONS: Notification[] = [
 	},
 ];
 
+// ─── Notification Preferences ──────────────────────────────────────────────────
+
+const MOCK_NOTIFICATION_PREFERENCES: NotificationPreferences = {
+	APPROVAL_REQUESTED: true,
+	ESCROW_FUNDED: true,
+	DISPUTE_RAISED: true,
+	SETTLEMENT_COMPLETE: true,
+	DOCUMENT_EXPIRING: true,
+	CUSTODY_EXPIRING: true,
+};
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getDelay(request: Request): number {
@@ -85,6 +96,18 @@ export const notifyHandlers = [
 
 	// POST /api/notifications/read-all — mark all notifications as read
 	http.post("/api/notifications/read-all", async ({ request }) => {
+		await delay(getDelay(request));
+		return new HttpResponse(null, { status: 204 });
+	}),
+
+	// GET /api/notifications/preferences — get notification preferences
+	http.get("**/api/notifications/preferences", async ({ request }) => {
+		await delay(getDelay(request));
+		return HttpResponse.json<NotificationPreferences>(MOCK_NOTIFICATION_PREFERENCES);
+	}),
+
+	// PATCH /api/notifications/preferences — update notification preferences
+	http.patch("**/api/notifications/preferences", async ({ request }) => {
 		await delay(getDelay(request));
 		return new HttpResponse(null, { status: 204 });
 	}),
