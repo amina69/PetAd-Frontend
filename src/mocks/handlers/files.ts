@@ -89,6 +89,14 @@ export const filesHandlers = [
 		}, { status: 201 });
 	}),
 
+	// POST /documents/:id/replace — replace an existing document (re-upload)
+	http.post("/api/documents/:id/replace", async ({ request, params }) => {
+		await delay(getDelay(request));
+
+		// Simulate replacing a document: return success message
+		return HttpResponse.json({ message: "Document replaced successfully" }, { status: 200 });
+	}),
+
 	// GET /api/adoption/:id/documents — list documents for an adoption (Phase 2 read endpoint)
 	http.get("/api/adoption/:id/documents", async ({ request, params }) => {
 		await delay(getDelay(request));
