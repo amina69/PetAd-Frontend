@@ -12,7 +12,6 @@ exports[`EscrowSettlementCard > matches snapshot in error state 1`] = `
         class="rounded-full bg-red-50 p-3 text-red-500 ring-8 ring-red-50/50"
       >
         <svg
-          aria-hidden="true"
           class="lucide lucide-circle-alert h-8 w-8"
           fill="none"
           height="24"
@@ -59,7 +58,6 @@ exports[`EscrowSettlementCard > matches snapshot in error state 1`] = `
         class="flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98]"
       >
         <svg
-          aria-hidden="true"
           class="lucide lucide-refresh-cw h-4 w-4"
           fill="none"
           height="24"
@@ -147,7 +145,6 @@ exports[`EscrowSettlementCard > matches snapshot in funded state 1`] = `
           class="flex items-center gap-2 text-slate-400"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-refresh-cw h-3 w-3"
             fill="none"
             height="24"
@@ -294,7 +291,6 @@ exports[`EscrowSettlementCard > matches snapshot in settled state 1`] = `
           class="flex items-center gap-2 text-slate-400"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-refresh-cw h-3 w-3"
             fill="none"
             height="24"
