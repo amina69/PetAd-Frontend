@@ -10,7 +10,7 @@ export interface CustodyTimelineEvent {
 
 export const custodyService = {
   async getDetails(custodyId: string): Promise<CustodyDetails> {
-    return apiClient.get<CustodyDetails>(`/custody/${custodyId}`);
+    return apiClient.get(`/custody/${custodyId}`);
   },
 
   async getTimeline(custodyId: string): Promise<CustodyTimelineEvent[]> {
