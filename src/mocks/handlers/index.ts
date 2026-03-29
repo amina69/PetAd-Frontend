@@ -5,6 +5,7 @@ import { disputeHandlers } from "./dispute";
 import { notifyHandlers } from "./notify";
 import { filesHandlers } from "./files";
 import { adoptionHandlers } from "./adoption";
+import { custodyHandlers } from "./custody";
 
 /**
  * All MSW request handlers, combined from every domain module.
@@ -18,4 +19,5 @@ export const handlers = [
 	...notifyHandlers,
 	...filesHandlers,
 	...adoptionHandlers,
+	...custodyHandlers,
 ];

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 import { useMutateCompleteAdoption } from "../useMutateCompleteAdoption";
 import { server } from "../../mocks/server";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import React from "react";
 import type { AdoptionDetails } from "../../types/adoption";
 
@@ -16,6 +16,7 @@ function createWrapper() {
       queries: { retry: false },
     },
   });
+  (queryClient as unknown as { _uid: string })._uid = "test-" + Math.random().toString(36).substring(2, 5);
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
@@ -90,6 +91,8 @@ describe("useMutateCompleteAdoption", () => {
       const { queryClient, wrapper } = createWrapper();
       queryClient.setQueryData<AdoptionDetails>(["adoption", "adoption-1"], MOCK_ADOPTION);
 
+      const invalidateSpy = vi.fn();
+      queryClient.invalidateQueries = invalidateSpy;
       const { result } = renderHook(
         () => useMutateCompleteAdoption("adoption-1"),
         { wrapper },
@@ -102,7 +105,9 @@ describe("useMutateCompleteAdoption", () => {
       await waitFor(() => expect(result.current.isPending).toBe(false));
 
       expect(result.current.isError).toBe(false);
-      expect(result.current.error).toBeNull();
+      await waitFor(() => expect(invalidateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ queryKey: ["adoption", "adoption-1"] }),
+      ));
     });
   });
 
@@ -182,7 +187,7 @@ describe("useMutateCompleteAdoption", () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      // After failure, cache should be restored to original state
+      // After failure, cache should be restored to the original state
       const restoredData = queryClient.getQueryData<AdoptionDetails>([
         "adoption",
         "fail",

@@ -83,7 +83,7 @@ describe('notificationRouter', () => {
       title: 'Unknown notification',
       message: 'Test message',
       time: 'now'
-    };
+    } as unknown as import('../../types/notifications').Notification;
     expect(notificationRouter(notification)).toBe('/notifications');
   });
 });

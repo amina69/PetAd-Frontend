@@ -17,8 +17,8 @@ import ListingDetailsPage from "./pages/ListingDetailsPage";
 import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
 import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
-import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import StatusPollingDemo from "./pages/StatusPollingDemo";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 
 function App() {

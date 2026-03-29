@@ -21,6 +21,8 @@ export interface UseEscrowStatusOptions
 const TERMINAL_STATUSES = new Set<EscrowStatusValue>([
 	"SETTLED",
 	"SETTLEMENT_FAILED",
+	"CANCELLED",
+	"RELEASED",
 ]);
 
 export function useEscrowStatus(

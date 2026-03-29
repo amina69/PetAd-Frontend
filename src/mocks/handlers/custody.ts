@@ -13,7 +13,7 @@ const MOCK_CUSTODY_DETAILS: CustodyDetails = {
 };
 
 export const custodyHandlers = [
-  http.get("/api/custody/:id", async ({ params }) => {
+  http.get("*/api/custody/:id", async ({ params }) => {
     await delay(100);
     const { id } = params;
     
@@ -25,5 +25,17 @@ export const custodyHandlers = [
       { error: "Custody not found" },
       { status: 404 }
     );
+  }),
+
+  http.get("*/api/custody/:id/timeline", async () => {
+    await delay(100);
+    return HttpResponse.json([
+      {
+        type: "STATUS_CHANGE",
+        label: "Custody Started",
+        timestamp: new Date().toISOString(),
+        toStatus: "CUSTODY_ACTIVE"
+      }
+    ]);
   }),
 ];

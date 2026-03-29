@@ -1,5 +1,6 @@
 
 import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import AdoptionTimelinePage from "../AdoptionTimelinePage";
@@ -10,7 +11,7 @@ vi.mock("../../hooks/useAdoptionTimeline", () => ({
   useAdoptionTimeline: vi.fn(),
 }));
 
-// Mock the TimelineEntry UI component to simplify testing the page's structure and logic
+
 vi.mock("../../components/ui/TimelineEntry", () => ({
   TimelineEntry: ({ entry }: { entry: AdoptionTimelineEntry }) => (
     <div data-testid="mock-timeline-entry">{entry.actor} - {entry.toStatus}</div>

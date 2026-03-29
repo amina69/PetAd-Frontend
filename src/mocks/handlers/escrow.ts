@@ -104,7 +104,13 @@ export const escrowHandlers = [
 			return new HttpResponse(null, { status: 404 });
 		}
 
-		const summary: Record<string, unknown> = {
+		interface SettlementSummary {
+			onChainStatus: string;
+			confirmations: number;
+			payments: { id: string; amount: number; asset: string; destination: string; status: string }[];
+			stellarExplorerUrl: string;
+		}
+		const summary: SettlementSummary = {
 			onChainStatus: "SUCCESS",
 			confirmations: 12,
 			payments: [

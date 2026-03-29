@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
 import { custodyService } from "../../api/custodyService";
@@ -22,7 +22,7 @@ export function useRealTimeStatusPolling(
 
   const { intervalMs = 15000 } = options;
   const [statusChanged, setStatusChanged] = useState(false);
-  const [prevStatus, setPrevStatus] = useState<string | undefined>(undefined);
+  const previousStatusRef = useRef<string | undefined>(undefined);
 
   // Determine the fetch function based on entity type
   const fetchFn = (): Promise<AdoptionDetails | CustodyDetails> => {
@@ -30,7 +30,7 @@ export function useRealTimeStatusPolling(
       case "adoption":
         return adoptionService.getDetails(entityId);
       case "custody":
-        return custodyService.getDetails(entityId);
+        return custodyService.getDetails(entityId) as Promise<AdoptionDetails | CustodyDetails>;
     }
   };
 
@@ -47,24 +47,29 @@ export function useRealTimeStatusPolling(
 
   const currentStatus = query.data?.status;
 
-  // Track status changes and trigger pulse animation
-  // Use state instead of ref to avoid react-hooks/refs error
-  if (currentStatus && prevStatus !== undefined && currentStatus !== prevStatus) {
-    setPrevStatus(currentStatus);
-    setStatusChanged(true);
-  } else if (currentStatus && prevStatus === undefined) {
-    setPrevStatus(currentStatus);
-  }
-
-  // Handle clearing the status changed flag after a duration
+  // Track status changes and trigger pulse animation inside useEffect (purity)
   useEffect(() => {
-    if (statusChanged) {
-      const timer = setTimeout(() => {
+    if (!currentStatus) return;
+
+    if (previousStatusRef.current === undefined) {
+      previousStatusRef.current = currentStatus;
+      return;
+    }
+
+    if (currentStatus !== previousStatusRef.current) {
+      previousStatusRef.current = currentStatus;
+      
+      // Trigger status changed animation
+      setStatusChanged(true);
+
+      // Reset the flag after 3 seconds
+      const resetTimer = setTimeout(() => {
         setStatusChanged(false);
       }, 3000);
-      return () => clearTimeout(timer);
+
+      return () => clearTimeout(resetTimer);
     }
-  }, [statusChanged]);
+  }, [currentStatus]);
 
   return {
     data: query.data,

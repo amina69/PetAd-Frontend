@@ -2,7 +2,7 @@ import { useApiQuery } from "./useApiQuery";
 import { adoptionService } from "../api/adoptionService";
 import type { AdoptionDetails, AdoptionStatus } from "../types/adoption";
 
-const SETTLED_STATUSES: AdoptionStatus[] = ["COMPLETED", "CANCELLED"];
+const SETTLED_STATUSES: AdoptionStatus[] = ["COMPLETED", "CANCELLED", "FUNDS_RELEASED"];
 const POLL_INTERVAL_MS = 3_000;
 
 /**

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useEscrowStatus } from "../../lib/hooks/useEscrowStatus";
+import { type EscrowStatus } from "./types";
 import { EscrowStatusBadge } from "./EscrowStatusBadge";
 import { Skeleton } from "../ui/Skeleton";
 import { RefreshCw, AlertCircle } from "lucide-react";
-import type { EscrowStatus } from "./types";
 
 interface EscrowSettlementCardProps {
   escrowId: string;
@@ -36,7 +36,7 @@ export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
 
   const secondsAgo = Math.floor((currentTime - lastUpdated) / 1000);
 
-  if (isLoading && !data) {
+  if (isLoading || !data) {
     return (
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-xl backdrop-blur-sm">
         <div className="flex items-center justify-between">
@@ -77,7 +77,7 @@ export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
     );
   }
 
-  const balance = (data as { balance?: string })?.balance || "0";
+  const balance = String(data?.balance ?? "0");
 
   return (
     <div 

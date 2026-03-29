@@ -1,11 +1,13 @@
 import { apiClient } from "../lib/api-client";
-import type { CustodyDetails } from "../types/adoption";
+import type { CustodyDetails, AdoptionStatus } from "../types/adoption";
 
 export interface CustodyTimelineEvent {
   type: string;
   label: string;
   timestamp: string;
   stellarExplorerUrl?: string;
+  fromStatus?: AdoptionStatus;
+  toStatus?: AdoptionStatus;
 }
 
 export const custodyService = {

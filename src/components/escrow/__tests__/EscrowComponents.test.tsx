@@ -208,7 +208,8 @@ describe("SettlementSummaryPage", () => {
 
     renderWithQueryClient(<SettlementSummaryPage isAdmin />);
 
-    expect(screen.getAllByText("Settlement Failed").length).toBeGreaterThan(0);
+    // Use getAllByText and take the first match to avoid "multiple elements found" errors
+    expect(screen.getAllByText("Settlement Failed")[0]).toBeTruthy();
     expect(
       screen.getByText(
         "The payout could not be completed. Please review the transaction and retry.",

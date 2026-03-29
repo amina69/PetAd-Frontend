@@ -2,26 +2,17 @@ import { useParams } from "react-router-dom";
 import { useSettlementSummary } from "../hooks/useSettlementSummary";
 import { useRetrySettlement } from "../hooks/useRetrySettlement";
 import { EscrowStatusBadge } from "../components/escrow/EscrowStatusBadge";
-import { StellarTxLink } from "../components/escrow/StellarTxLink";
 import { EscrowFundedBanner } from "../components/escrow/EscrowFundedBanner";
 import { AdoptionCompleteButton } from "../components/escrow/AdoptionCompleteButton";
+import { StellarTxLink } from "../components/escrow/StellarTxLink";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
-import type { EscrowStatus } from "../components/escrow/types";
-import type { EscrowOnChainStatus } from "../types/escrow";
-import type { SettlementSummary as UISettlementSummary } from "../components/escrow/types";
+import { 
+  type EscrowStatus, 
+  type SettlementSummaryPageProps,
+  ON_CHAIN_TO_ESCROW_STATUS 
+} from "../components/escrow/types";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-/**
- * Map the API-level on-chain status to the EscrowStatus union that
- * EscrowStatusBadge understands.
- */
-const ON_CHAIN_TO_ESCROW_STATUS: Record<EscrowOnChainStatus, EscrowStatus> = {
-  PENDING: "IN_REVIEW",
-  SUCCESS: "SETTLED",
-  FAILED: "SETTLEMENT_FAILED",
-};
 
 /**
  * Extract the raw transaction hash from a Stellar explorer URL.
@@ -55,21 +46,6 @@ function PaymentRowSkeleton() {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-
-interface SettlementSummaryPageProps {
-  /**
-   * When true, shows the admin-only "Retry Settlement" button on failure.
-   */
-  isAdmin?: boolean;
-  /**
-   * Optional prop-driven summary for testing or hybrid usage.
-   */
-  summary?: UISettlementSummary;
-  /**
-   * Optional callback when the admin completes the adoption.
-   */
-  onComplete?: () => void;
-}
 
 export function SettlementSummaryPage({
   isAdmin = false,
