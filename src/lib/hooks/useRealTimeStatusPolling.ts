@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
 import { custodyService } from "../../api/custodyService";
@@ -22,7 +22,7 @@ export function useRealTimeStatusPolling(
 
   const { intervalMs = 15000 } = options;
   const [statusChanged, setStatusChanged] = useState(false);
-  const previousStatusRef = useRef<string | undefined>(undefined);
+  const [prevStatus, setPrevStatus] = useState<string | undefined>(undefined);
 
   // Determine the fetch function based on entity type
   const fetchFn = (): Promise<AdoptionDetails | CustodyDetails> => {
@@ -45,30 +45,26 @@ export function useRealTimeStatusPolling(
     stopWhen,
   });
 
+  const currentStatus = query.data?.status;
+
   // Track status changes and trigger pulse animation
+  // Use state instead of ref to avoid react-hooks/refs error
+  if (currentStatus && prevStatus !== undefined && currentStatus !== prevStatus) {
+    setPrevStatus(currentStatus);
+    setStatusChanged(true);
+  } else if (currentStatus && prevStatus === undefined) {
+    setPrevStatus(currentStatus);
+  }
+
+  // Handle clearing the status changed flag after a duration
   useEffect(() => {
-    const currentStatus = query.data?.status;
-
-    if (!currentStatus) {
-      return;
-    }
-
-    if (previousStatusRef.current === undefined) {
-      previousStatusRef.current = currentStatus;
-      return;
-    }
-
-    if (previousStatusRef.current !== currentStatus) {
-      setStatusChanged(true);
-      previousStatusRef.current = currentStatus;
-
+    if (statusChanged) {
       const timer = setTimeout(() => {
         setStatusChanged(false);
       }, 3000);
-
       return () => clearTimeout(timer);
     }
-  }, [query.data?.status]);
+  }, [statusChanged]);
 
   return {
     data: query.data,

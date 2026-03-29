@@ -11,7 +11,13 @@ exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
     />
     <div
       class="flex-1 min-w-0"
-    />
+    >
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Basic entry
+      </p>
+    </div>
     <div
       class="flex-shrink-0 text-right"
     >
@@ -111,6 +117,11 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
           )
         </span>
       </div>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Escrow created
+      </p>
       <p
         class="text-sm text-gray-600 mb-2"
       >
@@ -268,6 +279,11 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
       <p
         class="text-sm text-gray-600 mb-2"
       >
+        Escrow created
+      </p>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
         Manual release due to completed custody
       </p>
       <div
@@ -342,6 +358,11 @@ exports[`TimelineEntry > renders regular entry correctly 1`] = `
           )
         </span>
       </div>
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        Escrow created
+      </p>
       <p
         class="text-sm text-gray-600 mb-2"
       >

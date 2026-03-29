@@ -1,17 +1,10 @@
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { AdoptionCompleteButton } from "../AdoptionCompleteButton";
-import {
-  EscrowFundedBanner,
-  getEscrowFundedBannerStorageKey,
-} from "../EscrowFundedBanner";
+import { EscrowFundedBanner } from "../EscrowFundedBanner";
+import { getEscrowFundedBannerStorageKey } from "../types";
 import { EscrowStatusCard } from "../EscrowStatusCard";
 import { StellarTxLink } from "../StellarTxLink";
 import type { EscrowStatusData } from "../types";
@@ -20,9 +13,10 @@ import { useSettlementSummary } from "../../../hooks/useSettlementSummary";
 import { useRetrySettlement } from "../../../hooks/useRetrySettlement";
 
 vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<typeof import("react-router-dom")>(
-    "react-router-dom",
-  );
+  const actual =
+    await vi.importActual<typeof import("react-router-dom")>(
+      "react-router-dom",
+    );
 
   return {
     ...actual,
@@ -98,14 +92,15 @@ describe("EscrowStatusCard", () => {
       />,
     );
 
-    expect(
-      screen.getByTestId("escrow-status-card-skeleton"),
-    ).toBeTruthy();
+    expect(screen.getByTestId("escrow-status-card-skeleton")).toBeTruthy();
   });
 
   it("renders funded escrow data", () => {
     renderWithQueryClient(
-      <EscrowStatusCard escrowId={fundedEscrow.escrowId} initialData={fundedEscrow} />,
+      <EscrowStatusCard
+        escrowId={fundedEscrow.escrowId}
+        initialData={fundedEscrow}
+      />,
     );
 
     expect(screen.getByText("Milo")).toBeTruthy();
@@ -115,7 +110,10 @@ describe("EscrowStatusCard", () => {
 
   it("renders settled state messaging", () => {
     renderWithQueryClient(
-      <EscrowStatusCard escrowId={settledEscrow.escrowId} initialData={settledEscrow} />,
+      <EscrowStatusCard
+        escrowId={settledEscrow.escrowId}
+        initialData={settledEscrow}
+      />,
     );
 
     expect(screen.getByText("Settled")).toBeTruthy();
@@ -172,7 +170,8 @@ describe("SettlementSummaryPage", () => {
             status: "SUCCESS",
           },
         ],
-        stellarExplorerUrl: "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
+        stellarExplorerUrl:
+          "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
       },
       isLoading: false,
       isError: false,
@@ -184,7 +183,9 @@ describe("SettlementSummaryPage", () => {
     renderWithQueryClient(<SettlementSummaryPage isAdmin />);
 
     expect(screen.getByText("Settlement Summary")).toBeTruthy();
-    expect(screen.getByText("Confirmed (12 ledger confirmations)")).toBeTruthy();
+    expect(
+      screen.getByText("Confirmed (12 ledger confirmations)"),
+    ).toBeTruthy();
     expect(screen.getByText("GDESTINATION123")).toBeTruthy();
     expect(screen.getByText("125.00 USDC")).toBeTruthy();
   });
@@ -195,7 +196,8 @@ describe("SettlementSummaryPage", () => {
         onChainStatus: "FAILED",
         confirmations: 2,
         payments: [],
-        stellarExplorerUrl: "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
+        stellarExplorerUrl:
+          "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
       },
       isLoading: false,
       isError: false,
@@ -208,7 +210,9 @@ describe("SettlementSummaryPage", () => {
 
     expect(screen.getAllByText("Settlement Failed").length).toBeGreaterThan(0);
     expect(
-      screen.getByText("The payout could not be completed. Please review the transaction and retry, or contact support."),
+      screen.getByText(
+        "The payout could not be completed. Please review the transaction and retry.",
+      ),
     ).toBeTruthy();
     expect(screen.getByText("Retry Settlement")).toBeTruthy();
   });
@@ -224,7 +228,9 @@ describe("EscrowFundedBanner", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Dismiss funded banner" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Dismiss funded banner" }),
+    );
 
     expect(screen.queryByTestId("escrow-funded-banner")).toBeNull();
     expect(

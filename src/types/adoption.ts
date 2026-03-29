@@ -33,6 +33,7 @@ export interface AdoptionTimelineEntry {
   sdkTxHash?: string;
   isAdminOverride?: boolean;
   reason?: string;
+  escrowPaused?: boolean;
 }
 
 export interface AdoptionDetails {

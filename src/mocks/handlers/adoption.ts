@@ -3,7 +3,7 @@ import type {
   AdoptionDetails,
 } from "../../types/adoption";
 
-const MOCK_TIMELINE: any[] = [
+const MOCK_TIMELINE: Record<string, unknown>[] = [
   {
     id: "1",
     adoptionId: "adoption-1",

@@ -30,9 +30,9 @@ describe("SplitOutcomeChart", () => {
     expect(screen.getByTestId("legend-item-adopter")).toBeInTheDocument();
     expect(screen.getByTestId("legend-item-platform")).toBeInTheDocument();
     
-    expect(screen.getByText(/Shelter:\s*60.00\s*\(60%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Adopter:\s*30.00\s*\(30%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Platform:\s*10.00\s*\(10%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Shelter:\s*60.00\s*USDC\s*\(60%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Adopter:\s*30.00\s*USDC\s*\(30%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Platform:\s*10.00\s*USDC\s*\(10%\)/)).toBeInTheDocument();
   });
 
   it("renders correct total amount", () => {
