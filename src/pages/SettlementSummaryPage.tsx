@@ -10,6 +10,8 @@ import { EmptyState } from "../components/ui/emptyState";
 import type { EscrowStatus } from "../components/escrow/types";
 import type { EscrowOnChainStatus } from "../types/escrow";
 import type { SettlementSummary as UISettlementSummary } from "../components/escrow/types";
+import { useRoleGuard } from "../hooks/useRoleGuard";
+import { AdminDocumentReviewPanel } from "../components/adoption/AdminDocumentReviewPanel";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -76,7 +78,9 @@ export function SettlementSummaryPage({
   summary: propSummary,
   onComplete,
 }: SettlementSummaryPageProps) {
+  const { isAdmin: isAdminFromRole } = useRoleGuard();
   const { adoptionId: paramAdoptionId } = useParams<{ adoptionId: string }>();
+  const canAdminReview = isAdmin || isAdminFromRole;
 
   // If we have a prop-driven summary, we follow its status/data.
   // Otherwise, we fetch on-chain settlement details for the adoption.
@@ -121,12 +125,14 @@ export function SettlementSummaryPage({
           />
         )}
 
-        {isAdmin && escrowStatus === "FUNDED" && (
+        {canAdminReview && escrowStatus === "FUNDED" && (
           <AdoptionCompleteButton
-            isAdmin={isAdmin}
+            isAdmin={canAdminReview}
             onConfirm={onComplete || (() => {})}
           />
         )}
+
+        {adoptionId ? <AdminDocumentReviewPanel adoptionId={adoptionId} /> : null}
 
         {/* ── Status + confirmation depth ── */}
         <div className="flex flex-wrap items-center gap-3">
@@ -160,7 +166,7 @@ export function SettlementSummaryPage({
               </p>
             </div>
 
-            {isAdmin && adoptionId && (
+            {canAdminReview && adoptionId && (
               <RetryButton adoptionId={adoptionId} />
             )}
           </div>

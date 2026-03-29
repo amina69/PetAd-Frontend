@@ -15,6 +15,15 @@ interface Document {
 	adoptionId: string;
 	createdAt: string;
 	updatedAt: string;
+	onChainVerified: boolean | null;
+	anchorTxHash: string | null;
+	reviewStatus: "PENDING" | "APPROVED" | "REJECTED";
+	reviewReason: string | null;
+}
+
+interface ReviewDocumentPayload {
+	decision: "APPROVED" | "REJECTED";
+	reason?: string;
 }
 
 interface UploadDocumentsResponse {
@@ -36,6 +45,10 @@ const MOCK_DOCUMENTS: Document[] = [
 		adoptionId: "adoption-001",
 		createdAt: "2026-03-18T08:00:00.000Z",
 		updatedAt: "2026-03-18T08:00:00.000Z",
+		onChainVerified: true,
+		anchorTxHash: "4f5f8abf20f6cb9d88a4dd5a13f5e97a9f5a7f72f0f7d9f8cf5a6a4d91aa1142",
+		reviewStatus: "PENDING",
+		reviewReason: null,
 	},
 	{
 		id: "doc-002",
@@ -48,6 +61,10 @@ const MOCK_DOCUMENTS: Document[] = [
 		adoptionId: "adoption-001",
 		createdAt: "2026-03-18T08:30:00.000Z",
 		updatedAt: "2026-03-18T08:30:00.000Z",
+		onChainVerified: null,
+		anchorTxHash: null,
+		reviewStatus: "PENDING",
+		reviewReason: null,
 	},
 ];
 
@@ -81,6 +98,10 @@ export const filesHandlers = [
 			adoptionId: params.id as string,
 			createdAt: now,
 			updatedAt: now,
+			onChainVerified: null,
+			anchorTxHash: null,
+			reviewStatus: "PENDING",
+			reviewReason: null,
 		};
 
 		return HttpResponse.json<UploadDocumentsResponse>({
@@ -96,5 +117,26 @@ export const filesHandlers = [
 			(d) => d.adoptionId === params.id || params.id === "adoption-001",
 		);
 		return HttpResponse.json<Document[]>(docs);
+	}),
+
+	// PATCH /api/documents/:id/review — review a single document (admin)
+	http.patch("/api/documents/:id/review", async ({ request, params }) => {
+		await delay(getDelay(request));
+
+		const body = (await request.json()) as ReviewDocumentPayload;
+		const document = MOCK_DOCUMENTS.find((doc) => doc.id === params.id);
+
+		if (!document) {
+			return HttpResponse.json(
+				{ message: "Document not found" },
+				{ status: 404 },
+			);
+		}
+
+		document.reviewStatus = body.decision;
+		document.reviewReason = body.decision === "REJECTED" ? (body.reason ?? "") : null;
+		document.updatedAt = new Date().toISOString();
+
+		return HttpResponse.json<Document>(document);
 	}),
 ];
