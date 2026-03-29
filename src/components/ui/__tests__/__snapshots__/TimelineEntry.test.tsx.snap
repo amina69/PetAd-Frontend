@@ -61,7 +61,6 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
         </div>
       </div>
       <svg
-        aria-hidden="true"
         class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
         fill="none"
         height="24"
@@ -151,7 +150,6 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
             type="button"
           >
             <svg
-              aria-hidden="true"
               class="lucide lucide-copy"
               fill="none"
               height="14"
@@ -222,7 +220,6 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
         </div>
       </div>
       <svg
-        aria-hidden="true"
         class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
         fill="none"
         height="24"
