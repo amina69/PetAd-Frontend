@@ -23,7 +23,6 @@ exports[`EscrowTimelinePanel > matches snapshot for disputed state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-sky-200 bg-white text-sky-700"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-pause"
             fill="none"
             height="16"
@@ -36,18 +35,18 @@ exports[`EscrowTimelinePanel > matches snapshot for disputed state 1`] = `
             xmlns="http://www.w3.org/2000/svg"
           >
             <rect
-              height="18"
+              height="16"
               rx="1"
-              width="5"
+              width="4"
               x="14"
-              y="3"
+              y="4"
             />
             <rect
-              height="18"
+              height="16"
               rx="1"
-              width="5"
-              x="5"
-              y="3"
+              width="4"
+              x="6"
+              y="4"
             />
           </svg>
         </div>
@@ -80,7 +79,6 @@ exports[`EscrowTimelinePanel > matches snapshot for disputed state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-wallet"
             fill="none"
             height="16"
@@ -152,7 +150,6 @@ exports[`EscrowTimelinePanel > matches snapshot for disputed state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-plus"
             fill="none"
             height="16"
@@ -220,7 +217,6 @@ exports[`EscrowTimelinePanel > matches snapshot for funded state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-sky-200 bg-white text-sky-700"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-wallet"
             fill="none"
             height="16"
@@ -292,7 +288,6 @@ exports[`EscrowTimelinePanel > matches snapshot for funded state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-plus"
             fill="none"
             height="16"
@@ -360,7 +355,6 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-sky-200 bg-white text-sky-700"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-check"
             fill="none"
             height="16"
@@ -429,7 +423,6 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-pause"
             fill="none"
             height="16"
@@ -442,18 +435,18 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
             xmlns="http://www.w3.org/2000/svg"
           >
             <rect
-              height="18"
+              height="16"
               rx="1"
-              width="5"
+              width="4"
               x="14"
-              y="3"
+              y="4"
             />
             <rect
-              height="18"
+              height="16"
               rx="1"
-              width="5"
-              x="5"
-              y="3"
+              width="4"
+              x="6"
+              y="4"
             />
           </svg>
         </div>
@@ -486,7 +479,6 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-wallet"
             fill="none"
             height="16"
@@ -535,7 +527,6 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
           class="absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500"
         >
           <svg
-            aria-hidden="true"
             class="lucide lucide-plus"
             fill="none"
             height="16"
