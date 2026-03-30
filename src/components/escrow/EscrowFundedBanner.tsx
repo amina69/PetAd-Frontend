@@ -17,9 +17,7 @@ export function EscrowFundedBanner({
     () => sessionStorage.getItem(storageKey) === "true",
   );
 
-  if (dismissed) {
-    return null;
-  }
+  if (dismissed) return null;
 
   function dismiss() {
     sessionStorage.setItem(storageKey, "true");

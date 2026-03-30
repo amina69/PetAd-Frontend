@@ -34,7 +34,6 @@ describe("EscrowSettlementCard", () => {
       refetch: vi.fn(),
     });
 
-    // Mock Date.now to keep snapshots consistent
     vi.setSystemTime(new Date("2026-03-25T22:20:00Z"));
 
     const { asFragment } = render(<EscrowSettlementCard escrowId="test-escrow" />);
