@@ -3,7 +3,7 @@ import type { CustodyDetails } from "../../types/adoption";
 
 const MOCK_CUSTODY_DETAILS: CustodyDetails = {
   id: "custody-1",
-  status: "CUSTODY_ACTIVE",
+  status: "ACTIVE",
   petId: "pet-1",
   custodianId: "user-1",
   ownerId: "user-2",

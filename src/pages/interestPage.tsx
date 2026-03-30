@@ -51,6 +51,7 @@ const MOCK_PETS: Pet[] = [
 ];
 
 
+
 export default function InterestPage() {
   const [pets, setPets] = useState<Pet[]>(MOCK_PETS);
   const [locationFilter, setLocationFilter] = useState("");
@@ -247,6 +248,7 @@ export default function InterestPage() {
             <h3 className="text-xl font-bold text-gray-900 mb-2">
               No interests found
             </h3>
+           
             <p className="text-gray-500 max-w-[300px]">
               {pets.filter((p) => p.isInterested).length > 0
                 ? "No pets match your current filter criteria. Try resetting the filters."

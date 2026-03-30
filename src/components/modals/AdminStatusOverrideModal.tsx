@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -22,6 +22,12 @@ export function AdminStatusOverrideModal({
   const [reason, setReason] = useState("");
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
+  const handleClose = useCallback(() => {
+    setTargetStatus("");
+    setReason("");
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -30,10 +36,8 @@ export function AdminStatusOverrideModal({
         handleClose();
       }
 
-      if (event.key === "Tab") {
-        const modal = document.querySelector('[role="dialog"]');
-        if (!modal) return;
-
+      const modal = document.querySelector('[role="dialog"]');
+      if (event.key === "Tab" && modal) {
         const focusableElements = modal.querySelectorAll<HTMLElement>(
           'button, select, textarea, input, [href], [tabindex]:not([tabindex="-1"])'
         );
@@ -63,15 +67,9 @@ export function AdminStatusOverrideModal({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
-
-  const handleClose = () => {
-    setTargetStatus("");
-    setReason("");
-    onClose();
-  };
 
   const trimmedReason = reason.trim();
   const isReasonValid = trimmedReason.length >= 10;

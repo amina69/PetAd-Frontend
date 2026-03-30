@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
 import { custodyService } from "../../api/custodyService";
@@ -6,6 +6,7 @@ import type { AdoptionDetails, CustodyDetails } from "../../types/adoption";
 
 type EntityType = "adoption" | "custody";
 const SUPPORTED_ENTITY_TYPES = ["adoption", "custody"] as const;
+const TERMINAL_STATUSES = new Set(["COMPLETED", "CANCELLED"]);
 
 export interface UseRealTimeStatusPollingOptions {
   intervalMs?: number;
@@ -23,8 +24,8 @@ export function useRealTimeStatusPolling(
   const { intervalMs = 15000 } = options;
   const [statusChanged, setStatusChanged] = useState(false);
   const previousStatusRef = useRef<string | undefined>(undefined);
+  const resetTimerRef = useRef<number | undefined>(undefined);
 
-  // Determine the fetch function based on entity type
   const fetchFn = (): Promise<AdoptionDetails | CustodyDetails> => {
     switch (entityType) {
       case "adoption":
@@ -34,10 +35,9 @@ export function useRealTimeStatusPolling(
     }
   };
 
-  // Determine if polling should stop based on terminal statuses
   const stopWhen = (data: AdoptionDetails | CustodyDetails | undefined) => {
     if (!data) return false;
-    return data.status === "COMPLETED" || data.status === "CANCELLED";
+    return TERMINAL_STATUSES.has(data.status);
   };
 
   const query = usePolling([entityType, entityId], fetchFn, {
@@ -45,7 +45,6 @@ export function useRealTimeStatusPolling(
     stopWhen,
   });
 
-  // Track status changes and trigger pulse animation
   useEffect(() => {
     const currentStatus = query.data?.status;
 
@@ -53,22 +52,37 @@ export function useRealTimeStatusPolling(
       return;
     }
 
-    if (previousStatusRef.current === undefined) {
-      previousStatusRef.current = currentStatus;
+    if (
+      previousStatusRef.current !== undefined &&
+      currentStatus !== previousStatusRef.current
+    ) {
+      setStatusChanged(true);
+    }
+
+    previousStatusRef.current = currentStatus;
+  }, [query.data?.status]);
+
+  useEffect(() => {
+    if (!statusChanged) {
       return;
     }
 
-    if (previousStatusRef.current !== currentStatus) {
-      setStatusChanged(true);
-      previousStatusRef.current = currentStatus;
-
-      const timer = setTimeout(() => {
-        setStatusChanged(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
+    if (resetTimerRef.current !== undefined) {
+      window.clearTimeout(resetTimerRef.current);
     }
-  }, [query.data?.status]);
+
+    resetTimerRef.current = window.setTimeout(() => {
+      setStatusChanged(false);
+      resetTimerRef.current = undefined;
+    }, 3000);
+
+    return () => {
+      if (resetTimerRef.current !== undefined) {
+        window.clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = undefined;
+      }
+    };
+  }, [statusChanged]);
 
   return {
     data: query.data,
