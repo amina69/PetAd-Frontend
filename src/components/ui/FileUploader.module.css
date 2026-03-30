@@ -1,0 +1,18 @@
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dropzone:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.dropzoneDragging {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
