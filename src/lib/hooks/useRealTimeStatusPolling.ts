@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
 import { custodyService } from "../../api/custodyService";
@@ -6,6 +6,7 @@ import type { AdoptionDetails, CustodyDetails } from "../../types/adoption";
 
 type EntityType = "adoption" | "custody";
 const SUPPORTED_ENTITY_TYPES = ["adoption", "custody"] as const;
+const TERMINAL_STATUSES = new Set(["COMPLETED", "CANCELLED"]);
 
 export interface UseRealTimeStatusPollingOptions {
   intervalMs?: number;
@@ -22,9 +23,9 @@ export function useRealTimeStatusPolling(
 
   const { intervalMs = 15000 } = options;
   const [statusChanged, setStatusChanged] = useState(false);
-  const [prevStatus, setPrevStatus] = useState<string | undefined>(undefined);
+  const previousStatusRef = useRef<string | undefined>(undefined);
+  const resetTimerRef = useRef<number | undefined>(undefined);
 
-  // Determine the fetch function based on entity type
   const fetchFn = (): Promise<AdoptionDetails | CustodyDetails> => {
     switch (entityType) {
       case "adoption":
@@ -34,10 +35,9 @@ export function useRealTimeStatusPolling(
     }
   };
 
-  // Determine if polling should stop based on terminal statuses
   const stopWhen = (data: AdoptionDetails | CustodyDetails | undefined) => {
     if (!data) return false;
-    return data.status === "COMPLETED" || data.status === "CANCELLED";
+    return TERMINAL_STATUSES.has(data.status);
   };
 
   const query = usePolling([entityType, entityId], fetchFn, {
@@ -45,25 +45,43 @@ export function useRealTimeStatusPolling(
     stopWhen,
   });
 
-  const currentStatus = query.data?.status;
-
-  // Track status changes and trigger pulse animation
-  // Use state instead of ref to avoid react-hooks/refs error
-  if (currentStatus && prevStatus !== undefined && currentStatus !== prevStatus) {
-    setPrevStatus(currentStatus);
-    setStatusChanged(true);
-  } else if (currentStatus && prevStatus === undefined) {
-    setPrevStatus(currentStatus);
-  }
-
-  // Handle clearing the status changed flag after a duration
   useEffect(() => {
-    if (statusChanged) {
-      const timer = setTimeout(() => {
-        setStatusChanged(false);
-      }, 3000);
-      return () => clearTimeout(timer);
+    const currentStatus = query.data?.status;
+
+    if (!currentStatus) {
+      return;
     }
+
+    if (
+      previousStatusRef.current !== undefined &&
+      currentStatus !== previousStatusRef.current
+    ) {
+      setStatusChanged(true);
+    }
+
+    previousStatusRef.current = currentStatus;
+  }, [query.data?.status]);
+
+  useEffect(() => {
+    if (!statusChanged) {
+      return;
+    }
+
+    if (resetTimerRef.current !== undefined) {
+      window.clearTimeout(resetTimerRef.current);
+    }
+
+    resetTimerRef.current = window.setTimeout(() => {
+      setStatusChanged(false);
+      resetTimerRef.current = undefined;
+    }, 3000);
+
+    return () => {
+      if (resetTimerRef.current !== undefined) {
+        window.clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = undefined;
+      }
+    };
   }, [statusChanged]);
 
   return {
