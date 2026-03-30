@@ -40,7 +40,7 @@ describe("useEscrowStatus", () => {
   it("polling active: isSettled is false and refetchInterval is non-false while status is non-terminal", async () => {
     // Handler returns a non-terminal status → polling should remain active
     server.use(
-      http.get("http://localhost:3000/api/adoption/:id", () => {
+      http.get("/api/adoption/:id", () => {
         return HttpResponse.json<AdoptionDetails>({
           ...BASE_ADOPTION,
           status: "ESCROW_FUNDED",
@@ -63,7 +63,7 @@ describe("useEscrowStatus", () => {
 
   it("stops polling on COMPLETED: isSettled becomes true", async () => {
     server.use(
-      http.get("http://localhost:3000/api/adoption/:id", () => {
+      http.get("/api/adoption/:id", () => {
         return HttpResponse.json<AdoptionDetails>({
           ...BASE_ADOPTION,
           status: "COMPLETED",
@@ -85,7 +85,7 @@ describe("useEscrowStatus", () => {
 
   it("stops polling on CANCELLED: isSettled becomes true", async () => {
     server.use(
-      http.get("http://localhost:3000/api/adoption/:id", () => {
+      http.get("/api/adoption/:id", () => {
         return HttpResponse.json<AdoptionDetails>({
           ...BASE_ADOPTION,
           status: "CANCELLED",
