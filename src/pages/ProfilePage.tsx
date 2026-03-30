@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ownerImg from "../assets/owner.png";
 import dogImg from "../assets/dog.png";
+import { DocumentUploadModal } from "../components/modals";
 import { AdoptionDetailsModal } from "../components/ui/AdoptionDetailsModal";
 import { ListingDetailsModal } from "../components/ui/ListingDetailsModal";
 
@@ -115,6 +116,7 @@ export default function ProfilePage() {
     const [listingRecords] = useState<ListingRecordItem[]>(MOCK_LISTING_RECORDS);
     const [adoptionDetailsId, setAdoptionDetailsId] = useState<string | null>(null);
     const [listingDetailsId, setListingDetailsId] = useState<string | null>(null);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const adoptionDetails = adoptionDetailsId ? getAdoptionDetails(adoptionDetailsId) : null;
     const listingDetails = listingDetailsId ? getListingDetails(listingDetailsId) : null;
@@ -169,11 +171,22 @@ export default function ProfilePage() {
                             <p className="text-[16px] leading-5 text-[#98A1AF] mb-0.5">Phone Number</p>
                             <p className="text-[16px] leading-8 font-semibold text-[#0D162B]">+234 903 123 1233</p>
                         </div>
-                        <div className="py-4">
+                        <div className="py-4 border-b border-[#ECEFF3]">
                             <p className="text-[16px] leading-5 text-[#98A1AF] mb-0.5">Location</p>
-                            <p className="ttext-[16px] leading-8 font-semibold text-[#0D162B]">
+                            <p className="text-[16px] leading-8 font-semibold text-[#0D162B]">
                                 24 Just Street, Lekki, Lagos, Nigeria
                             </p>
+                        </div>
+                        <div className="py-4">
+                            <button
+                                onClick={() => setIsUploadModalOpen(true)}
+                                className="w-full py-3 rounded-xl bg-white border-2 border-[#E84D2A] text-[#E84D2A] font-semibold text-[15px] hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Upload Document
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -342,6 +355,10 @@ export default function ProfilePage() {
                 onClose={() => setListingDetailsId(null)}
                 data={listingDetails}
                 onAdopterClick={handleAdopterClick}
+            />
+            <DocumentUploadModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
             />
         </div>
     );
