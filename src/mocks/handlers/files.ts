@@ -15,6 +15,7 @@ interface Document {
 	adoptionId: string;
 	createdAt: string;
 	updatedAt: string;
+	expiresAt?: string | null;
 }
 
 interface UploadDocumentsResponse {
@@ -36,6 +37,7 @@ const MOCK_DOCUMENTS: Document[] = [
 		adoptionId: "adoption-001",
 		createdAt: "2026-03-18T08:00:00.000Z",
 		updatedAt: "2026-03-18T08:00:00.000Z",
+		expiresAt: null,
 	},
 	{
 		id: "doc-002",
@@ -48,6 +50,20 @@ const MOCK_DOCUMENTS: Document[] = [
 		adoptionId: "adoption-001",
 		createdAt: "2026-03-18T08:30:00.000Z",
 		updatedAt: "2026-03-18T08:30:00.000Z",
+		expiresAt: "2026-04-01T23:59:59.000Z",
+	},
+	{
+		id: "doc-003",
+		fileName: "proof-of-residence.pdf",
+		fileUrl: "https://res.cloudinary.com/petad/image/upload/v1/adoptions/adoption-001/proof-of-residence.pdf",
+		publicId: "adoptions/adoption-001/proof-of-residence",
+		mimeType: "application/pdf",
+		size: 153600,
+		uploadedById: "user-owner-1",
+		adoptionId: "adoption-001",
+		createdAt: "2026-03-18T09:00:00.000Z",
+		updatedAt: "2026-03-18T09:00:00.000Z",
+		expiresAt: "2026-03-15T23:59:59.000Z",
 	},
 ];
 
@@ -81,6 +97,7 @@ export const filesHandlers = [
 			adoptionId: params.id as string,
 			createdAt: now,
 			updatedAt: now,
+			expiresAt: null,
 		};
 
 		return HttpResponse.json<UploadDocumentsResponse>({
