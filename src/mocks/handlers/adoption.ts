@@ -68,4 +68,78 @@ export const adoptionHandlers = [
 
     return new HttpResponse(null, { status: 204 });
   }),
+
+  // GET /api/adoption/:adoptionId/approvals — get adoption approval state
+  http.get("/api/adoption/:adoptionId/approvals", async ({ params }) => {
+    await delay(200);
+    const { adoptionId } = params;
+
+    // Pre-quorum shape (approvals still being gathered)
+    if (adoptionId === "adoption-pending") {
+      return HttpResponse.json({
+        required: 3,
+        given: 1,
+        pending: 2,
+        quorumMet: false,
+        escrowAccountId: "escrow-123",
+        parties: [
+          {
+            id: "party-1",
+            name: "Dr. Sarah Lee",
+            role: "Veterinary Inspector",
+            status: "APPROVED",
+            timestamp: "2026-03-29T10:00:00Z",
+          },
+          {
+            id: "party-2",
+            name: "Mark Evans",
+            role: "Welfare Officer",
+            status: "PENDING",
+          },
+          {
+            id: "party-3",
+            name: "Jane Smith",
+            role: "Legal Reviewer",
+            status: "PENDING",
+          },
+        ],
+      });
+    }
+
+    // Post-quorum shape (all approvals received)
+    if (adoptionId === "adoption-approved") {
+      return HttpResponse.json({
+        required: 3,
+        given: 3,
+        pending: 0,
+        quorumMet: true,
+        escrowAccountId: "escrow-456",
+        parties: [
+          {
+            id: "party-1",
+            name: "Dr. Sarah Lee",
+            role: "Veterinary Inspector",
+            status: "APPROVED",
+            timestamp: "2026-03-29T10:00:00Z",
+          },
+          {
+            id: "party-2",
+            name: "Mark Evans",
+            role: "Welfare Officer",
+            status: "APPROVED",
+            timestamp: "2026-03-29T11:30:00Z",
+          },
+          {
+            id: "party-3",
+            name: "Jane Smith",
+            role: "Legal Reviewer",
+            status: "APPROVED",
+            timestamp: "2026-03-29T12:15:00Z",
+          },
+        ],
+      });
+    }
+
+    return HttpResponse.json({ error: "Adoption not found" }, { status: 404 });
+  }),
 ];
