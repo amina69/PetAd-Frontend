@@ -1,5 +1,4 @@
 // components/DisputeStatusBadge.tsx
-import React from 'react'
 import type { DisputeStatus } from '../types/dispute.types'
 
 interface DisputeStatusBadgeProps {

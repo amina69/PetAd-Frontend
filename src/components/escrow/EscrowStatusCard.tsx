@@ -17,16 +17,6 @@ export function EscrowStatusCard({
   fetchStatus,
   pollingIntervalMs = 1000,
 }: EscrowStatusCardProps) {
-  // Always call usePolling to satisfy React Hooks rules
-  const query = usePolling(
-    ["escrow-status", escrowId],
-    fetchStatus ?? (async () => initialData ?? ({} as EscrowStatusData)),
-    {
-      intervalMs: pollingIntervalMs,
-      stopWhen: (data) => data?.status === "SETTLED",
-    }
-  );
-
   const query = usePolling(
     ["escrow-status", escrowId],
     async () => {
