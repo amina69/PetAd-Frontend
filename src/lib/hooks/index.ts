@@ -24,3 +24,5 @@ export {
   useRealTimeStatusPolling,
   type UseRealTimeStatusPollingOptions,
 } from "./useRealTimeStatusPolling";
+
+export { useNotificationCount } from "./useNotificationCount";

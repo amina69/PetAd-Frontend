@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 
-function readFromUrl<T>(defaults: T): T {
+function readFromUrl<T extends Record<string, unknown>>(defaults: T): T {
   const params = new URLSearchParams(window.location.search);
-  const result: any = { ...defaults };
+  const result: Record<string, unknown> = { ...defaults };
 
-  Object.keys(defaults as any).forEach((key) => {
+  Object.keys(defaults).forEach((key) => {
     const values = params.getAll(key);
 
     if (values.length > 1) {
@@ -12,21 +12,21 @@ function readFromUrl<T>(defaults: T): T {
     } else if (values.length === 1) {
       result[key] = values[0];
     } else {
-      result[key] = (defaults as any)[key];
+      result[key] = defaults[key];
     }
   });
 
-  return result;
+  return result as T;
 }
 
-function writeToUrl(state: any) {
+function writeToUrl(state: Record<string, unknown>) {
   const params = new URLSearchParams();
 
   Object.entries(state).forEach(([key, value]) => {
     if (Array.isArray(value)) {
-      value.forEach((v) => params.append(key, v));
+      value.forEach((v) => params.append(key, String(v)));
     } else if (value !== undefined && value !== null) {
-      params.set(key, value as string);
+      params.set(key, String(value));
     }
   });
 
@@ -36,12 +36,12 @@ function writeToUrl(state: any) {
   window.history.replaceState(null, "", newUrl);
 }
 
-export function useUrlSync<T extends Record<string, any>>(defaults: T) {
+export function useUrlSync<T extends Record<string, unknown>>(defaults: T) {
   const [state, setState] = useState<T>(() => readFromUrl(defaults));
 
   const setUrlState = useCallback((next: T) => {
     setState(next);
-    writeToUrl(next);
+    writeToUrl(next as Record<string, unknown>);
   }, []);
 
   useEffect(() => {

@@ -38,7 +38,7 @@ const mockAdoptionData: AdoptionDetails = {
 
 const mockCustodyData: CustodyDetails = {
   id: "custody-1",
-  status: "CUSTODY_ACTIVE",
+  status: "ACTIVE",
   petId: "pet-1",
   custodianId: "user-1",
   ownerId: "user-2",
@@ -107,7 +107,7 @@ describe("useRealTimeStatusPolling", () => {
       });
 
     const { result } = renderHook(
-      () => useRealTimeStatusPolling("adoption", "adoption-1", { intervalMs: 25 }),
+      () => useRealTimeStatusPolling("adoption", "adoption-1", { intervalMs: 100 }),
       { wrapper: createWrapper(queryClient) }
     );
 

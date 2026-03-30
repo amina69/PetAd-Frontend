@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, Bell, ChevronDown } from "lucide-react";
+import { House, Eye, List, Heart, ChevronDown } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
+import { NotificationCentreDropdown } from "../notifications";
 
 const navLinks = [
   { label: "Home", path: "/home", icon: House },
@@ -14,7 +15,6 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-      {/* Logo */}
       <Link to="/home" className="flex items-center gap-2">
         <img src={logo} alt="Logo" className="w-8 h-8" />
         <div>
@@ -27,7 +27,6 @@ export function Navbar() {
         </div>
       </Link>
 
-      {/* Navigation Links */}
       <div className="hidden md:flex items-center gap-8">
         {navLinks.map((link) => {
           const Icon = link.icon;
@@ -47,9 +46,7 @@ export function Navbar() {
         })}
       </div>
 
-      {/* Action Icons and Profile */}
       <div className="flex items-center gap-4">
-        {/* Favorite Icon with Badge */}
         <Link
           to="/favourites"
           className="relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
@@ -60,16 +57,8 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Notification Icon with Red Dot */}
-        <Link
-          to="/notifications"
-          className="relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
-        >
-          <Bell size={20} />
-          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-        </Link>
+        <NotificationCentreDropdown />
 
-        {/* User Profile */}
         <div className="flex items-center gap-3 ml-2 cursor-pointer group">
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100">
             <img src={owner} alt="User Avatar" className="w-full h-full object-cover" />

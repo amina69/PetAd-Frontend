@@ -3,10 +3,13 @@ import { useSettlementSummary } from "../hooks/useSettlementSummary";
 import { useRetrySettlement } from "../hooks/useRetrySettlement";
 import { EscrowStatusBadge } from "../components/escrow/EscrowStatusBadge";
 import { StellarTxLink } from "../components/escrow/StellarTxLink";
+import { EscrowFundedBanner } from "../components/escrow/EscrowFundedBanner";
+import { AdoptionCompleteButton } from "../components/escrow/AdoptionCompleteButton";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
 import type { EscrowStatus } from "../components/escrow/types";
 import type { EscrowOnChainStatus } from "../types/escrow";
+import type { SettlementSummary as UISettlementSummary } from "../components/escrow/types";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -15,9 +18,9 @@ import type { EscrowOnChainStatus } from "../types/escrow";
  * EscrowStatusBadge understands.
  */
 const ON_CHAIN_TO_ESCROW_STATUS: Record<EscrowOnChainStatus, EscrowStatus> = {
-  PENDING:  "IN_REVIEW",
-  SUCCESS:  "SETTLED",
-  FAILED:   "SETTLEMENT_FAILED",
+  PENDING: "IN_REVIEW",
+  SUCCESS: "SETTLED",
+  FAILED: "SETTLEMENT_FAILED",
 };
 
 /**
@@ -56,38 +59,74 @@ function PaymentRowSkeleton() {
 interface SettlementSummaryPageProps {
   /**
    * When true, shows the admin-only "Retry Settlement" button on failure.
-   * TODO: replace with useRoleGuard() once role context is wired up.
    */
   isAdmin?: boolean;
+  /**
+   * Optional prop-driven summary for testing or hybrid usage.
+   */
+  summary?: UISettlementSummary;
+  /**
+   * Optional callback when the admin completes the adoption.
+   */
+  onComplete?: () => void;
 }
 
-export function SettlementSummaryPage({ isAdmin = false }: SettlementSummaryPageProps) {
-  const { adoptionId } = useParams<{ adoptionId: string }>();
+export function SettlementSummaryPage({
+  isAdmin = false,
+  summary: propSummary,
+  onComplete,
+}: SettlementSummaryPageProps) {
+  const { adoptionId: paramAdoptionId } = useParams<{ adoptionId: string }>();
 
-  const { data, isLoading, isError } = useSettlementSummary(adoptionId ?? "");
+  // If we have a prop-driven summary, we follow its status/data.
+  // Otherwise, we fetch on-chain settlement details for the adoption.
+  const adoptionId = propSummary?.escrow.adoptionId || paramAdoptionId;
+  const { data, isLoading: hookLoading, isError: hookError } = useSettlementSummary(
+    propSummary ? "" : (adoptionId ?? ""),
+  );
 
-  // TODO: useRetrySettlement takes escrowId — currently using adoptionId as a
-  // proxy until the adoption→escrow lookup hook is available.
-  const retryMutation = useRetrySettlement(adoptionId ?? "");
+  const isLoading = propSummary ? false : hookLoading;
+  const isError = propSummary ? false : hookError;
 
-  const isFailed  = data?.onChainStatus === "FAILED";
-  const txHash    = data?.stellarExplorerUrl
+  const isFailed = data?.onChainStatus === "FAILED" || propSummary?.status === "SETTLEMENT_FAILED";
+  const txHash = data?.stellarExplorerUrl
     ? extractTxHash(data.stellarExplorerUrl)
-    : undefined;
+    : propSummary?.escrow.txHash;
+
   const totalAmount = data?.payments.reduce((sum, p) => sum + p.amount, 0) ?? 0;
-  const escrowStatus: EscrowStatus | undefined = data?.onChainStatus
+  const escrowStatus: EscrowStatus | undefined = propSummary?.status 
+    ? propSummary.status 
+    : data?.onChainStatus
     ? ON_CHAIN_TO_ESCROW_STATUS[data.onChainStatus]
     : undefined;
+
+  const headline = propSummary?.headline || "Settlement Summary";
+  const description = propSummary?.description || (adoptionId ? `Adoption #${adoptionId}` : "");
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-
         {/* ── Header ── */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settlement Summary</h1>
-          <p className="text-sm text-gray-500 mt-1">Adoption #{adoptionId}</p>
+          <h1 className="text-2xl font-bold text-gray-900">{headline}</h1>
+          <p className="text-sm text-gray-500 mt-1">{description}</p>
         </div>
+
+        {/* ── Actions / Banners ── */}
+        {escrowStatus === "FUNDED" && propSummary && (
+          <EscrowFundedBanner
+            escrowId={propSummary.escrow.escrowId}
+            amount={propSummary.escrow.amount}
+            currency={propSummary.escrow.currency}
+          />
+        )}
+
+        {isAdmin && escrowStatus === "FUNDED" && (
+          <AdoptionCompleteButton
+            isAdmin={isAdmin}
+            onConfirm={onComplete || (() => {})}
+          />
+        )}
 
         {/* ── Status + confirmation depth ── */}
         <div className="flex flex-wrap items-center gap-3">
@@ -116,23 +155,13 @@ export function SettlementSummaryPage({ isAdmin = false }: SettlementSummaryPage
                 Settlement Failed
               </h2>
               <p className="text-sm text-red-700 mt-1">
-                The payout could not be completed. Please review the transaction
-                and retry, or contact support.
+                {propSummary?.escrow.failureReason || 
+                 "The payout could not be completed. Please review the transaction and retry."}
               </p>
             </div>
 
-            {isAdmin && (
-              <button
-                type="button"
-                onClick={() => retryMutation.mutateRetrySettlement()}
-                disabled={retryMutation.isPending}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white
-                           hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed
-                           focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500
-                           focus-visible:ring-offset-2"
-              >
-                {retryMutation.isPending ? "Retrying…" : "Retry Settlement"}
-              </button>
+            {isAdmin && adoptionId && (
+              <RetryButton adoptionId={adoptionId} />
             )}
           </div>
         )}
@@ -237,8 +266,25 @@ export function SettlementSummaryPage({ isAdmin = false }: SettlementSummaryPage
             </p>
           </div>
         )}
-
       </div>
     </div>
+  );
+}
+
+/** Internal helper for the retry logic to keep the main component cleaner. */
+function RetryButton({ adoptionId }: { adoptionId: string }) {
+  const retryMutation = useRetrySettlement(adoptionId);
+  return (
+    <button
+      type="button"
+      onClick={() => retryMutation.mutateRetrySettlement()}
+      disabled={retryMutation.isPending}
+      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white
+                 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500
+                 focus-visible:ring-offset-2"
+    >
+      {retryMutation.isPending ? "Retrying…" : "Retry Settlement"}
+    </button>
   );
 }

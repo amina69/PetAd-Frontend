@@ -36,10 +36,8 @@ export function AdminStatusOverrideModal({
         handleClose();
       }
 
-      if (event.key === "Tab") {
-        const modal = document.querySelector('[role="dialog"]');
-        if (!modal) return;
-
+      const modal = document.querySelector('[role="dialog"]');
+      if (event.key === "Tab" && modal) {
         const focusableElements = modal.querySelectorAll<HTMLElement>(
           'button, select, textarea, input, [href], [tabindex]:not([tabindex="-1"])'
         );

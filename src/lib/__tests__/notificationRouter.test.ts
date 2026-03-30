@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { notificationRouter } from '../notificationRouter';
-import type { Notification } from '../../types/notifications';
+import type { Notification, NotificationType } from '../../types/notifications';
 
 describe('notificationRouter', () => {
   it('should return correct route for APPROVAL_REQUESTED', () => {
@@ -76,9 +76,11 @@ describe('notificationRouter', () => {
   });
 
   it('should return default route for unknown type', () => {
-    const notification: any = {
+    const notification: Notification = {
       id: '7',
-      type: 'UNKNOWN_TYPE',
+      // Force an unknown type to test fallback
+      type: 'UNKNOWN_TYPE' as NotificationType,
+      title: 'Unknown notification',
       message: 'Test message',
       time: 'now'
     };

@@ -1,11 +1,12 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useAdoptionTimeline } from '../useAdoptionTimeline';
-import { adoptionService } from '../../api/adoptionService';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
-import React from 'react';
+import { renderHook, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useAdoptionTimeline } from "../useAdoptionTimeline";
+import { adoptionService } from "../../api/adoptionService";
+import type { AdoptionTimelineEntry } from "../../types/adoption";
+import { describe, beforeEach, it, expect, vi } from "vitest";
+import React from "react";
 
-vi.mock('../../api/adoptionService', () => ({
+vi.mock("../../api/adoptionService", () => ({
   adoptionService: {
     getTimeline: vi.fn(),
   },
@@ -24,32 +25,40 @@ const createWrapper = () => {
   );
 };
 
-describe('useAdoptionTimeline', () => {
+describe("useAdoptionTimeline", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should fetch and return all timeline entries', async () => {
-    const mockTimeline = [
+  it("should fetch and return all timeline entries", async () => {
+    const mockTimeline: AdoptionTimelineEntry[] = [
       {
-        fromStatus: null,
-        toStatus: 'ESCROW_CREATED',
-        actor: 'System',
-        timestamp: '2026-03-25T10:00:00Z',
-        reason: 'Initial',
+        id: "1",
+        adoptionId: "adoption-1",
+        sdkEvent: "ESCROW_CREATED",
+        message: "Escrow created",
+        fromStatus: "COMPLETED",
+        toStatus: "ESCROW_CREATED",
+        actor: "System",
+        timestamp: "2026-03-25T10:00:00Z",
+        reason: "Initial",
       },
       {
-        fromStatus: 'ESCROW_CREATED',
-        toStatus: 'ESCROW_FUNDED',
-        actor: 'Adopter',
-        timestamp: '2026-03-25T11:00:00Z',
-        sdkTxHash: '0x123',
+        id: "2",
+        adoptionId: "adoption-1",
+        sdkEvent: "ESCROW_FUNDED",
+        message: "Escrow funded",
+        fromStatus: "ESCROW_CREATED",
+        toStatus: "ESCROW_FUNDED",
+        actor: "Adopter",
+        timestamp: "2026-03-25T11:00:00Z",
+        sdkTxHash: "0x123",
       },
     ];
 
-    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline as any);
+    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline);
 
-    const { result } = renderHook(() => useAdoptionTimeline('adoption-1'), {
+    const { result } = renderHook(() => useAdoptionTimeline("adoption-1"), {
       wrapper: createWrapper(),
     });
 
@@ -59,15 +68,17 @@ describe('useAdoptionTimeline', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.entries).toHaveLength(2);
-    expect(result.current.entries[0].toStatus).toBe('ESCROW_CREATED');
-    expect(result.current.entries[1].actor).toBe('Adopter');
+    expect(result.current.entries[0].toStatus).toBe("ESCROW_CREATED");
+    expect(result.current.entries[1].actor).toBe("Adopter");
     expect(result.current.isError).toBe(false);
   });
 
-  it('should handle error states', async () => {
-    vi.mocked(adoptionService.getTimeline).mockRejectedValue(new Error('API error'));
+  it("should handle error states", async () => {
+    vi.mocked(adoptionService.getTimeline).mockRejectedValue(
+      new Error("API error"),
+    );
 
-    const { result } = renderHook(() => useAdoptionTimeline('adoption-1'), {
+    const { result } = renderHook(() => useAdoptionTimeline("adoption-1"), {
       wrapper: createWrapper(),
     });
 

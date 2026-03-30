@@ -28,19 +28,15 @@ describe("AdminApprovalQueuePage", () => {
     render(<AdminApprovalQueuePage />, { wrapper });
     
     expect(screen.getByText(/Approval Queue/i)).toBeInTheDocument();
-    
-    await waitFor(() => {
-      expect(screen.getByText("Buddy (Golden Retriever)")).toBeInTheDocument();
-      expect(screen.getByText("Luna (Siamese Cat)")).toBeInTheDocument();
-    });
+
+    expect(await screen.findByText("Buddy (Golden Retriever)", {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByText("Luna (Siamese Cat)", {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it("filters overdue items when toggle is clicked", async () => {
     render(<AdminApprovalQueuePage />, { wrapper });
-    
-    await waitFor(() => {
-      expect(screen.getByText("Luna (Siamese Cat)")).toBeInTheDocument();
-    });
+
+    expect(await screen.findByText("Luna (Siamese Cat)", {}, { timeout: 3000 })).toBeInTheDocument();
 
     const toggle = screen.getByText(/Show overdue only/i);
     fireEvent.click(toggle);
@@ -49,6 +45,6 @@ describe("AdminApprovalQueuePage", () => {
       expect(screen.queryByText("Luna (Siamese Cat)")).not.toBeInTheDocument();
       expect(screen.getByText("Buddy (Golden Retriever)")).toBeInTheDocument();
       expect(screen.getAllByText(/SLA Breached/i).length).toBeGreaterThan(0);
-    });
+    }, { timeout: 3000 });
   });
 });

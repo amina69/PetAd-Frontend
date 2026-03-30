@@ -95,7 +95,7 @@ describe("useMutateCompleteAdoption", () => {
         { wrapper },
       );
 
-      await act(async () => {
+      act(() => {
         result.current.mutateCompleteAdoption();
       });
 
@@ -168,8 +168,8 @@ describe("useMutateCompleteAdoption", () => {
   describe("rollback on error", () => {
     it("restores previous cache state when mutation fails", async () => {
       const { queryClient, wrapper } = createWrapper();
-      // Seed cache with the original adoption state
-      queryClient.setQueryData<AdoptionDetails>(["adoption", "fail"], MOCK_ADOPTION);
+      // Seed cache with the original adoption state. Ensure ID matches.
+      queryClient.setQueryData<AdoptionDetails>(["adoption", "fail"], { ...MOCK_ADOPTION, id: "fail" });
 
       const { result } = renderHook(
         () => useMutateCompleteAdoption("fail"),
@@ -188,7 +188,7 @@ describe("useMutateCompleteAdoption", () => {
         "fail",
       ]);
       expect(restoredData?.status).toBe("ESCROW_FUNDED");
-      expect(restoredData?.id).toBe("adoption-1");
+      expect(restoredData?.id).toBe("fail");
     });
 
     it("clears optimistic update and shows error state on failure", async () => {

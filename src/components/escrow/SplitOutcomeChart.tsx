@@ -126,7 +126,7 @@ export const SplitOutcomeChart: FC<SplitOutcomeChartProps> = ({
                 aria-hidden="true"
               />
               <span style={{ fontSize: "14px", color: "#374151" }}>
-                {label}: {item.amount} ({item.percentage}%)
+                {label}: {item.amount} USDC ({item.percentage}%)
               </span>
             </div>
           );
