@@ -1,9 +1,9 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useApiQuery } from '../useApiQuery';
-import type { ApiError } from '../../types/auth';
-import React from 'react';
-import { describe, beforeEach, it, expect, vi } from 'vitest';
+import React from "react";
+import { renderHook, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useApiQuery } from "../useApiQuery";
+import type { ApiError } from "../../types/auth";
 
 const createWrapper = () => {
     const queryClient = new QueryClient({

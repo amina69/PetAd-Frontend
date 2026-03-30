@@ -22,7 +22,7 @@ export function useCustodyTimeline(
 ) {
   const enabled = Boolean(custodyId) && (options?.enabled ?? true);
 
-  const query = useQuery({
+  const query = useQuery<CustodyTimelineEvent[]>({
     queryKey: ["custody-timeline", custodyId],
     queryFn: () => custodyService.getTimeline(custodyId!),
     enabled,

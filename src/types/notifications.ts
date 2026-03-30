@@ -11,15 +11,24 @@ export type NotificationType =
   | "adoption"
   | "reminder";
 
+export type NotificationFilter = "all" | "unread" | "read";
+
 export interface Notification {
   id: string | number;
   type: NotificationType;
   title: string;
   message: string | React.ReactNode;
   time: string;
+  isRead?: boolean;
   hasArrow?: boolean;
   metadata?: {
     resourceId: string;
     [key: string]: unknown;
   };
+}
+
+export interface NotificationsPage {
+  data: Notification[];
+  nextCursor: string | null;
+  total: number;
 }
