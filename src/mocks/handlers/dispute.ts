@@ -1,6 +1,10 @@
 // TODO: No backend model yet — align field names when Dispute is added to Prisma schema.
 import { http, HttpResponse, delay } from "msw";
+<<<<<<< feat/AdminDisputeListPage
 import type { Dispute, DisputeListResponse, DisputeStatus } from "../../types/dispute";
+=======
+import type { Dispute, DisputeListResponse } from "../../types/dispute";
+>>>>>>> main
 
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
