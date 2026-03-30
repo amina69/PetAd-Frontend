@@ -4,6 +4,11 @@ import {useMutateAdminStatusOverride} from "../useMutateAdminStatusOverride"
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook as baseRenderHook, type RenderHookOptions, act } from "@testing-library/react";
+
+interface WrapperWithClient {
+  ({ children }: { children: React.ReactNode }): React.ReactElement;
+  __queryClient?: QueryClient;
+}
  
 export function createWrapper() {
   const queryClient = new QueryClient({
@@ -13,11 +18,11 @@ export function createWrapper() {
     },
   });
  
-  const Wrapper = ({ children }: { children: React.ReactNode }) =>
+  const Wrapper: WrapperWithClient = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client: queryClient }, children);
  
   // Stash the client so renderHook callers can access it
-  (Wrapper as any).__queryClient = queryClient;
+  Wrapper.__queryClient = queryClient;
  
   return Wrapper;
 }
@@ -31,7 +36,7 @@ export function renderHook<TProps, TResult>(
   options: RenderHookOptions<TProps> & { wrapper?: ReturnType<typeof createWrapper> },
 ) {
   const base = baseRenderHook(callback, options);
-  const queryClient: QueryClient | undefined = (options.wrapper as any)?.__queryClient;
+  const queryClient: QueryClient | undefined = (options.wrapper as WrapperWithClient)?.__queryClient;
   return { ...base, queryClient: queryClient! };
 }
 
@@ -124,7 +129,7 @@ describe("useMutateAdminStatusOverride", () => {
  
     expect(result.current.isPending).toBe(false);
   });
-
+ 
   it("does not invalidate queries when editStatus rejects", async () => {
     mockEditStatus.mockRejectedValueOnce(new Error("Server error"));
  
@@ -144,4 +149,3 @@ describe("useMutateAdminStatusOverride", () => {
     });
   });
 });
- 

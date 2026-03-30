@@ -3,6 +3,7 @@ import { EscrowStatusBadge } from "./EscrowStatusBadge";
 import { StellarTxLink } from "./StellarTxLink";
 import { usePolling } from "../../lib/hooks/usePolling";
 import { formatAmount, type EscrowStatusData } from "./types";
+import { DisputeBanner } from "./DisputeBanner";
 
 interface EscrowStatusCardProps {
   escrowId: string;
@@ -29,17 +30,7 @@ export function EscrowStatusCard({
 
   const query = usePolling(
     ["escrow-status", escrowId],
-    async () => {
-      if (fetchStatus) {
-        return fetchStatus();
-      }
-
-      if (initialData) {
-        return initialData;
-      }
-
-      throw new Error("No escrow status fetcher provided");
-    },
+    fetchStatus || (async () => ({}) as EscrowStatusData),
     {
       intervalMs: pollingIntervalMs,
       stopWhen: (data) => data?.status === "SETTLED",
@@ -74,14 +65,25 @@ export function EscrowStatusCard({
             {data.petName}
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            {formatAmount(data.amount, data.currency)} for adoption #{data.adoptionId}
+            {formatAmount(data.amount, data.currency)} for adoption #
+            {data.adoptionId}
           </p>
         </div>
         <EscrowStatusBadge status={data.status} />
       </div>
 
       <div className="mt-6">
-        <EscrowProgressStepper status={data.status} />
+        {data.status === "DISPUTED" && data.disputeId ? (
+          <DisputeBanner
+            disputeId={data.disputeId}
+            raisedAt={
+              data.disputeRaisedAt ?? data.fundedAt ?? new Date().toISOString()
+            }
+            escrowAccountId={data.escrowId}
+          />
+        ) : (
+          <EscrowProgressStepper status={data.status} />
+        )}
       </div>
 
       <dl className="mt-6 grid gap-4 md:grid-cols-2">
@@ -89,7 +91,9 @@ export function EscrowStatusCard({
           <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             Escrow ID
           </dt>
-          <dd className="mt-2 text-sm font-medium text-slate-900">{data.escrowId}</dd>
+          <dd className="mt-2 text-sm font-medium text-slate-900">
+            {data.escrowId}
+          </dd>
         </div>
         <div className="rounded-2xl bg-slate-50 p-4">
           <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -114,7 +118,8 @@ export function EscrowStatusCard({
 
       {data.status === "SETTLED" && (
         <p className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-900">
-          Settlement complete. Polling stops after this terminal state is reached.
+          Settlement complete. Polling stops after this terminal state is
+          reached.
         </p>
       )}
 

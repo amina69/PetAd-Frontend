@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, } from "react";
 import { Upload } from "lucide-react";
 export default function EditAdoptionListing() {
   const [isLoading, setIsLoading] = useState(false);
@@ -239,8 +239,15 @@ export default function EditAdoptionListing() {
   );
 }
 
-// Internal Helpers
-const InputField = ({ label, name, value, onChange, error }: any) => (
+interface InputFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+}
+
+const InputField = ({ label, name, value, onChange, error }: InputFieldProps) => (
   <div className="flex flex-col">
     <label className="text-[11px] font-bold text-gray-400 uppercase mb-2">
       {label}
@@ -253,8 +260,15 @@ const InputField = ({ label, name, value, onChange, error }: any) => (
     />
   </div>
 );
+interface SelectFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  options: string[];
+  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+}
 
-const SelectField = ({ label, name, value, options, onChange }: any) => (
+const SelectField = ({ label, name, value, options, onChange }: SelectFieldProps) => (
   <div className="flex flex-col">
     <label className="text-[11px] font-bold text-gray-400 uppercase mb-2">
       {label}

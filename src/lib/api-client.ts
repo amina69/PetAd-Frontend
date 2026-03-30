@@ -1,11 +1,5 @@
 import type { ApiClientConfig } from "../types/auth";
-import {
-	ApiError,
-	ForbiddenError,
-	NotFoundError,
-	ValidationApiError,
-} from "./api-errors";
-
+import { ApiError, ValidationApiError } from "./api-errors";
 class ApiClient {
 	private baseURL: string;
 	private defaultHeaders: Record<string, string>;
@@ -83,36 +77,19 @@ class ApiClient {
 
 			const code = (errorData as { code?: string } | undefined)?.code;
 
-			if (response.status === 403) {
-				throw new ForbiddenError(message, {
-					status: 403,
-					code,
-					data: errorData,
-				});
-			}
+			// Normalize all errors to ApiError (except validation)
+if (response.status === 422) {
+  const fields =
+    (errorData as { fields?: Record<string, string[]> } | undefined)?.fields ??
+    (errorData as { errors?: Record<string, string[]> } | undefined)?.errors ??
+    {};
 
-			if (response.status === 404) {
-				throw new NotFoundError(message, {
-					status: 404,
-					code,
-					data: errorData,
-				});
-			}
-
-			if (response.status === 422) {
-				const fields =
-					(errorData as { fields?: Record<string, string[]> } | undefined)
-						?.fields ??
-					(errorData as { errors?: Record<string, string[]> } | undefined)
-						?.errors ??
-					{};
-
-				throw new ValidationApiError(message, fields, {
-					status: 422,
-					code,
-					data: errorData,
-				});
-			}
+  throw new ValidationApiError(message, fields, {
+    status: 422,
+    code,
+    data: errorData,
+  });
+}
 
 			throw new ApiError(message, {
 				status: response.status,

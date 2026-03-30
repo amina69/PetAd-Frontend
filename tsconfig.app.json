@@ -6,8 +6,10 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "types": ["vite/client", "jest", "node"],
+    "types": ["vite/client", "vitest/globals"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
@@ -27,4 +29,5 @@
     "src/**/*.spec.tsx",
     "src/**/*.spec.ts"
   ]
+}
 }

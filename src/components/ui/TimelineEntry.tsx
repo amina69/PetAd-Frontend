@@ -87,6 +87,11 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
           </div>
         )}
 
+        {/* Message */}
+        {entry.message && (
+          <p className="text-sm text-gray-600 mb-2">{entry.message}</p>
+        )}
+
         {/* Reason */}
         {entry.reason && (
           <p className="text-sm text-gray-600 mb-2">{entry.reason}</p>
@@ -104,6 +109,18 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
           <div className="mb-2">
             <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
               Admin override
+            </span>
+          </div>
+        )}
+
+        {/* Escrow Paused badge */}
+        {entry.escrowPaused && (
+          <div className="mb-2 flex items-center gap-1.5" data-testid="escrow-paused-badge">
+            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 border border-red-200">
+              <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Escrow Paused
             </span>
           </div>
         )}

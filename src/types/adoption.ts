@@ -9,6 +9,17 @@ export type AdoptionStatus =
   | "COMPLETED"
   | "CANCELLED";
 
+export type CustodyStatus =
+  | "PENDING"
+  | "DEPOSIT_PENDING"
+  | "DEPOSIT_CONFIRMED"
+  | "ACTIVE"
+  | "EXPIRING_SOON"
+  | "COMPLETING"
+  | "COMPLETED"
+  | "DISPUTED"
+  | "CANCELLED";
+
 export interface AdoptionTimelineEntry {
   id: string;
   adoptionId: string;
@@ -22,6 +33,7 @@ export interface AdoptionTimelineEntry {
   sdkTxHash?: string;
   isAdminOverride?: boolean;
   reason?: string;
+  escrowPaused?: boolean;
 }
 
 export interface AdoptionDetails {
@@ -35,7 +47,7 @@ export interface AdoptionDetails {
 
 export interface CustodyDetails {
   id: string;
-  status: AdoptionStatus;
+  status: CustodyStatus;
   petId: string;
   custodianId: string;
   ownerId: string;

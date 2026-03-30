@@ -2,6 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEscrowTimeline } from '../useEscrowTimeline';
 import { adoptionService } from '../../api/adoptionService';
+import type { AdoptionTimelineEntry } from '../../types/adoption';
 import { describe, beforeEach, it, expect, vi } from 'vitest';
 import React from 'react';
 
@@ -30,14 +31,14 @@ describe('useEscrowTimeline', () => {
   });
 
   it('should filter out non-escrow events', async () => {
-    const mockTimeline = [
+    const mockTimeline: Partial<AdoptionTimelineEntry>[] = [
       { id: '1', sdkEvent: 'ESCROW_CREATED', message: 'Escrow created' },
       { id: '2', sdkEvent: 'PET_UPDATED', message: 'Pet updated' },
       { id: '3', sdkEvent: 'ESCROW_FUNDED', message: 'Escrow funded' },
       { id: '4', sdkEvent: 'OTHER_EVENT', message: 'Other' },
     ];
 
-    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline as any);
+    vi.mocked(adoptionService.getTimeline).mockResolvedValue(mockTimeline as AdoptionTimelineEntry[]);
 
     const { result } = renderHook(() => useEscrowTimeline('adoption-1'), {
       wrapper: createWrapper(),

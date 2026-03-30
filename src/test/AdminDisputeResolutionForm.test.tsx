@@ -83,6 +83,12 @@ describe("AdminDisputeResolutionForm", () => {
     const noteTextarea = screen.getByPlaceholderText("Enter detailed reasoning for this resolution...");
     fireEvent.change(noteTextarea, { target: { value: "This is a valid admin note with enough characters." } });
 
+    // Still invalid until a resolution type is selected
+    expect(submitButton).toBeDisabled();
+
+    // Select REFUND to complete required form fields
+    fireEvent.click(screen.getByLabelText("REFUND"));
+
     expect(submitButton).not.toBeDisabled();
   });
 
@@ -98,15 +104,13 @@ describe("AdminDisputeResolutionForm", () => {
 
     const submitButton = screen.getByRole("button", { name: "Resolve Dispute" });
 
-    // Manually set invalid percentages (this simulates a bug, but in real usage sliders constrain)
-    // For testing, we can assume the sliders work, but let's test the validation
-    // Since sliders auto-adjust, this might not happen, but the validation is there
-
     expect(submitButton).not.toBeDisabled(); // Should be enabled since sliders constrain
   });
 
   it("submits form with correct data for REFUND", () => {
     render(<AdminDisputeResolutionForm onSubmit={mockOnSubmit} />);
+
+    fireEvent.click(screen.getByLabelText("REFUND"));
 
     const noteTextarea = screen.getByPlaceholderText("Enter detailed reasoning for this resolution...");
     fireEvent.change(noteTextarea, { target: { value: "This is a valid admin note with enough characters." } });

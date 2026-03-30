@@ -1,4 +1,5 @@
 import type { SettlementSummary } from "../types/escrow";
+import { ApiError } from "../lib/api-errors";
 
 interface HttpError extends Error {
   status: number;
@@ -22,6 +23,9 @@ export const escrowService = {
       const error = new Error("Failed to retry settlement") as HttpError;
       error.status = response.status;
       throw error;
+      throw new ApiError("Failed to retry settlement", {
+        status: response.status,
+      });
     }
   },
 
@@ -35,5 +39,10 @@ export const escrowService = {
     }
 
     return (await response.json()) as SettlementSummary;
+      throw new ApiError("Failed to fetch settlement summary", {
+        status: response.status,
+      });
+    }
+    return response.json() as Promise<SettlementSummary>;
   },
 };

@@ -37,7 +37,7 @@ const mockEntries: AdoptionTimelineEntry[] = [
     timestamp: getEarlierString(),
     sdkEvent: "event2",
     message: "Message 2",
-    fromStatus: null,
+    fromStatus: undefined,
     toStatus: "ESCROW_CREATED",
     actor: "System",
   }
