@@ -183,7 +183,7 @@ export const disputeHandlers = [
       evidence: [],
       timeline: [
         {
-          event: "Dispute raised",
+          event: "Dispute raise",
           actor: body.raisedBy,
           timestamp: new Date().toISOString(),
         },
