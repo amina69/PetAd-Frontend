@@ -89,3 +89,20 @@ export interface AdminApprovalQueueItem {
   daysWaiting: number;
   isOverdue: boolean;
 }
+
+export interface ApprovalParty {
+  id: string;
+  name: string;
+  role: string;
+  status: "APPROVED" | "PENDING" | "REJECTED";
+  timestamp?: string;
+}
+
+export interface AdoptionApprovalsState {
+  required: number;
+  given: number;
+  pending: number;
+  quorumMet: boolean;
+  escrowAccountId: string;
+  parties: ApprovalParty[];
+}
