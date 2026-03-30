@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.locals
 
+# Local issue notes (not shipped)
+issues/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

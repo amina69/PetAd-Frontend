@@ -35,8 +35,9 @@ const useDisputeMock = (disputeId: string) => {
   const mockData: DisputeDetails = {
     id: disputeId,
     adoptionId: "adopt_123",
-    status: "RESOLVED",
+    status: "resolved",
     reason: "Item not as described",
+    description: "Buyer reported issues with the pet’s condition after adoption.",
     createdAt: "2026-03-25T10:00:00Z",
     updatedAt: "2026-03-28T10:00:00Z",
     events: [
