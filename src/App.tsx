@@ -20,7 +20,7 @@ import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
-import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
+import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage"; // added import
 
 function App() {
   return (
@@ -32,7 +32,6 @@ function App() {
       <Route path="/reset" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
-      {/* Main App Routes - With Navbar/Footer */}
       <Route element={<MainLayout />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -55,25 +54,13 @@ function App() {
           path="/adoption/:adoptionId/timeline"
           element={<AdoptionTimelinePage />}
         />
-
-        {/* Admin Approvals */}
         <Route
           path="/admin/approvals"
           element={<AdminApprovalQueuePage />}
         />
-
-        {/* Custody Routes */}
-        <Route
-          path="/custody/:custodyId/timeline"
-          element={<CustodyTimelinePage />}
-        />
-
-        {/* Preview Routes */}
+        <Route path="/custody/:custodyId/timeline" element={<CustodyTimelinePage />} />
         <Route path="/preview-modal" element={<ModalPreview />} />
-        <Route
-          path="/adoption-completion-demo"
-          element={<AdoptionCompletionDemo />}
-        />
+        <Route path="/adoption-completion-demo" element={<AdoptionCompletionDemo />} />
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
       </Route>
     </Routes>

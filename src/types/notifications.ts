@@ -1,4 +1,3 @@
-
 export type NotificationType =
   | "APPROVAL_REQUESTED"
   | "ESCROW_FUNDED"
@@ -18,12 +17,15 @@ export type NotificationPreferenceType =
   | "DOCUMENT_EXPIRING"
   | "CUSTODY_EXPIRING";
 
+export type NotificationFilter = "all" | "unread" | "read";
+
 export interface Notification {
   id: string | number;
   type: NotificationType;
   title: string;
   message: string | React.ReactNode;
   time: string;
+  isRead?: boolean;
   hasArrow?: boolean;
   metadata?: {
     resourceId: string;
@@ -48,3 +50,9 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   DOCUMENT_EXPIRING: true,
   CUSTODY_EXPIRING: true,
 };
+
+export interface NotificationsPage {
+  data: Notification[];
+  nextCursor: string | null;
+  total: number;
+}
