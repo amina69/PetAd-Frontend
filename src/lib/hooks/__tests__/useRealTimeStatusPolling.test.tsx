@@ -111,6 +111,14 @@ describe("useRealTimeStatusPolling", () => {
       { wrapper: createWrapper(queryClient) }
     );
 
+    // Wait for hook to settle after the first poll (ESCROW_CREATED)
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // At this point either first or second value may have arrived.
+    // What matters is that once the status *changes* to ESCROW_FUNDED,
+    // statusChanged becomes true.
     await waitFor(() => {
       expect(result.current.data?.status).toBe("ESCROW_FUNDED");
       expect(result.current.statusChanged).toBe(true);

@@ -88,4 +88,14 @@ export const statusHandlers = [
 			updatedAt: new Date().toISOString(),
 		});
 	}),
+	// PATCH /api/adoption/:id/status
+	http.patch("/api/adoption/:id/status", async ({ params, request }) => {
+		await delay(getDelay(request));
+		const body = await request.json() as { status: string };
+		return HttpResponse.json({
+			id: params.id,
+			toStatus: body.status,
+			timestamp: new Date().toISOString()
+		});
+	}),
 ];

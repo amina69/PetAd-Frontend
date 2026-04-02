@@ -1,9 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { type PropsWithChildren } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import ApprovalBanner from "./ApprovalBanner";
 
-export function MainLayout() {
+export function MainLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       
@@ -13,7 +13,7 @@ export function MainLayout() {
       <Navbar />
 
       <main className="flex-1">
-        <Outlet />
+        {children}
       </main>
 
       <Footer />

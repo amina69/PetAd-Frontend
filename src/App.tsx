@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgetPasswordPage from "./pages/forgetPasswordPage";
 import InterestPage from "./pages/interestPage";
 import NotificationPage from "./pages/notificationPage";
+import NotificationPreferencesPage from "./pages/NotificationPreferencesPage";
 import ResetPasswordPage from "./pages/resetPasswordPage";
 import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
 import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
@@ -19,9 +20,9 @@ import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 
 function App() {
-
   return (
     <Routes>
       {/* Auth Routes - No Navbar/Footer */}
@@ -31,6 +32,7 @@ function App() {
       <Route path="/reset" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
+      {/* Main App Routes - With Navbar/Footer */}
       <Route element={<MainLayout />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -41,18 +43,41 @@ function App() {
         <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
         <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/adoption/:adoptionId/settlement" element={<SettlementSummaryPage />} />
-        <Route path="/adoption/:adoptionId/timeline" element={<AdoptionTimelinePage />} />
+        <Route
+          path="/notification-preferences"
+          element={<NotificationPreferencesPage />}
+        />
+        <Route
+          path="/adoption/:adoptionId/settlement"
+          element={<SettlementSummaryPage />}
+        />
+        <Route
+          path="/adoption/:adoptionId/timeline"
+          element={<AdoptionTimelinePage />}
+        />
 
-        <Route path="/custody/:custodyId/timeline" element={<CustodyTimelinePage />} />
+        {/* Admin Approvals */}
+        <Route
+          path="/admin/approvals"
+          element={<AdminApprovalQueuePage />}
+        />
 
+        {/* Custody Routes */}
+        <Route
+          path="/custody/:custodyId/timeline"
+          element={<CustodyTimelinePage />}
+        />
+
+        {/* Preview Routes */}
         <Route path="/preview-modal" element={<ModalPreview />} />
-        <Route path="/adoption-completion-demo" element={<AdoptionCompletionDemo />} />
+        <Route
+          path="/adoption-completion-demo"
+          element={<AdoptionCompletionDemo />}
+        />
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
       </Route>
     </Routes>
   );
-
 }
 
 export default App;

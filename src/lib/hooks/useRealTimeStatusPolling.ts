@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
 import { custodyService } from "../../api/custodyService";
@@ -6,7 +6,6 @@ import type { AdoptionDetails, CustodyDetails } from "../../types/adoption";
 
 type EntityType = "adoption" | "custody";
 const SUPPORTED_ENTITY_TYPES = ["adoption", "custody"] as const;
-const TERMINAL_STATUSES = new Set(["COMPLETED", "CANCELLED"]);
 
 export interface UseRealTimeStatusPollingOptions {
   intervalMs?: number;
@@ -24,20 +23,21 @@ export function useRealTimeStatusPolling(
   const { intervalMs = 15000 } = options;
   const [statusChanged, setStatusChanged] = useState(false);
   const previousStatusRef = useRef<string | undefined>(undefined);
-  const resetTimerRef = useRef<number | undefined>(undefined);
 
+  // Determine the fetch function based on entity type
   const fetchFn = (): Promise<AdoptionDetails | CustodyDetails> => {
     switch (entityType) {
       case "adoption":
         return adoptionService.getDetails(entityId);
       case "custody":
-        return custodyService.getDetails(entityId);
+        return custodyService.getDetails(entityId) as Promise<AdoptionDetails | CustodyDetails>;
     }
   };
 
+  // Determine if polling should stop based on terminal statuses
   const stopWhen = (data: AdoptionDetails | CustodyDetails | undefined) => {
     if (!data) return false;
-    return TERMINAL_STATUSES.has(data.status);
+    return data.status === "COMPLETED" || data.status === "CANCELLED";
   };
 
   const query = usePolling([entityType, entityId], fetchFn, {
@@ -45,44 +45,31 @@ export function useRealTimeStatusPolling(
     stopWhen,
   });
 
-  useEffect(() => {
-    const currentStatus = query.data?.status;
+  const currentStatus = query.data?.status;
 
-    if (!currentStatus) {
+  // Track status changes and trigger pulse animation inside useEffect (purity)
+  useEffect(() => {
+    if (!currentStatus) return;
+
+    if (previousStatusRef.current === undefined) {
+      previousStatusRef.current = currentStatus;
       return;
     }
 
-    if (
-      previousStatusRef.current !== undefined &&
-      currentStatus !== previousStatusRef.current
-    ) {
+    if (currentStatus !== previousStatusRef.current) {
+      previousStatusRef.current = currentStatus;
+      
+      // Trigger status changed animation
       setStatusChanged(true);
+
+      // Reset the flag after 3 seconds
+      const resetTimer = setTimeout(() => {
+        setStatusChanged(false);
+      }, 3000);
+
+      return () => clearTimeout(resetTimer);
     }
-
-    previousStatusRef.current = currentStatus;
-  }, [query.data?.status]);
-
-  useEffect(() => {
-    if (!statusChanged) {
-      return;
-    }
-
-    if (resetTimerRef.current !== undefined) {
-      window.clearTimeout(resetTimerRef.current);
-    }
-
-    resetTimerRef.current = window.setTimeout(() => {
-      setStatusChanged(false);
-      resetTimerRef.current = undefined;
-    }, 3000);
-
-    return () => {
-      if (resetTimerRef.current !== undefined) {
-        window.clearTimeout(resetTimerRef.current);
-        resetTimerRef.current = undefined;
-      }
-    };
-  }, [statusChanged]);
+  }, [currentStatus]);
 
   return {
     data: query.data,

@@ -1,7 +1,7 @@
 
 import { AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { StellarTxLink } from "./StellarTxLink";
+import { StellarTxLink } from "../ui/StellarTxLink";
 
 export interface DisputeBannerProps {
   disputeId: string;
@@ -74,7 +74,7 @@ export function DisputeBanner({
                 Escrow Account
               </dt>
               <dd className="mt-1">
-                <StellarTxLink txHash={escrowAccountId} />
+                <StellarTxLink id={escrowAccountId} type="account" />
               </dd>
             </div>
           </dl>

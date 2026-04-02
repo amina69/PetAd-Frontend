@@ -1,16 +1,9 @@
 import { EscrowProgressStepper } from "./EscrowProgressStepper";
 import { EscrowStatusBadge } from "./EscrowStatusBadge";
-import { StellarTxLink } from "./StellarTxLink";
+import { StellarTxLink } from "../ui/StellarTxLink";
 import { usePolling } from "../../lib/hooks/usePolling";
-import { formatAmount, type EscrowStatusData } from "./types";
+import { formatAmount, type EscrowStatusData, type EscrowStatusCardProps } from "./types";
 import { DisputeBanner } from "./DisputeBanner";
-
-interface EscrowStatusCardProps {
-  escrowId: string;
-  initialData?: EscrowStatusData;
-  fetchStatus?: () => Promise<EscrowStatusData>;
-  pollingIntervalMs?: number;
-}
 
 export function EscrowStatusCard({
   escrowId,
@@ -20,7 +13,7 @@ export function EscrowStatusCard({
 }: EscrowStatusCardProps) {
   const query = usePolling(
     ["escrow-status", escrowId],
-    fetchStatus || (async () => ({}) as EscrowStatusData),
+    fetchStatus || (async () => ({}) as unknown as EscrowStatusData),
     {
       intervalMs: pollingIntervalMs,
       stopWhen: (data) => data?.status === "SETTLED",
@@ -101,7 +94,7 @@ export function EscrowStatusCard({
             Transaction
           </p>
           <div className="mt-2">
-            <StellarTxLink txHash={data.txHash} />
+            <StellarTxLink id={data.txHash} type="tx" />
           </div>
         </div>
       ) : null}

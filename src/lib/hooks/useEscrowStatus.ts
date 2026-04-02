@@ -8,9 +8,18 @@ export type EscrowStatusValue =
 	| "SETTLEMENT_FAILED"
 	| string;
 
+export interface EscrowSignature {
+	id: string;
+	signer: string;
+	timestamp: string;
+}
+
 export interface EscrowStatusResponse {
 	status: EscrowStatusValue;
-	[key: string]: unknown;
+	signatures: EscrowSignature[];
+	required_approvals: number;
+	escrow_account_id: string;
+	balance: string;
 }
 
 export interface UseEscrowStatusOptions
@@ -21,6 +30,8 @@ export interface UseEscrowStatusOptions
 const TERMINAL_STATUSES = new Set<EscrowStatusValue>([
 	"SETTLED",
 	"SETTLEMENT_FAILED",
+	"CANCELLED",
+	"RELEASED",
 ]);
 
 export function useEscrowStatus(

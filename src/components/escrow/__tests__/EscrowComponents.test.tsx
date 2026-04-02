@@ -6,11 +6,12 @@ import { AdoptionCompleteButton } from "../AdoptionCompleteButton";
 import { EscrowFundedBanner } from "../EscrowFundedBanner";
 import { getEscrowFundedBannerStorageKey } from "../types";
 import { EscrowStatusCard } from "../EscrowStatusCard";
-import { StellarTxLink } from "../StellarTxLink";
 import type { EscrowStatusData } from "../types";
 import { SettlementSummaryPage } from "../../../pages/SettlementSummaryPage";
 import { useSettlementSummary } from "../../../hooks/useSettlementSummary";
 import { useRetrySettlement } from "../../../hooks/useRetrySettlement";
+import { useSubmitSignature } from "../../../hooks/useSubmitSignature";
+import { useEscrowStatus } from "../../../lib/hooks/useEscrowStatus";
 
 vi.mock("react-router-dom", async () => {
   const actual =
@@ -32,8 +33,18 @@ vi.mock("../../../hooks/useRetrySettlement", () => ({
   useRetrySettlement: vi.fn(),
 }));
 
+vi.mock("../../../hooks/useSubmitSignature", () => ({
+  useSubmitSignature: vi.fn(),
+}));
+
+vi.mock("../../../lib/hooks/useEscrowStatus", () => ({
+  useEscrowStatus: vi.fn(),
+}));
+
 const mockUseSettlementSummary = vi.mocked(useSettlementSummary);
 const mockUseRetrySettlement = vi.mocked(useRetrySettlement);
+const mockUseSubmitSignature = vi.mocked(useSubmitSignature);
+const mockUseEscrowStatus = vi.mocked(useEscrowStatus);
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -154,6 +165,16 @@ describe("SettlementSummaryPage", () => {
       isError: false,
       error: null,
     });
+    mockUseSubmitSignature.mockReturnValue({
+      mutateSubmitSignature: vi.fn(),
+      isPending: false,
+    });
+    mockUseEscrowStatus.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn() as any,
+    });
   });
 
   it("renders the full summary with funded data", () => {
@@ -208,13 +229,96 @@ describe("SettlementSummaryPage", () => {
 
     renderWithQueryClient(<SettlementSummaryPage isAdmin />);
 
-    expect(screen.getAllByText("Settlement Failed").length).toBeGreaterThan(0);
+    // Use getAllByText and take the first match to avoid "multiple elements found" errors
+    expect(screen.getAllByText("Settlement Failed")[0]).toBeTruthy();
     expect(
       screen.getByText(
         "The payout could not be completed. Please review the transaction and retry.",
       ),
     ).toBeTruthy();
     expect(screen.getByText("Retry Settlement")).toBeTruthy();
+  });
+
+  it("renders the 'Sign & Approve Escrow' button for eligible un-signed approvers", () => {
+    mockUseSettlementSummary.mockReturnValue({
+      data: {
+        onChainStatus: "SUCCESS",
+        confirmations: 12,
+        payments: [
+          {
+            id: "pay-1",
+            amount: 125,
+            asset: "USDC",
+            destination: "G_MOCK_USER_PUBLIC_KEY",
+            status: "SUCCESS",
+          },
+        ],
+        stellarExplorerUrl: "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
+      },
+      isLoading: false,
+      isError: false,
+      isForbidden: false,
+      isNotFound: false,
+      error: null,
+    });
+
+    mockUseEscrowStatus.mockReturnValue({
+      data: {
+        status: "FUNDED",
+        signatures: [],
+        required_approvals: 2,
+        escrow_account_id: "G_ESCROW",
+        balance: "100",
+      },
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn() as any,
+    });
+
+    renderWithQueryClient(<SettlementSummaryPage isAdmin />);
+    expect(screen.getByText("Sign & Approve Escrow")).toBeTruthy();
+    expect(screen.queryByText("Signature Submitted")).toBeNull();
+  });
+
+  it("renders the 'Signature Submitted' message for already signed approvers", () => {
+    mockUseSettlementSummary.mockReturnValue({
+      data: {
+        onChainStatus: "SUCCESS",
+        confirmations: 12,
+        payments: [
+          {
+            id: "pay-1",
+            amount: 125,
+            asset: "USDC",
+            destination: "G_MOCK_USER_PUBLIC_KEY",
+            status: "SUCCESS",
+          },
+        ],
+        stellarExplorerUrl: "https://stellar.expert/explorer/testnet/tx/mock_tx_hash",
+      },
+      isLoading: false,
+      isError: false,
+      isForbidden: false,
+      isNotFound: false,
+      error: null,
+    });
+
+    mockUseEscrowStatus.mockReturnValue({
+      data: {
+        status: "FUNDED",
+        signatures: [{ id: "1", signer: "G_MOCK_USER_PUBLIC_KEY", timestamp: "now" }],
+        required_approvals: 2,
+        escrow_account_id: "G_ESCROW",
+        balance: "100",
+      },
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn() as any,
+    });
+
+    renderWithQueryClient(<SettlementSummaryPage isAdmin />);
+    expect(screen.queryByText("Sign & Approve Escrow")).toBeNull();
+    expect(screen.getByText("Signature Submitted")).toBeTruthy();
   });
 });
 
@@ -267,24 +371,3 @@ describe("AdoptionCompleteButton", () => {
   });
 });
 
-describe("StellarTxLink", () => {
-  it("renders the correct href, truncates the hash, and copies to the clipboard", async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      configurable: true,
-      value: { writeText },
-    });
-
-    render(<StellarTxLink txHash={txHash} />);
-
-    const link = screen.getByRole("link");
-    expect(link.getAttribute("href")).toBe(
-      `https://stellar.expert/explorer/testnet/tx/${txHash}`,
-    );
-    expect(link.textContent).toBe("abcdef12...34567890");
-
-    fireEvent.click(screen.getByText("Copy"));
-
-    await waitFor(() => expect(writeText).toHaveBeenCalledWith(txHash));
-  });
-});

@@ -95,7 +95,7 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
             {decision.txHash && (
               <div className="flex items-center gap-2">
                 <span className="font-medium text-gray-500">Tx:</span>
-                <StellarTxLink txHash={decision.txHash} />
+                <StellarTxLink id={decision.txHash} type="tx" />
               </div>
             )}
           </div>

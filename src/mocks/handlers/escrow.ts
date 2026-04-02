@@ -17,6 +17,9 @@ interface Escrow {
 	refundTxHash: string | null;
 	requiredSignatures: number;
 	status: EscrowStatus;
+	signatures: { id: string; signer: string; timestamp: string }[];
+	required_approvals: number;
+	escrow_account_id: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -35,6 +38,11 @@ const BASE_ESCROW: Escrow = {
 	refundTxHash: null,
 	requiredSignatures: 2,
 	status: "FUNDED",
+	signatures: [
+		{ id: "sig-1", signer: "Shelter A", timestamp: "2026-03-20T11:00:00Z" }
+	],
+	required_approvals: 2,
+	escrow_account_id: "GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 	createdAt: "2026-03-20T10:00:00.000Z",
 	updatedAt: "2026-03-20T12:00:00.000Z",
 };
@@ -104,7 +112,13 @@ export const escrowHandlers = [
 			return new HttpResponse(null, { status: 404 });
 		}
 
-		const summary: Record<string, unknown> = {
+		interface SettlementSummary {
+			onChainStatus: string;
+			confirmations: number;
+			payments: { id: string; amount: number; asset: string; destination: string; status: string }[];
+			stellarExplorerUrl: string;
+		}
+		const summary: SettlementSummary = {
 			onChainStatus: "SUCCESS",
 			confirmations: 12,
 			payments: [

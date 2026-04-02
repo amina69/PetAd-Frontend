@@ -4,9 +4,9 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi } from "vitest";
 import { DisputeBanner } from "../DisputeBanner";
 
-vi.mock("../StellarTxLink", () => ({
-  StellarTxLink: ({ txHash }: { txHash: string }) => (
-    <span data-testid="stellar-tx-link">{txHash}</span>
+vi.mock("../../ui/StellarTxLink", () => ({
+  StellarTxLink: ({ id }: { id: string }) => (
+    <span data-testid="stellar-tx-link">{id}</span>
   ),
 }));
 

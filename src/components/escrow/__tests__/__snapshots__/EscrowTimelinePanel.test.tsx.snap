@@ -121,25 +121,39 @@ exports[`EscrowTimelinePanel > matches snapshot for disputed state 1`] = `
           <div
             class="mt-3"
           >
-            <div
-              class="flex flex-wrap items-center gap-3"
+            <a
+              aria-label="View transaction on Stellar explorer"
+              class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline "
               data-testid="stellar-tx-link"
+              href="https://stellar.expert/explorer/public/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              <a
-                class="text-sm font-semibold text-sky-700 underline underline-offset-4"
-                href="https://stellar.expert/explorer/testnet/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-                rel="noreferrer"
-                target="_blank"
+              abcdef12…34567890
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-external-link w-4 h-4"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                abcdef12...34567890
-              </a>
-              <button
-                class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
-                type="button"
-              >
-                Copy
-              </button>
-            </div>
+                <path
+                  d="M15 3h6v6"
+                />
+                <path
+                  d="M10 14 21 3"
+                />
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </li>
@@ -261,25 +275,39 @@ exports[`EscrowTimelinePanel > matches snapshot for funded state 1`] = `
           <div
             class="mt-3"
           >
-            <div
-              class="flex flex-wrap items-center gap-3"
+            <a
+              aria-label="View transaction on Stellar explorer"
+              class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline "
               data-testid="stellar-tx-link"
+              href="https://stellar.expert/explorer/public/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              <a
-                class="text-sm font-semibold text-sky-700 underline underline-offset-4"
-                href="https://stellar.expert/explorer/testnet/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-                rel="noreferrer"
-                target="_blank"
+              abcdef12…34567890
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-external-link w-4 h-4"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                abcdef12...34567890
-              </a>
-              <button
-                class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
-                type="button"
-              >
-                Copy
-              </button>
-            </div>
+                <path
+                  d="M15 3h6v6"
+                />
+                <path
+                  d="M10 14 21 3"
+                />
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </li>
@@ -398,25 +426,39 @@ exports[`EscrowTimelinePanel > matches snapshot for settled state 1`] = `
           <div
             class="mt-3"
           >
-            <div
-              class="flex flex-wrap items-center gap-3"
+            <a
+              aria-label="View transaction on Stellar explorer"
+              class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline "
               data-testid="stellar-tx-link"
+              href="https://stellar.expert/explorer/public/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              <a
-                class="text-sm font-semibold text-sky-700 underline underline-offset-4"
-                href="https://stellar.expert/explorer/testnet/tx/abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-                rel="noreferrer"
-                target="_blank"
+              abcdef12…34567890
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-external-link w-4 h-4"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                abcdef12...34567890
-              </a>
-              <button
-                class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
-                type="button"
-              >
-                Copy
-              </button>
-            </div>
+                <path
+                  d="M15 3h6v6"
+                />
+                <path
+                  d="M10 14 21 3"
+                />
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </li>

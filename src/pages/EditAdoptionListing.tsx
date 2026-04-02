@@ -239,11 +239,12 @@ export default function EditAdoptionListing() {
   );
 }
 
+// Internal Helpers
 interface InputFieldProps {
   label: string;
   name: string;
   value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   error?: string;
 }
 

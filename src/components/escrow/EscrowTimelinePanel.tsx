@@ -1,6 +1,6 @@
 import { Check, Pause, Plus, Wallet } from "lucide-react";
 import { Skeleton } from "../ui/Skeleton";
-import { StellarTxLink } from "./StellarTxLink";
+import { StellarTxLink } from "../ui/StellarTxLink";
 import { useEscrowTimeline, type EscrowTimelineEventType } from "../../lib/hooks/useEscrowTimeline";
 
 function formatRelativeTime(timestamp: string, now = new Date()): string {
@@ -131,7 +131,7 @@ export function EscrowTimelinePanel({ adoptionId }: EscrowTimelinePanelProps) {
 
                     {txHash ? (
                       <div className="mt-3">
-                        <StellarTxLink txHash={txHash} />
+                        <StellarTxLink id={txHash} type="tx" />
                       </div>
                     ) : null}
                   </div>

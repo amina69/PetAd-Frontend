@@ -100,7 +100,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
         {/* Transaction link */}
         {entry.sdkTxHash && (
           <div className="mb-2">
-            <StellarTxLink txHash={entry.sdkTxHash} />
+            <StellarTxLink id={entry.sdkTxHash} type="tx" />
           </div>
         )}
 
