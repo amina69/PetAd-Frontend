@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --maxsockets 1 --retry 3
 
       - name: Lint check
         run: npm run lint
