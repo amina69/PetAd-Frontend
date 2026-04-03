@@ -44,7 +44,7 @@ describe('RelativeDate', () => {
   });
 
   it('sets up interval with 60000ms duration', async () => {
-    const setIntervalSpy = vi.spyOn(global, 'setInterval');
+    const setIntervalSpy = vi.spyOn(globalThis, 'setInterval');
     const testDate = new Date(Date.now() - 60 * 1000);
     
     render(<RelativeDate date={testDate} />);
@@ -58,7 +58,7 @@ describe('RelativeDate', () => {
   });
 
   it('cleans up interval on unmount', async () => {
-    const clearIntervalSpy = vi.spyOn(global, 'clearInterval');
+    const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
     const testDate = new Date(Date.now() - 60 * 1000);
 
     const { unmount } = render(<RelativeDate date={testDate} />);
@@ -110,9 +110,9 @@ describe('RelativeDate', () => {
     let capturedCallback: (() => void) | null = null;
 
     // Spy on setInterval to capture the callback
-    const originalSetInterval = global.setInterval;
-    const setIntervalSpy = vi.spyOn(global, 'setInterval')
-      .mockImplementation((callback: any, ms: number) => {
+    const originalSetInterval = globalThis.setInterval;
+    const setIntervalSpy = vi.spyOn(globalThis, 'setInterval')
+      .mockImplementation((callback: any, ms?: number) => {
         capturedCallback = callback;
         return originalSetInterval(callback, ms);
       });
