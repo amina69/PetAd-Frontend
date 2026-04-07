@@ -20,6 +20,7 @@ import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
 import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import CustodyListPage from "./pages/CustodyListPage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
         />
 
         {/* Custody Routes */}
+        <Route path="/custody" element={<CustodyListPage />} />
         <Route
           path="/custody/:custodyId/timeline"
           element={<CustodyTimelinePage />}
