@@ -2,19 +2,27 @@
 
 @theme {
   --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-slide-down: slide-down 0.5s ease-out;
+
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
 
-  --animate-notification-bell: notification-bell 0.55s ease-out;
-  @keyframes notification-bell {
-    0%, 100% { transform: rotate(0deg); }
-    18% { transform: rotate(-14deg); }
-    36% { transform: rotate(12deg); }
-    54% { transform: rotate(-8deg); }
-    72% { transform: rotate(5deg); }
-  }
+@keyframes slide-down {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+--animate-notification-bell: notification-bell 0.55s ease-out;
+
+@keyframes notification-bell {
+  0%, 100% { transform: rotate(0deg); }
+  18% { transform: rotate(-14deg); }
+  36% { transform: rotate(12deg); }
+  54% { transform: rotate(-8deg); }
+  72% { transform: rotate(5deg); }
+}
 }
 
 

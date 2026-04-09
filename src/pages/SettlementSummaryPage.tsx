@@ -109,7 +109,7 @@ export function SettlementSummaryPage({
   const description = propSummary?.description || (adoptionId ? `Adoption #${adoptionId}` : "");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+<div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         {/* ── Header ── */}
         <div>
@@ -328,15 +328,13 @@ export function SettlementSummaryPage({
 /** Internal helper for the retry logic to keep the main component cleaner. */
 function RetryButton({ adoptionId }: { adoptionId: string }) {
   const retryMutation = useRetrySettlement(adoptionId);
+
   return (
     <button
       type="button"
       onClick={() => retryMutation.mutateRetrySettlement()}
       disabled={retryMutation.isPending}
-      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white
-                 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed
-                 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500
-                 focus-visible:ring-offset-2"
+      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
     >
       {retryMutation.isPending ? "Retrying…" : "Retry Settlement"}
     </button>
