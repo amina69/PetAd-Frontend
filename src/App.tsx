@@ -62,16 +62,9 @@ function App() {
           element={<AdoptionTimelinePage />}
         />
 
-        {/* Admin Approvals */}
-        <Route
-          path="/admin/approvals"
-          element={<AdminApprovalQueuePage />}
-        />
-
-        <Route
-          path="/admin/disputes"
-          element={<AdminDisputeListPage />}
-        />
+        {/* Admin Routes */}
+        <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+        <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
 
         <Route
           path="/disputes"
