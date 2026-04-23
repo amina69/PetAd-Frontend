@@ -109,7 +109,7 @@ describe("NotificationPreferencesPage", () => {
     fireEvent.click(screen.getByText("Reset to defaults"));
 
     expect(mockMutate).not.toHaveBeenCalled();
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Reset"));
 
