@@ -155,21 +155,41 @@ export const disputeHandlers = [
 		return HttpResponse.json<Dispute>(found);
 	}),
 
-	// POST /api/disputes — raise a new dispute
+	// POST /api/disputes — raise a new dispute (JSON or FormData)
 	http.post("/api/disputes", async ({ request }) => {
 		await delay(getDelay(request));
-		const body = (await request.json()) as {
-			adoptionId: string;
-			raisedBy: string;
-			reason: string;
-			description: string;
-		};
+
+		let adoptionId = "";
+		let raisedBy = "";
+		let reason = "";
+		let description = "";
+
+		const contentType = request.headers.get("content-type") ?? "";
+		if (contentType.includes("multipart/form-data")) {
+			const form = await request.formData();
+			adoptionId = (form.get("adoptionId") as string) ?? "";
+			raisedBy = (form.get("raisedBy") as string) ?? "";
+			reason = (form.get("reason") as string) ?? "";
+			description = (form.get("description") as string) ?? "";
+		} else {
+			const body = (await request.json()) as {
+				adoptionId: string;
+				raisedBy: string;
+				reason: string;
+				description: string;
+			};
+			adoptionId = body.adoptionId;
+			raisedBy = body.raisedBy;
+			reason = body.reason;
+			description = body.description;
+		}
+
 		const created: Dispute = {
 			id: `dispute-${Date.now()}`,
-			adoptionId: body.adoptionId,
-			raisedBy: body.raisedBy,
-			reason: body.reason,
-			description: body.description,
+			adoptionId,
+			raisedBy,
+			reason,
+			description,
 			status: "open",
 			isOverdue: false,
 			pet: { id: "pet-new", name: "Unknown" },
@@ -179,7 +199,7 @@ export const disputeHandlers = [
 			timeline: [
 				{
 					event: "Dispute raised",
-					actor: body.raisedBy,
+					actor: raisedBy,
 					timestamp: new Date().toISOString(),
 				},
 			],
