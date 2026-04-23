@@ -21,6 +21,7 @@ import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
+import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 
 function App() {
   return (
@@ -56,11 +57,9 @@ function App() {
           element={<AdoptionTimelinePage />}
         />
 
-        {/* Admin Approvals */}
-        <Route
-          path="/admin/approvals"
-          element={<AdminApprovalQueuePage />}
-        />
+        {/* Admin Routes */}
+        <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+        <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
 
         {/* Custody Routes */}
         <Route
