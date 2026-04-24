@@ -144,12 +144,11 @@ export default function NotificationPreferencesPage() {
 
         <ConfirmationModal
           isOpen={showResetModal}
-          onClose={() => setShowResetModal(false)}
+          onCancel={() => setShowResetModal(false)}
           onConfirm={confirmReset}
           title="Reset Preferences"
-          message="Are you sure you want to reset all notification preferences to their default settings? This action cannot be undone."
+          body="Are you sure you want to reset all notification preferences to their default settings? This action cannot be undone."
           confirmLabel="Reset"
-          isLoading={updatePreferences.isPending}
         />
       </div>
     </div>

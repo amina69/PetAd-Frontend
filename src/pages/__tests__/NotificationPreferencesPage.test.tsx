@@ -211,6 +211,8 @@ describe("NotificationPreferencesPage – ESCROW_FUNDED preference flow", () => 
 
     // Confirm inside the modal
     await user.click(within(dialog).getByRole("button", { name: /reset/i }));
+    expect(mockMutate).not.toHaveBeenCalled();
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
 
     vi.advanceTimersByTime(600);
 

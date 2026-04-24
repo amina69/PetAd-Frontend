@@ -1,3 +1,5 @@
+import { apiClient } from "../lib/api-client";
+import { type Document } from "../types/documents";
 import { ApiError, ValidationApiError } from "../lib/api-errors";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
@@ -90,5 +92,20 @@ export const documentService = {
 
             xhr.send(formData);
         });
+    },
+
+    getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {
+        const params = new URLSearchParams();
+        if (adoptionId) params.append("adoptionId", adoptionId);
+        if (disputeId) params.append("disputeId", disputeId);
+
+        const queryString = params.toString();
+        const endpoint = `/documents${queryString ? `?${queryString}` : ""}`;
+
+        return apiClient.get(endpoint);
+    },
+
+    verifyDocument: async (documentId: string): Promise<{ verified: boolean, hash: string }> => {
+        return apiClient.get(`/documents/${documentId}/verify`);
     }
 };

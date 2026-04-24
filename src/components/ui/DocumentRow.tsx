@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, FileImage, Download, Trash2 } from 'lucide-react';
 
 import type { Document } from '../../types/documents';
 import type { UserRole } from '../../types/auth';
 import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { DocumentExpiryBadge } from './DocumentExpiryBadge';
+import { documentService } from '../../api/documentService';
 
 interface DocumentRowProps {
   document: Document;
@@ -38,6 +39,39 @@ export function DocumentRow({
   onDelete,
 }: DocumentRowProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationResult, setVerificationResult] = useState<{
+    verified: boolean | null;
+    hash: string | null;
+  }>({
+    verified: document.onChainVerified,
+    hash: document.anchorTxHash,
+  });
+
+  useEffect(() => {
+    // Only verify if not already verified or if explicitly unverified (null means unknown)
+    if (document.onChainVerified === null) {
+      const verify = async () => {
+        setIsVerifying(true);
+        try {
+          const result = await documentService.verifyDocument(document.id);
+          setVerificationResult({
+            verified: result.verified,
+            hash: result.hash,
+          });
+        } catch (error) {
+          console.error('Failed to verify document:', error);
+          setVerificationResult({
+            verified: false,
+            hash: null,
+          });
+        } finally {
+          setIsVerifying(false);
+        }
+      };
+      verify();
+    }
+  }, [document.id, document.onChainVerified]);
 
   const canDelete =
     currentUserRole === 'ADMIN' || document.uploadedById === currentUserId;
@@ -75,8 +109,8 @@ export function DocumentRow({
 
       <div className="flex flex-wrap items-center gap-2">
         <DocumentIntegrityBadge
-          onChainVerified={document.onChainVerified}
-          anchorTxHash={document.anchorTxHash}
+          onChainVerified={isVerifying ? null : verificationResult.verified}
+          anchorTxHash={verificationResult.hash}
         />
         <DocumentExpiryBadge expiresAt={document.expiresAt} />
 
