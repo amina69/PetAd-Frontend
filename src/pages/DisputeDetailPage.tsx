@@ -79,9 +79,10 @@ const useDisputeMock = (disputeId: string) => {
 };
 
 export default function DisputeDetailPage() {
-  const { disputeId } = useParams<{ disputeId: string }>();
+  const { disputeId, id } = useParams<{ disputeId?: string; id?: string }>();
+  const resolvedDisputeId = disputeId ?? id ?? "mock_1";
   // Replace with actual useDispute(disputeId) when API is ready
-  const { data: dispute, isLoading, isError } = useDisputeMock(disputeId || "mock_1");
+  const { data: dispute, isLoading, isError } = useDisputeMock(resolvedDisputeId);
 
   const timelineEntries = useMemo(() => {
     if (!dispute?.events) return [];
@@ -107,14 +108,14 @@ export default function DisputeDetailPage() {
       {/* Header */}
       <div className="mb-8">
         <Link
-          to={`/disputes`}
+          to={`/admin/disputes`}
           className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Disputes
         </Link>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Dispute Detail</h1>
-        <p className="text-gray-600">Dispute #{disputeId?.slice(0, 8) || "Unknown"}</p>
+        <p className="text-gray-600">Dispute #{resolvedDisputeId.slice(0, 8)}</p>
       </div>
 
       <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
