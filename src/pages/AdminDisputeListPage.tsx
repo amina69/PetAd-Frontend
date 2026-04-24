@@ -32,6 +32,22 @@ export default function AdminDisputeListPage() {
     navigate(`/disputes/${id}`);
   };
 
+  const getEmptyDescription = () => {
+    if (statusFilter !== "all" && isOverdueFilter) {
+      return `No disputes found for status "${statusFilter}" with SLA breached.`;
+    }
+
+    if (statusFilter !== "all") {
+      return `No disputes found for status "${statusFilter}".`;
+    }
+
+    if (isOverdueFilter) {
+      return "No SLA-breached disputes found.";
+    }
+
+    return "No disputes are available yet.";
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -74,7 +90,7 @@ export default function AdminDisputeListPage() {
                   checked={isOverdueFilter}
                   onChange={(e) => setIsOverdueFilter(e.target.checked)}
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
               </div>
               <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">SLA Breached Only</span>
             </label>
@@ -103,10 +119,10 @@ export default function AdminDisputeListPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
                     <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pet</th>
                     <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Adopter</th>
                     <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Shelter</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
                     <th scope="col" className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                     <th scope="col" className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">SLA</th>
                   </tr>
@@ -132,7 +148,7 @@ export default function AdminDisputeListPage() {
                       <td colSpan={7} className="px-6 py-12">
                         <EmptyState 
                           title="No disputes found" 
-                          description={`There are no disputes matching the current filter: ${statusFilter !== 'all' ? `Status "${statusFilter}"` : ''} ${isOverdueFilter ? 'and SLA Breached' : ''}.`} 
+                          description={getEmptyDescription()}
                         />
                       </td>
                     </tr>
@@ -154,14 +170,7 @@ export default function AdminDisputeListPage() {
                       }}
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 group-hover:text-emerald-600">
-                        {dispute.id.split('-')[1] || dispute.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(dispute.createdAt).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+                        {dispute.id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{dispute.pet.name}</div>
@@ -171,6 +180,13 @@ export default function AdminDisputeListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {dispute.shelter.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(dispute.createdAt).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <DisputeStatusBadge status={dispute.status} />

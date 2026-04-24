@@ -25,3 +25,8 @@ issues/
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright artifacts
+playwright-report/
+test-results/
+.playwright/

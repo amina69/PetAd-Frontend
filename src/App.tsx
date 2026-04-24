@@ -21,6 +21,8 @@ import ModalPreview from "./pages/ModalPreview";
 import StatusPollingDemo from "./pages/StatusPollingDemo";
 import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
+import AdminDisputeListPage from "./pages/AdminDisputeListPage";
+import DisputeDetailPage from "./pages/DisputeDetailPage";
 
 function App() {
   return (
@@ -60,6 +62,16 @@ function App() {
         <Route
           path="/admin/approvals"
           element={<AdminApprovalQueuePage />}
+        />
+
+        <Route
+          path="/admin/disputes"
+          element={<AdminDisputeListPage />}
+        />
+
+        <Route
+          path="/disputes/:id"
+          element={<DisputeDetailPage />}
         />
 
         {/* Custody Routes */}
