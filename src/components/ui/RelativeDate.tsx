@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface RelativeDateProps {
@@ -12,8 +12,11 @@ interface RelativeDateProps {
 export const RelativeDate = ({ date }: RelativeDateProps) => {
   const [relativeText, setRelativeText] = useState<string>('');
 
-  // Convert string to Date if needed
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  // Memoised so the Date reference is stable across renders
+  const dateObj = useMemo(
+    () => (typeof date === 'string' ? new Date(date) : date),
+    [date],
+  );
 
   // Format absolute date for title attribute (locale-aware)
   const absoluteDate = dateObj.toLocaleString();
@@ -32,7 +35,7 @@ export const RelativeDate = ({ date }: RelativeDateProps) => {
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
-  }, [dateObj, absoluteDate]);
+  }, [dateObj]);
 
   if (!relativeText) {
     return <span title={absoluteDate}>Loading...</span>;
