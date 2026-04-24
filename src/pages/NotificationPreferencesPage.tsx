@@ -127,6 +127,7 @@ export default function NotificationPreferencesPage() {
 
         <div className="mt-8 flex items-center justify-between">
           <button
+            data-testid="reset-preferences"
             onClick={handleReset}
             className="rounded-xl border-2 border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             disabled={updatePreferences.isPending}

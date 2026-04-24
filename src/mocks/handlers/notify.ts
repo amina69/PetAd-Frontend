@@ -162,6 +162,8 @@ export const notifyHandlers = [
   // PATCH /api/notifications/preferences - update notification preferences
   http.patch("**/api/notifications/preferences", async ({ request }) => {
     await delay(getDelay(request));
+    const body = await request.json() as Partial<NotificationPreferences>;
+    Object.assign(mockNotificationPreferences, body);
     return new HttpResponse(null, { status: 204 });
   }),
 ];
