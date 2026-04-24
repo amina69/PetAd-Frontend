@@ -20,10 +20,6 @@ import { toast } from "react-hot-toast";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeFile(name = "evidence.pdf", type = "application/pdf") {
-  return new File(["content"], name, { type });
-}
-
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: vi.fn(),

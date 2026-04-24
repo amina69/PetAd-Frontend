@@ -148,9 +148,7 @@ describe("FileUploadZone", () => {
   it("rejects a file with a spoofed extension but wrong MIME type", () => {
     render(<FileUploadZone onFilesChange={vi.fn()} />);
 
-    // .pdf extension but wrong MIME — should still be caught by MIME check
-    const bad = makeFile("fake.pdf", "application/octet-stream");
-    // ALLOWED_EXT matches .pdf so this passes — test the opposite: wrong ext + wrong MIME
+    // wrong ext + wrong MIME — should be caught by MIME check
     const reallyBad = makeFile("script.sh", "text/x-shellscript");
     dropFiles(getZone(), [reallyBad]);
 
