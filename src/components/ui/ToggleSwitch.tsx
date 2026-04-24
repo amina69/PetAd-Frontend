@@ -6,8 +6,13 @@ interface ToggleSwitchProps {
 }
 
 export function ToggleSwitch({ checked, onChange, label, disabled }: ToggleSwitchProps) {
+  const testId = `toggle-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <div
+      data-testid={testId}
+      aria-checked={checked}
+      role="switch"
+      aria-label={label}
       className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border border-gray-200 cursor-pointer select-none transition-colors ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'bg-gray-50 hover:bg-gray-100'
       }`}
