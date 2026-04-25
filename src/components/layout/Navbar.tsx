@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, ChevronDown } from "lucide-react";
+import { House, Eye, List, Heart, ChevronDown, CheckCircle } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
 import { NotificationCentreDropdown } from "../notifications";
+import { useRoleGuard } from "../../hooks/useRoleGuard";
+import { usePendingApprovalsCount } from "../../hooks/usePendingApprovalsCount";
 
-const navLinks = [
+const baseNavLinks = [
   { label: "Home", path: "/home", icon: House },
   { label: "Interests", path: "/interests", icon: Eye },
   { label: "Listings", path: "/listings", icon: List },
@@ -12,6 +14,18 @@ const navLinks = [
 
 export function Navbar() {
   const location = useLocation();
+  const { role, isAdmin, isShelter } = useRoleGuard();
+  const { count } = usePendingApprovalsCount(role);
+
+  // Show Approvals link only for ADMIN and SHELTER roles
+  const showApprovals = isAdmin || isShelter;
+
+  const navLinks = showApprovals
+    ? [
+        ...baseNavLinks,
+        { label: "Approvals", path: "/admin/approvals", icon: CheckCircle },
+      ]
+    : baseNavLinks;
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
@@ -31,16 +45,27 @@ export function Navbar() {
         {navLinks.map((link) => {
           const Icon = link.icon;
           const isActive = location.pathname === link.path;
+          const isApprovals = link.path === "/admin/approvals";
+          const showBadge = isApprovals && count > 0;
+
           return (
             <Link
               key={link.path}
               to={link.path}
-              className={`flex items-center gap-2 text-[15px] font-medium transition-colors ${
+              className={`relative flex items-center gap-2 text-[15px] font-medium transition-colors ${
                 isActive ? "text-[#001323]" : "text-gray-500 hover:text-[#001323]"
               }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               {link.label}
+              {showBadge && (
+                <span
+                  className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-bold text-white bg-red-500 rounded-full"
+                  aria-label={`${count} pending approval${count !== 1 ? "s" : ""}`}
+                >
+                  {count > 9 ? "9+" : count}
+                </span>
+              )}
             </Link>
           );
         })}
