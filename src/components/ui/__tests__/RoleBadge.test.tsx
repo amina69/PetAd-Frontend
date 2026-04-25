@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { RoleBadge } from '../RoleBadge'
-import { UserRole } from '../../../types/auth'
+import type { UserRole } from '../../../types/auth'
 
 const cases: { role: UserRole; textClass: string; bgClass: string }[] = [
   { role: 'ADMIN', textClass: 'text-purple-700', bgClass: 'bg-purple-100' },
