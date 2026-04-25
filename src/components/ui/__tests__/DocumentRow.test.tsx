@@ -16,6 +16,7 @@ const BASE_DOC: Document = {
   onChainVerified: null,
   anchorTxHash: null,
   expiresAt: null,
+  type: 'ID',
 };
 
 describe('DocumentRow — file info', () => {

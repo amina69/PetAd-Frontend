@@ -18,6 +18,7 @@ const BASE_DOC: Document = {
   onChainVerified: null, // This triggers lazy verification
   anchorTxHash: null,
   expiresAt: null,
+  type: 'ID',
 };
 
 describe('DocumentRow Lazy Verification', () => {

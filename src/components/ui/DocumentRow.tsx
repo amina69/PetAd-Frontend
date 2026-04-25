@@ -5,6 +5,7 @@ import type { Document } from '../../types/documents';
 import type { UserRole } from '../../types/auth';
 import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { DocumentExpiryBadge } from './DocumentExpiryBadge';
+import { DocumentReUploadFlow } from './DocumentReUploadFlow';
 import { documentService } from '../../api/documentService';
 
 interface DocumentRowProps {
@@ -76,6 +77,11 @@ export function DocumentRow({
   const canDelete =
     currentUserRole === 'ADMIN' || document.uploadedById === currentUserId;
 
+  // Check if document is expired or rejected
+  const isExpired = document.expiresAt && new Date(document.expiresAt) < new Date();
+  const isRejected = verificationResult.verified === false;
+  const canReUpload = (isExpired || isRejected) && canDelete;
+
   const uploadedDate = new Date(document.createdAt).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
@@ -113,6 +119,13 @@ export function DocumentRow({
           anchorTxHash={verificationResult.hash}
         />
         <DocumentExpiryBadge expiresAt={document.expiresAt} />
+
+        {canReUpload && (
+          <DocumentReUploadFlow
+            documentId={document.id}
+            documentType={document.type}
+          />
+        )}
 
         <a
           href={document.fileUrl}
