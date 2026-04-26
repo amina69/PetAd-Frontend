@@ -70,6 +70,7 @@ describe("SettlementFailureState", () => {
       role: "user",
       isAdmin: false,
       isUser: true,
+      hasAccess: vi.fn().mockReturnValue(false),
     });
     // Default: settlement resolves successfully
     mockRetrySettlement.mockResolvedValue(undefined);
@@ -100,6 +101,7 @@ describe("SettlementFailureState", () => {
       role: "user",
       isAdmin: false,
       isUser: true,
+      hasAccess: vi.fn().mockReturnValue(false),
     });
     renderComponent();
     expect(screen.queryByTestId("retry-settlement-btn")).toBeNull();
@@ -110,6 +112,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
     renderComponent();
     expect(screen.getByTestId("retry-settlement-btn")).toBeTruthy();
@@ -122,6 +125,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
 
     renderComponent();
@@ -144,6 +148,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
 
     renderComponent();
@@ -164,6 +169,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
 
     renderComponent();
@@ -183,6 +189,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
 
     let resolveFn!: () => void;
@@ -216,6 +223,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
     mockRetrySettlement.mockResolvedValue(undefined);
 
@@ -240,6 +248,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
     mockRetrySettlement.mockRejectedValue(
       new Error("Network error, please try again."),
@@ -266,6 +275,7 @@ describe("SettlementFailureState", () => {
       role: "admin",
       isAdmin: true,
       isUser: false,
+      hasAccess: vi.fn().mockReturnValue(true),
     });
     mockRetrySettlement.mockResolvedValue(undefined);
     const onRetry = vi.fn();
