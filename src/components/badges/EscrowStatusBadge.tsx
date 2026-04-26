@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DisputeDetail } from '../../pages/disputes/types';
 
 interface Props {

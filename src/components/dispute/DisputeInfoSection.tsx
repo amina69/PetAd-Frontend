@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { DisputeDetail } from '../../pages/disputes/types';
 import { DisputeStatusBadge } from '../badges/DisputeStatusBadge';
 import { DisputeSLABadge } from '../badges/DisputeSLABadge';

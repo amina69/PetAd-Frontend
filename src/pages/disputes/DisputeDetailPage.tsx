@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useDisputeDetail } from '../../hooks/useDisputeDetail';
 import { DisputeInfoSection } from '../../components/dispute/DisputeInfoSection';

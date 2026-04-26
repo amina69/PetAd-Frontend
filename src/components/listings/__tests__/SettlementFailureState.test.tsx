@@ -69,7 +69,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "user",
       isAdmin: false,
-      isUser: true,
+      isUser: true, hasAccess: () => true,
     });
     // Default: settlement resolves successfully
     mockRetrySettlement.mockResolvedValue(undefined);
@@ -99,7 +99,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "user",
       isAdmin: false,
-      isUser: true,
+      isUser: true, hasAccess: () => true,
     });
     renderComponent();
     expect(screen.queryByTestId("retry-settlement-btn")).toBeNull();
@@ -109,7 +109,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
     renderComponent();
     expect(screen.getByTestId("retry-settlement-btn")).toBeTruthy();
@@ -121,7 +121,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
 
     renderComponent();
@@ -143,7 +143,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
 
     renderComponent();
@@ -163,7 +163,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
 
     renderComponent();
@@ -182,7 +182,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
 
     let resolveFn!: () => void;
@@ -215,7 +215,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
     mockRetrySettlement.mockResolvedValue(undefined);
 
@@ -239,7 +239,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
     mockRetrySettlement.mockRejectedValue(
       new Error("Network error, please try again."),
@@ -265,7 +265,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
-      isUser: false,
+      isUser: false, hasAccess: () => true,
     });
     mockRetrySettlement.mockResolvedValue(undefined);
     const onRetry = vi.fn();

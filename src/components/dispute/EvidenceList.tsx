@@ -1,4 +1,3 @@
-import React from 'react';
 import type { EvidenceFile } from '../../pages/disputes/types';
 import { EvidenceItem } from './EvidenceItem';
 
