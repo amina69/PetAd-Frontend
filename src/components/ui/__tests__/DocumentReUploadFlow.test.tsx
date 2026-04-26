@@ -91,11 +91,7 @@ describe('DocumentReUploadFlow', () => {
     const queryClient = createTestQueryClient();
     queryClient.invalidateQueries = mockInvalidateQueries;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DocumentReUploadFlow {...defaultProps} />
-      </QueryClientProvider>,
-    );
+    renderWithQueryClient(<DocumentReUploadFlow {...defaultProps} />);
 
     // Open modal
     const reUploadButton = screen.getByRole('button', { name: /re-upload/i });

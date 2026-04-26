@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { DocumentRow } from '../DocumentRow';
 import type { Document } from '../../../types/documents';
@@ -19,9 +20,24 @@ const BASE_DOC: Document = {
   type: 'ID',
 };
 
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+const renderWithQueryClient = (component: React.ReactElement) => {
+  const queryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
+  );
+};
+
 describe('DocumentRow — file info', () => {
   it('renders the filename', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -33,7 +49,7 @@ describe('DocumentRow — file info', () => {
   });
 
   it('renders the file size', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -45,7 +61,7 @@ describe('DocumentRow — file info', () => {
   });
 
   it('renders the uploaded date', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -57,7 +73,7 @@ describe('DocumentRow — file info', () => {
   });
 
   it('renders a PDF icon for pdf mimeType', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -69,7 +85,7 @@ describe('DocumentRow — file info', () => {
   });
 
   it('renders an image icon for image mimeType', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={{ ...BASE_DOC, mimeType: 'image/jpeg' }}
         currentUserId="user-owner"
@@ -83,7 +99,7 @@ describe('DocumentRow — file info', () => {
 
 describe('DocumentRow — integrity badge', () => {
   it('renders unverified integrity badge when onChainVerified is null', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -95,7 +111,7 @@ describe('DocumentRow — integrity badge', () => {
   });
 
   it('renders verified integrity badge when onChainVerified is true', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={{
           ...BASE_DOC,
@@ -111,7 +127,7 @@ describe('DocumentRow — integrity badge', () => {
   });
 
   it('renders integrity failed badge when onChainVerified is false', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={{ ...BASE_DOC, onChainVerified: false }}
         currentUserId="user-owner"
@@ -125,7 +141,7 @@ describe('DocumentRow — integrity badge', () => {
 
 describe('DocumentRow — expiry badge', () => {
   it('renders no expiry badge when expiresAt is null', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -137,7 +153,7 @@ describe('DocumentRow — expiry badge', () => {
   });
 
   it('renders expired badge when expiresAt is in the past', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={{ ...BASE_DOC, expiresAt: '2020-01-01T00:00:00.000Z' }}
         currentUserId="user-owner"
@@ -193,7 +209,7 @@ describe('DocumentRow — download link', () => {
 
 describe('DocumentRow — delete button visibility', () => {
   it('shows delete button for document owner', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -205,7 +221,7 @@ describe('DocumentRow — delete button visibility', () => {
   });
 
   it('shows delete button for ADMIN regardless of ownership', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-other"
@@ -217,7 +233,7 @@ describe('DocumentRow — delete button visibility', () => {
   });
 
   it('does not show delete button for non-owner non-admin', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-other"
@@ -229,7 +245,7 @@ describe('DocumentRow — delete button visibility', () => {
   });
 
   it('does not show delete button for SHELTER who is not the owner', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-shelter"
@@ -243,7 +259,7 @@ describe('DocumentRow — delete button visibility', () => {
 
 describe('DocumentRow — delete confirmation', () => {
   it('shows confirmation UI after clicking delete', () => {
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -259,7 +275,7 @@ describe('DocumentRow — delete confirmation', () => {
 
   it('calls onDelete with the document id on confirm', () => {
     const onDelete = vi.fn();
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
@@ -275,7 +291,7 @@ describe('DocumentRow — delete confirmation', () => {
 
   it('dismisses confirmation and does not call onDelete on cancel', () => {
     const onDelete = vi.fn();
-    render(
+    renderWithQueryClient(
       <DocumentRow
         document={BASE_DOC}
         currentUserId="user-owner"
