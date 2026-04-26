@@ -10,6 +10,8 @@ interface DocumentUploadModalProps {
     // Mocking quota props, default to 32MB of 50MB
     usedQuotaMB?: number;
     totalQuotaMB?: number;
+    initialDocType?: string;
+    onUpload?: (file: File, type: string) => Promise<void>;
 }
 
 export function DocumentUploadModal({
@@ -17,11 +19,13 @@ export function DocumentUploadModal({
     onClose,
     usedQuotaMB = 32,
     totalQuotaMB = 50,
+    initialDocType,
+    onUpload,
 }: DocumentUploadModalProps) {
     const queryClient = useQueryClient();
 
     const [file, setFile] = useState<File | null>(null);
-    const [docType, setDocType] = useState<string>("ID");
+    const [docType, setDocType] = useState<string>(initialDocType || "ID");
     const [isUploading, setIsUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -65,16 +69,20 @@ export function DocumentUploadModal({
         setProgress(0);
 
         try {
-            await documentService.uploadDocument({
-                file,
-                type: docType,
-                onProgress: (pct) => {
-                    setProgress(Math.round(pct));
-                },
-            });
+            if (onUpload) {
+                await onUpload(file, docType);
+            } else {
+                await documentService.uploadDocument({
+                    file,
+                    type: docType,
+                    onProgress: (pct) => {
+                        setProgress(Math.round(pct));
+                    },
+                });
 
-            // On success
-            await queryClient.invalidateQueries({ queryKey: ["documents"] });
+                // On success
+                await queryClient.invalidateQueries({ queryKey: ["documents"] });
+            }
             resetState();
             onClose();
         } catch (error) {
