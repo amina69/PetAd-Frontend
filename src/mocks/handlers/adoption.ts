@@ -76,5 +76,8 @@ export const adoptionHandlers = [
     await delay(100);
     return HttpResponse.json([]);
   }),
-
+  http.post("*/api/adoption/:id/approve", async () => {
+    await delay(800);
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];
