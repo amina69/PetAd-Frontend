@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
 import FavouritePage from "./pages/FavouritePage";
 import HomePage from "./pages/HomePage";
@@ -25,6 +26,8 @@ import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
 
 function App() {
+  useNotificationDeepLink();
+
   return (
     <Routes>
       {/* Auth Routes - No Navbar/Footer */}
