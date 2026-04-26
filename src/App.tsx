@@ -23,6 +23,8 @@ import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
+import ApprovalUIPreview from "./pages/ApprovalUIPreview";
+import DisputeUIPreview from "./pages/DisputeUIPreview";
 
 function App() {
   return (
@@ -87,6 +89,8 @@ function App() {
           element={<AdoptionCompletionDemo />}
         />
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
+        <Route path="/preview-approval" element={<ApprovalUIPreview />} />
+        <Route path="/preview-dispute" element={<DisputeUIPreview />} />
       </Route>
     </Routes>
   );
