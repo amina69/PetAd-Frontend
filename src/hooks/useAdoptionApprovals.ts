@@ -19,7 +19,7 @@ export function useAdoptionApprovals(adoptionId: string) {
         resolve();
       }, 1000);
     });
-  }, []);
+  }, [adoptionId]);
 
   return {
     hasDecided,
