@@ -25,6 +25,7 @@ import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
 import ApprovalUIPreview from "./pages/ApprovalUIPreview";
 import DisputeUIPreview from "./pages/DisputeUIPreview";
+import EscrowBannerPreview from "./pages/EscrowBannerPreview";
 
 function App() {
   return (
@@ -91,6 +92,7 @@ function App() {
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
         <Route path="/preview-approval" element={<ApprovalUIPreview />} />
         <Route path="/preview-dispute" element={<DisputeUIPreview />} />
+        <Route path="/preview-banner" element={<EscrowBannerPreview />} />
       </Route>
     </Routes>
   );

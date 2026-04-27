@@ -118,11 +118,13 @@ export function SettlementSummaryPage({
         </div>
 
         {/* ── Actions / Banners ── */}
-        {escrowStatus === "FUNDED" && propSummary && (
+        {escrowStatus === "FUNDED" && (propSummary || data) && (
           <EscrowFundedBanner
-            escrowId={propSummary.escrow.escrowId}
-            amount={propSummary.escrow.amount}
-            currency={propSummary.escrow.currency}
+            adoptionId={propSummary?.escrow.adoptionId || data?.escrow.adoptionId || ""}
+            petName={propSummary?.escrow.petName || data?.escrow.petName || "Pet"}
+            amount={propSummary?.escrow.amount || data?.escrow.amount || 0}
+            currency={propSummary?.escrow.currency || data?.escrow.currency}
+            txHash={txHash}
           />
         )}
 

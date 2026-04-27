@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, act } from "@testing-library/react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { AdoptionCompleteButton } from "../AdoptionCompleteButton";
 import { EscrowFundedBanner } from "../EscrowFundedBanner";
@@ -87,6 +87,7 @@ const settledEscrow: EscrowStatusData = {
 
 beforeEach(() => {
   sessionStorage.clear();
+  vi.useFakeTimers();
   vi.restoreAllMocks();
 });
 
@@ -136,6 +137,7 @@ describe("EscrowStatusCard", () => {
   });
 
   it("stops polling after the escrow reaches SETTLED", async () => {
+    vi.useRealTimers();
     const fetchStatus = vi
       .fn<() => Promise<EscrowStatusData>>()
       .mockResolvedValueOnce(fundedEscrow)
@@ -328,7 +330,9 @@ describe("EscrowFundedBanner", () => {
       <EscrowFundedBanner
         amount={125}
         currency="USDC"
-        escrowId={fundedEscrow.escrowId}
+        adoptionId={fundedEscrow.adoptionId}
+        petName={fundedEscrow.petName}
+        txHash={fundedEscrow.txHash}
       />,
     );
 
@@ -336,10 +340,15 @@ describe("EscrowFundedBanner", () => {
       screen.getByRole("button", { name: "Dismiss funded banner" }),
     );
 
+    // Skip ahead for animation
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+
     expect(screen.queryByTestId("escrow-funded-banner")).toBeNull();
     expect(
       sessionStorage.getItem(
-        getEscrowFundedBannerStorageKey(fundedEscrow.escrowId),
+        getEscrowFundedBannerStorageKey(fundedEscrow.adoptionId),
       ),
     ).toBe("true");
   });
