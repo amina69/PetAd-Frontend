@@ -1,42 +1,30 @@
-import { useMemo } from "react";
-import { useApiQuery } from "./useApiQuery";
-import { adoptionService } from "../api/adoptionService";
-import type { ApprovalDecision } from "../types/adoption";
+import { useState, useCallback } from 'react';
 
-export interface UseAdoptionApprovalsReturn {
-  required: string[];
-  given: ApprovalDecision[];
-  pending: string[];
-  isLoading: boolean;
-  isError: boolean;
-}
+export function useAdoptionApprovals(adoptionId: string) {
+  const [hasDecided, setHasDecided] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-/**
- * useAdoptionApprovals
- * 
- * Orchestrates the approval state for a multi-party adoption process.
- * Returns the required roles, the decisions already given, and the roles still pending.
- */
-export function useAdoptionApprovals(adoptionId: string): UseAdoptionApprovalsReturn {
-  const { data: given = [], isLoading, isError } = useApiQuery<ApprovalDecision[]>(
-    ["adoption", adoptionId, "approvals"],
-    () => adoptionService.getApprovals(adoptionId),
-    { enabled: !!adoptionId }
-  );
+  // Mocking required roles for this approval
+  const requiredRoles = ['admin', 'manager', 'reviewer'];
 
-  // In a real app, these might come from an adoption template or another endpoint
-  const required = useMemo(() => ["Shelter", "Admin", "Veterinary Inspector"], []);
+  const mutateApprovalDecision = useCallback((payload: { decision: "APPROVED" | "REJECTED"; reason?: string }) => {
+    console.log(`[Mock] mutateApprovalDecision for ${adoptionId}:`, payload);
+    setIsPending(true);
 
-  const pending = useMemo(() => {
-    const givenRoles = given.map(d => d.approverRole);
-    return required.filter(role => !givenRoles.includes(role));
-  }, [required, given]);
+    return new Promise<void>((resolve) => {
+      // Simulate an API call
+      setTimeout(() => {
+        setIsPending(false);
+        setHasDecided(true);
+        resolve();
+      }, 1000);
+    });
+  }, [adoptionId]);
 
   return {
-    required,
-    given,
-    pending,
-    isLoading,
-    isError,
+    hasDecided,
+    requiredRoles,
+    mutateApprovalDecision,
+    isPending
   };
 }
