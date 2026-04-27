@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
 import FavouritePage from "./pages/FavouritePage";
 import HomePage from "./pages/HomePage";
@@ -23,14 +24,14 @@ import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
-import ApprovalUIPreview from "./pages/ApprovalUIPreview";
-import DisputeUIPreview from "./pages/DisputeUIPreview";
-import EscrowBannerPreview from "./pages/EscrowBannerPreview";
+import MyDisputesPage from "./pages/MyDisputesPage";
 
 function App() {
+  useNotificationDeepLink();
+
   return (
     <Routes>
-      {/* Auth Routes - No Navbar/Footer */}
+      {/* Auth Routes - No Navbar/Footer*/}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -70,6 +71,11 @@ function App() {
         <Route
           path="/admin/disputes"
           element={<AdminDisputeListPage />}
+        />
+
+        <Route
+          path="/disputes"
+          element={<MyDisputesPage />}
         />
 
         <Route

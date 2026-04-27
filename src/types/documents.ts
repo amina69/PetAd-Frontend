@@ -12,6 +12,7 @@ export interface Document {
   onChainVerified: boolean | null;
   anchorTxHash: string | null;
   expiresAt: string | null;
+  type: string;
 }
 
 export type { UserRole };

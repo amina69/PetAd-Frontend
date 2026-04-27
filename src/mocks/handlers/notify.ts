@@ -133,6 +133,14 @@ export const notifyHandlers = [
     return HttpResponse.json<NotificationsPage>(response);
   }),
 
+  http.get("/api/notifications/:id", async ({ params, request }) => {
+    await delay(getDelay(request));
+    const { id } = params;
+    const notification = mockNotifications.find((n) => String(n.id) === String(id));
+    if (!notification) return new HttpResponse(null, { status: 404 });
+    return HttpResponse.json<Notification>(notification);
+  }),
+
   http.patch("/api/notifications/:id/read", async ({ params, request }) => {
     await delay(getDelay(request));
     const { id } = params;
