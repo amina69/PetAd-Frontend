@@ -12,8 +12,11 @@ interface RelativeDateProps {
 export const RelativeDate = ({ date }: RelativeDateProps) => {
   const [relativeText, setRelativeText] = useState<string>('');
 
-  // Convert string to Date if needed and keep a stable reference for hooks.
-  const dateObj = useMemo(() => (typeof date === 'string' ? new Date(date) : date), [date]);
+  // Memoised so the Date reference is stable across renders
+  const dateObj = useMemo(
+    () => (typeof date === 'string' ? new Date(date) : date),
+    [date],
+  );
 
   // Format absolute date for title attribute (locale-aware)
   const absoluteDate = dateObj.toLocaleString();
