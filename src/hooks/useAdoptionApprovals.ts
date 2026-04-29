@@ -1,30 +1,77 @@
-import { useState, useCallback } from 'react';
+import { useApiQuery } from "./useApiQuery";
+import { apiClient } from "../lib/api-client";
 
-export function useAdoptionApprovals(adoptionId: string) {
-  const [hasDecided, setHasDecided] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+interface AdoptionApprovalsApiResponse {
+  required: number;
+  given: number;
+  quorumMet: boolean;
+  escrowAccountId: string | null;
+}
 
-  // Mocking required roles for this approval
-  const requiredRoles = ['admin', 'manager', 'reviewer'];
+export interface AdoptionApprovalsResult {
+  required: number;
+  given: number;
+  pending: number;
+  quorumMet: boolean;
+  escrowAccountId: string | null;
+  isLoading: boolean;
+  isError: boolean;
+}
 
-  const mutateApprovalDecision = useCallback((payload?: { decision: "APPROVED" | "REJECTED"; reason?: string }) => {
-    console.log(`[Mock] mutateApprovalDecision for ${adoptionId}:`, payload);
-    setIsPending(true);
+const POLL_INTERVAL_MS = 30_000; // 30 seconds
 
-    return new Promise<void>((resolve) => {
-      // Simulate an API call
-      setTimeout(() => {
-        setIsPending(false);
-        setHasDecided(true);
-        resolve();
-      }, 1000);
-    });
-  }, [adoptionId]);
+/**
+ * useAdoptionApprovals
+ *
+ * Fetches and polls adoption approval state. Polls every 30 seconds while
+ * quorum is not met, and stops polling permanently once quorum is reached.
+ *
+ * @param adoptionId - The adoption ID to fetch approvals for
+ * @returns Approval state including required, given, pending counts and quorum status
+ */
+export function useAdoptionApprovals(adoptionId: string): AdoptionApprovalsResult {
+  const result = useApiQuery<AdoptionApprovalsApiResponse>(
+    ["adoptionApprovals", adoptionId],
+    () => apiClient.get(`/adoption/${adoptionId}/approvals`),
+    {
+      enabled: Boolean(adoptionId),
+      refetchInterval: (query) => {
+        const data = query.state.data;
+        // Stop polling once quorum is met
+        if (data?.quorumMet) {
+          return false;
+        }
+        return POLL_INTERVAL_MS;
+      },
+      select: (data) => ({
+        required: data.required,
+        given: data.given,
+        pending: data.required - data.given,
+        quorumMet: data.quorumMet,
+        escrowAccountId: data.escrowAccountId,
+        isLoading: false,
+        isError: false,
+      }),
+    }
+  );
 
+  // Transform the result to match the expected return type
+  if (result.data) {
+    return {
+      ...result.data,
+      isLoading: result.isLoading,
+      isError: result.isError,
+    };
+  }
+
+  // Return default values when no data is available yet
   return {
-    hasDecided,
-    requiredRoles,
-    mutateApprovalDecision,
-    isPending
+    required: 0,
+    given: 0,
+    pending: 0,
+    quorumMet: false,
+    escrowAccountId: null,
+    isLoading: result.isLoading,
+    isError: result.isError,
   };
 }
