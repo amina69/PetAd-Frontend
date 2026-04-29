@@ -72,4 +72,11 @@ export const adoptionService = {
 
     return apiClient.get(endpoint);
   },
+
+  async approveAdoption(
+    id: string,
+    data: { decision: string; reason: string }
+  ): Promise<void> {
+    return apiClient.post(`/adoption/${id}/approve`, data);
+  },
 };

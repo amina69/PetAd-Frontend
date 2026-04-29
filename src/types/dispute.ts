@@ -24,6 +24,19 @@ export interface TimelineEvent {
   timestamp: string;
 }
 
+export interface DisputeResolution {
+  type: "REFUND" | "RELEASE" | "SPLIT";
+  adminNote: string;
+  resolvedBy: string;
+  resolvedAt: string;
+  resolutionTxHash?: string;
+  splitData?: {
+    recipient: string;
+    amount: string;
+    percentage: number;
+  }[];
+}
+
 export interface Dispute {
   id: string;
   adoptionId: string;
@@ -40,7 +53,7 @@ export interface Dispute {
   
   evidence: Evidence[];
   timeline: TimelineEvent[];
-  resolution: string | null;
+  resolution: DisputeResolution | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -71,4 +84,5 @@ export interface DisputeDetails {
   createdAt: string;
   updatedAt: string;
   events: DisputeEvent[];
+  resolution?: DisputeResolution;
 }

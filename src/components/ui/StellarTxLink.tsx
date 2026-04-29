@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { truncateTxHash } from "../../lib/stellar";
+import { truncateTxHash, stellarExplorerUrl } from "../../lib/stellar";
 
 interface StellarTxLinkProps {
   id: string;
@@ -11,7 +11,7 @@ interface StellarTxLinkProps {
 export function StellarTxLink({ id, type, label, className = "" }: StellarTxLinkProps) {
   if (!id) return null;
   const displayLabel = label ?? truncateTxHash(id).replace('...', '…');
-  const href = `https://stellar.expert/explorer/public/${type}/${id}`;
+  const href = stellarExplorerUrl(id, type);
 
   return (
     <a
