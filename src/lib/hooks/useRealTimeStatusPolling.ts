@@ -60,6 +60,7 @@ export function useRealTimeStatusPolling(
       previousStatusRef.current = currentStatus;
       
       // Trigger status changed animation
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatusChanged(true);
 
       // Reset the flag after 3 seconds
