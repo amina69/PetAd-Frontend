@@ -109,10 +109,11 @@ describe("SplitOutcomeChart", () => {
       { recipient: "Adopter", amount: "100.00", percentage: 100 },
     ];
     
-    render(<SplitOutcomeChart distribution={zeroDistribution} />);
+    const { container } = render(<SplitOutcomeChart distribution={zeroDistribution} />);
     
     const shelterSegment = screen.getByTestId("chart-segment-shelter");
     expect(shelterSegment).toHaveStyle("flex-basis: 0%");
     expect(shelterSegment).toHaveStyle("min-width: 0");
+    expect(container).toBeInTheDocument();
   });
 });

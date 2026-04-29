@@ -20,7 +20,7 @@ function iso(base: Date, hours: number): string {
   return date.toISOString();
 }
 
-let mockNotifications: Notification[] = [
+const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: "notif-001",
     type: "ESCROW_FUNDED" as NotificationType,
@@ -82,6 +82,8 @@ let mockNotifications: Notification[] = [
     metadata: { resourceId: "pet-001" },
   },
 ];
+
+let mockNotifications = [...MOCK_NOTIFICATIONS];
 
 const mockNotificationPreferences: NotificationPreferences = {
   APPROVAL_REQUESTED: true,
