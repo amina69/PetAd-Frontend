@@ -12,6 +12,12 @@ export interface Document {
   onChainVerified: boolean | null;
   anchorTxHash: string | null;
   expiresAt: string | null;
+  type: string;
+  // Admin review fields
+  adminReviewStatus?: 'APPROVED' | 'REJECTED' | null;
+  rejectionReason?: string | null;
+  reviewedBy?: string | null;
+  reviewedAt?: string | null;
 }
 
 export type { UserRole };
