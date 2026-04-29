@@ -212,7 +212,12 @@ export const disputeHandlers = [
 			...base,
 			id: params.id as string,
 			status: "resolved",
-			resolution: body.resolution,
+			resolution: {
+				type: "REFUND",
+				adminNote: body.resolution,
+				resolvedBy: body.resolvedBy,
+				resolvedAt: new Date().toISOString(),
+			},
 			timeline: [
 				...base.timeline,
 				{

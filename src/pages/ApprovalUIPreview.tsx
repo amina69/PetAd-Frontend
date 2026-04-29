@@ -8,18 +8,14 @@ import toast, { Toaster } from "react-hot-toast";
 export default function ApprovalUIPreview() {
   const adoptionId = "adoption-1"; // Matches mock in adoptionHandlers
   const { required, given, pending, isLoading, isError } = useAdoptionApprovals(adoptionId);
-  const { mutate: submitDecision, isPending } = useMutateApprovalDecision(adoptionId);
+  const { mutateAsync: submitDecision, isPending } = useMutateApprovalDecision(adoptionId);
 
   const [reason, setReason] = useState("Information looks correct.");
 
   const handleDecision = (role: string, decision: 'APPROVED' | 'REJECTED') => {
-    submitDecision(
-      { role, decision, reason },
-      {
-        onSuccess: () => toast.success(`Decision submitted for ${role}`),
-        onError: () => toast.error(`Failed to submit decision for ${role}`),
-      }
-    );
+    submitDecision({ role, decision, reason })
+      .then(() => toast.success(`Decision submitted for ${role}`))
+      .catch(() => toast.error(`Failed to submit decision for ${role}`));
   };
 
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-blue-500" /></div>;
