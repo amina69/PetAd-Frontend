@@ -60,6 +60,6 @@ export function formatAmount(amount: number, currency = "USDC") {
   return `${currency} ${amount.toFixed(2)}`;
 }
 
-export function getEscrowFundedBannerStorageKey(escrowId: string) {
-  return `escrow-funded-banner-dismissed:${escrowId}`;
+export function getEscrowFundedBannerStorageKey(adoptionId: string) {
+  return `escrow-funded-banner-dismissed:${adoptionId}`;
 }

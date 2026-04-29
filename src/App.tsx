@@ -104,6 +104,9 @@ function App() {
           element={<AdoptionCompletionDemo />}
         />
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
+        <Route path="/preview-approval" element={<ApprovalUIPreview />} />
+        <Route path="/preview-dispute" element={<DisputeUIPreview />} />
+        <Route path="/preview-banner" element={<EscrowBannerPreview />} />
       </Route>
     </Routes>
   );

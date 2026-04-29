@@ -66,7 +66,13 @@ const MOCK_DISPUTES: Dispute[] = [
 		shelter: { id: "user-shelter-3", name: "Safe Haven" },
 		evidence: [],
 		timeline: [],
-		resolution: "Refunded to buyer",
+		resolution: {
+			type: "REFUND",
+			adminNote: "Dispute resolved with a full refund to the adopter due to undisclosed medical condition.",
+			resolvedBy: "Admin Sarah",
+			resolvedAt: "2026-03-20T10:00:00.000Z",
+			resolutionTxHash: "GBC45678...XYZ",
+		},
 		createdAt: "2026-03-15T09:00:00.000Z",
 		updatedAt: "2026-03-20T10:00:00.000Z",
 	},
@@ -206,7 +212,12 @@ export const disputeHandlers = [
 			...base,
 			id: params.id as string,
 			status: "resolved",
-			resolution: body.resolution,
+			resolution: {
+				type: "REFUND",
+				adminNote: body.resolution,
+				resolvedBy: body.resolvedBy,
+				resolvedAt: new Date().toISOString(),
+			},
 			timeline: [
 				...base.timeline,
 				{
