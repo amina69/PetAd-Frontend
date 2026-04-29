@@ -13,9 +13,15 @@ export function useRoleGuard() {
       ? localStorage.getItem("petad_user_role")
       : null;
 
+  const hasAccess = (roles: string[]) => {
+    if (!role) return false;
+    return roles.includes(role);
+  };
+
   return {
-    role,
+    role: role || "",
     isAdmin: role === "admin",
     isUser: role === "user",
+    hasAccess,
   };
 }
