@@ -51,7 +51,7 @@ export default function AdminDisputeListPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        
+
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -62,7 +62,7 @@ export default function AdminDisputeListPage() {
 
         {/* Filter Bar */}
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
-          
+
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <label htmlFor="status-filter" className="text-sm font-medium text-gray-700">Status:</label>
@@ -84,9 +84,9 @@ export default function AdminDisputeListPage() {
           <div className="flex items-center">
             <label className="flex items-center gap-2 cursor-pointer group">
               <div className="relative flex items-center">
-                <input 
-                  type="checkbox" 
-                  className="sr-only peer" 
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
                   checked={isOverdueFilter}
                   onChange={(e) => setIsOverdueFilter(e.target.checked)}
                 />
@@ -95,15 +95,15 @@ export default function AdminDisputeListPage() {
               <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">SLA Breached Only</span>
             </label>
           </div>
-          
+
         </div>
 
         {/* Error Handling */}
         {isError && (
           <div className="rounded-xl border border-red-200 bg-red-50 p-4 flex items-center justify-between">
             <p className="text-sm font-medium text-red-800">Failed to load disputes. Please try again.</p>
-            <button 
-              onClick={() => refetch()} 
+            <button
+              onClick={() => refetch()}
               className="text-sm bg-white text-red-700 border border-red-200 px-3 py-1.5 rounded-md hover:bg-red-50 font-medium"
             >
               Retry
@@ -128,7 +128,7 @@ export default function AdminDisputeListPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
-                  
+
                   {/* Loading State Skeleton */}
                   {isLoading && Array.from({ length: 3 }).map((_, i) => (
                     <tr key={`skeleton-${i}`}>
@@ -146,8 +146,8 @@ export default function AdminDisputeListPage() {
                   {!isLoading && disputes.length === 0 && (
                     <tr>
                       <td colSpan={7} className="px-6 py-12">
-                        <EmptyState 
-                          title="No disputes found" 
+                        <EmptyState
+                          title="No disputes found"
                           description={getEmptyDescription()}
                         />
                       </td>
@@ -156,8 +156,8 @@ export default function AdminDisputeListPage() {
 
                   {/* Data rendering */}
                   {!isLoading && disputes.map((dispute) => (
-                    <tr 
-                      key={dispute.id} 
+                    <tr
+                      key={dispute.id}
                       onClick={() => handleRowClick(dispute.id)}
                       className="hover:bg-gray-50 cursor-pointer transition-colors group"
                       tabIndex={0}
