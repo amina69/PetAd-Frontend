@@ -69,6 +69,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "user",
       isAdmin: false,
+      isShelter: false,
       isUser: true,
     });
     // Default: settlement resolves successfully
@@ -99,6 +100,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "user",
       isAdmin: false,
+      isShelter: false,
       isUser: true,
     });
     renderComponent();
@@ -109,6 +111,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
     renderComponent();
@@ -121,6 +124,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
 
@@ -143,6 +147,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
 
@@ -163,6 +168,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
 
@@ -182,6 +188,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
 
@@ -215,6 +222,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
     mockRetrySettlement.mockResolvedValue(undefined);
@@ -239,6 +247,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
     mockRetrySettlement.mockRejectedValue(
@@ -265,6 +274,7 @@ describe("SettlementFailureState", () => {
     mockUseRoleGuard.mockReturnValue({
       role: "admin",
       isAdmin: true,
+      isShelter: false,
       isUser: false,
     });
     mockRetrySettlement.mockResolvedValue(undefined);
