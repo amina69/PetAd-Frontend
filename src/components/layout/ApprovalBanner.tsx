@@ -7,11 +7,11 @@ import {
 import { Link } from "react-router-dom";
 
 export default function ApprovalBanner() {
-  const { count, isLoading } = usePendingApprovalsCount();
+  const role = localStorage.getItem("petad_user_role");
+  const { count, isLoading } = usePendingApprovalsCount(role);
   const [visible, setVisible] = useState(false);
 
-  const role = localStorage.getItem("role");
-  const allowed = role === "ADMIN" || role === "SHELTER";
+  const allowed = role === "admin" || role === "shelter";
 
   useEffect(() => {
     if (!allowed || isLoading) return;

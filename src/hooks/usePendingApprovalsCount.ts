@@ -1,16 +1,31 @@
-import { useEffect, useState } from "react";
+import { useApiQuery } from "./useApiQuery";
+import { shelterService } from "../api/shelterService";
 
-export const usePendingApprovalsCount = () => {
-  const [count, setCount] = useState(0);
-  const [isLoading, setLoading] = useState(true);
+/**
+ * Hook to fetch and poll pending approvals count for SHELTER and ADMIN roles.
+ * 
+ * Features:
+ * - Polls every 5 minutes (300,000ms)
+ * - Only fetches if user has SHELTER or ADMIN role
+ * - Returns count, loading state, and error state
+ */
+export const usePendingApprovalsCount = (userRole: string | null) => {
+  const isAuthorized = userRole === "admin" || userRole === "shelter";
 
-  useEffect(() => {
-    fetch("/shelter/approvals?status=PENDING&limit=0")
-      .then((res) => res.json())
-      .then((data) => setCount(data?.count || 0))
-      .catch(() => setCount(0))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, isLoading, isError } = useApiQuery(
+    ["shelter", "approvals", "pending-count"],
+    () => shelterService.getPendingApprovalsCount(),
+    {
+      enabled: isAuthorized,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchInterval: 5 * 60 * 1000, // Poll every 5 minutes
+      refetchOnWindowFocus: true, // Refresh when user returns to tab
+    }
+  );
 
-  return { count, isLoading };
+  return {
+    count: data?.count ?? 0,
+    isLoading,
+    isError,
+  };
 };
