@@ -3,10 +3,24 @@ import dog1Image from '../assets/dog_1.png';
 import goldenretrival from "../assets/golden_retriever.png";
 import ListingCard from '../components/listings/ListingCard';
 import ListingHeader from '../components/listings/ListingHeader';
+import { usePetAvailability } from '../hooks/usePetAvailability';
 
-const mockListings = [
+interface Listing {
+  id: number;
+  petId: string;
+  name: string;
+  species: string;
+  breed: string;
+  age: string;
+  status: string;
+  interests: number;
+  imageUrl: string;
+}
+
+const mockListings: Listing[] = [
   {
     id: 1,
+    petId: 'pet-1',
     name: "Pet For Adoption",
     species: "Dog",
     breed: "German Shepard",
@@ -17,6 +31,7 @@ const mockListings = [
   },
   {
     id: 2,
+    petId: 'pet-2',
     name: "Pet For Adoption",
     species: "Dog",
     breed: "German Shepard",
@@ -27,6 +42,7 @@ const mockListings = [
   },
   {
     id: 3,
+    petId: 'pet-3',
     name: "Pet For Adoption",
     species: "Dog",
     breed: "German Shepard",
@@ -36,6 +52,19 @@ const mockListings = [
     imageUrl: goldenretrival
   }
 ];
+
+function ListingCardWithAvailability({ listing }: { listing: Listing }) {
+  const { data: availability, isLoading } = usePetAvailability(listing.petId);
+
+  return (
+    <ListingCard
+      listing={{
+        ...listing,
+        status: isLoading ? listing.status : availability ?? listing.status,
+      }}
+    />
+  );
+}
 
 export default function ListingsPage() {
     return (
@@ -47,7 +76,7 @@ export default function ListingsPage() {
 
                 <div className="space-y-4">
                     {mockListings.map((listing) => (
-                        <ListingCard key={listing.id} listing={listing} />
+                        <ListingCardWithAvailability key={listing.id} listing={listing} />
                     ))}
                 </div>
             </div>

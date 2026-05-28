@@ -1,4 +1,8 @@
 export type AdoptionStatus =
+  | "REQUESTED"
+  | "PENDING"
+  | "PENDING_REVIEW"
+  | "APPROVED"
   | "ESCROW_CREATED"
   | "ESCROW_FUNDED"
   | "SETTLEMENT_TRIGGERED"
@@ -7,6 +11,7 @@ export type AdoptionStatus =
   | "CUSTODY_ACTIVE"
   | "EXPIRING_SOON"
   | "COMPLETED"
+  | "REJECTED"
   | "CANCELLED";
 
 export type CustodyStatus =

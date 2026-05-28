@@ -1,4 +1,5 @@
 import { useRealTimeStatusPolling } from "../lib/hooks/useRealTimeStatusPolling";
+import { usePetAvailability } from "../hooks/usePetAvailability";
 
 export default function StatusPollingDemo() {
   // Test adoption polling
@@ -8,6 +9,12 @@ export default function StatusPollingDemo() {
   // Test custody polling
   const { data: custodyData, statusChanged: custodyStatusChanged, isLoading: custodyLoading } =
     useRealTimeStatusPolling("custody", "custody-1", { intervalMs: 7000 });
+
+  const {
+    data: petAvailability,
+    isLoading: petAvailabilityLoading,
+    isError: petAvailabilityError,
+  } = usePetAvailability("pet-1");
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -128,15 +135,34 @@ export default function StatusPollingDemo() {
           </div>
         </div>
 
-        <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-          <h3 className="font-semibold text-gray-800 mb-2">How this works:</h3>
-          <ul className="text-sm text-gray-600 space-y-1">
-            <li>• Adoption status polls every 5 seconds</li>
-            <li>• Custody status polls every 7 seconds</li>
-            <li>• Border pulses and shows notification when status changes</li>
-            <li>• Polling stops automatically when status is COMPLETED or CANCELLED</li>
-            <li>• Uses mock data via MSW (Mock Service Worker)</li>
-          </ul>
+        <div className="grid grid-cols-1 gap-6 mt-8">
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Computed Pet Availability</h2>
+            {petAvailabilityLoading ? (
+              <div className="text-gray-500">Computing availability...</div>
+            ) : petAvailabilityError ? (
+              <div className="text-red-500">Failed to compute availability</div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-gray-600">Pet ID:</span>
+                <span className="text-base font-semibold text-gray-900">pet-1</span>
+                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-sm font-semibold">
+                  {petAvailability ?? "UNKNOWN"}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 bg-gray-100 rounded-lg">
+            <h3 className="font-semibold text-gray-800 mb-2">How this works:</h3>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Adoption status polls every 5 seconds</li>
+              <li>• Custody status polls every 7 seconds</li>
+              <li>• Computed pet availability derives state from adoption and custody records</li>
+              <li>• Adoption-completed overrides custody, custody overrides pending, pending overrides available</li>
+              <li>• Uses mock data via MSW (Mock Service Worker)</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

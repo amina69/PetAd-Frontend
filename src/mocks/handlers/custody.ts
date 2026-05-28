@@ -13,6 +13,16 @@ const MOCK_CUSTODY_DETAILS: CustodyDetails = {
 };
 
 export const custodyHandlers = [
+  http.get("*/api/custody/active", async ({ request }) => {
+    await delay(100);
+    const petId = new URL(request.url).searchParams.get("petId");
+
+    if (petId === "pet-1") {
+      return HttpResponse.json(MOCK_CUSTODY_DETAILS);
+    }
+
+    return HttpResponse.json(null);
+  }),
   http.get("*/api/custody/:id", async ({ params }) => {
     await delay(100);
     const { id } = params;

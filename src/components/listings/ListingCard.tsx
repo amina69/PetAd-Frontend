@@ -3,6 +3,7 @@ import { ClockIcon, CheckCircleIcon, EditIcon, TrashIcon } from '../icons/Status
 
 interface Listing {
   id: number;
+  petId: string;
   name: string;
   species: string;
   breed: string;
@@ -17,6 +18,11 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
+  const showPositiveBadge =
+    listing.status === "Consent Granted" ||
+    listing.status === "ADOPTED" ||
+    listing.status === "AVAILABLE";
+
   return (
     <div className="bg-white border text-gray-900 border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6 relative overflow-hidden">
       
@@ -43,7 +49,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         {/* Status */}
         <div className="md:col-span-3 flex items-center">
           <div className="flex items-center">
-            {listing.status === "Consent Granted" ? <CheckCircleIcon /> : <ClockIcon />}
+            {showPositiveBadge ? <CheckCircleIcon /> : <ClockIcon />}
             <span className="font-semibold text-[15px]">{listing.status}</span>
           </div>
         </div>

@@ -54,6 +54,16 @@ export const adoptionHandlers = [
     await delay(100);
     return HttpResponse.json(MOCK_TIMELINE);
   }),
+  http.get("*/api/adoption/latest", async ({ request }) => {
+    await delay(100);
+    const petId = new URL(request.url).searchParams.get("petId");
+
+    if (petId === "pet-1") {
+      return HttpResponse.json(MOCK_ADOPTION_DETAILS);
+    }
+
+    return HttpResponse.json(null);
+  }),
   http.get("*/api/adoption/:id", async ({ params }) => {
     await delay(100);
     const { id } = params;
