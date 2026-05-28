@@ -170,6 +170,15 @@ export const notifyHandlers = [
   // PATCH /api/notifications/preferences - update notification preferences
   http.patch("**/api/notifications/preferences", async ({ request }) => {
     await delay(getDelay(request));
+
+    try {
+      const body = await request.json();
+      // Merge incoming preferences into the mock preferences to simulate persistence
+      mockNotificationPreferences = { ...mockNotificationPreferences, ...(body ?? {}) };
+    } catch (err) {
+      // If parsing fails, continue and return 204 to keep tests resilient
+    }
+
     return new HttpResponse(null, { status: 204 });
   }),
 ];
