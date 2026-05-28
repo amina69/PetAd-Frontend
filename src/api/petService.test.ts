@@ -1,14 +1,18 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { petAvailabilityService, computeAvailability } from "./petService";
 import type { AdoptionDetails, CustodyDetails } from "../types/adoption";
 
-const getMock = vi.fn();
+const { getMock } = vi.hoisted(() => ({
+  getMock: vi.fn(),
+}));
 
 vi.mock("../lib/api-client", () => ({
   apiClient: {
     get: getMock,
   },
 }));
+
+// Import after mock setup so the module picks up the mocked apiClient
+import { petAvailabilityService, computeAvailability } from "./petService";
 
 describe("PetAvailabilityService", () => {
   beforeEach(() => {

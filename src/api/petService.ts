@@ -2,12 +2,12 @@ import { apiClient } from "../lib/api-client";
 import type { AdoptionDetails, CustodyDetails } from "../types/adoption";
 import type { PetAvailability, PetAvailabilityEvent } from "../types/pet";
 
-const PENDING_ADOPTION_STATUSES = new Set<string>([
+const PENDING_ADOPTION_STATUSES = new Set([
   "REQUESTED",
   "PENDING_REVIEW",
   "APPROVED",
   "ESCROW_FUNDED",
-]);
+] as const);
 
 function computeAvailability(
   adoption: AdoptionDetails | null,
@@ -21,7 +21,7 @@ function computeAvailability(
     return "IN_CUSTODY";
   }
 
-  if (adoption?.status && PENDING_ADOPTION_STATUSES.has(adoption.status)) {
+  if (adoption?.status && PENDING_ADOPTION_STATUSES.has(adoption.status as typeof PENDING_ADOPTION_STATUSES extends Set<infer T> ? T : never)) {
     return "PENDING";
   }
 
