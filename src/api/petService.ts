@@ -2,12 +2,12 @@ import { apiClient } from "../lib/api-client";
 import type { AdoptionDetails, CustodyDetails } from "../types/adoption";
 import type { PetAvailability, PetAvailabilityEvent } from "../types/pet";
 
-const PENDING_ADOPTION_STATUSES = new Set([
+const PENDING_ADOPTION_STATUSES = new Set<string>([
   "REQUESTED",
   "PENDING_REVIEW",
   "APPROVED",
   "ESCROW_FUNDED",
-] as const);
+]);
 
 function computeAvailability(
   adoption: AdoptionDetails | null,
