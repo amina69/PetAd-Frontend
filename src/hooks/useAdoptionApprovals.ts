@@ -9,7 +9,7 @@ export function useAdoptionApprovals(adoptionId: string) {
   const requiredRoles = ['admin', 'manager', 'reviewer'];
   
   // Polling logic
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
   const startPolling = useCallback(() => {
     if (timerRef.current) return;
@@ -69,3 +69,7 @@ export function useAdoptionApprovals(adoptionId: string) {
     setQuorumMet // exposed for testing / mock data setting
   };
 }
+
+  // Issues Implemented
+
+  

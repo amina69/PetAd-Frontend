@@ -13,8 +13,8 @@ describe('useAdoptionApprovals', () => {
   });
 
   it('starts polling on mount and stops when quorum is met', () => {
-    const setIntervalSpy = vi.spyOn(global, 'setInterval');
-    const clearIntervalSpy = vi.spyOn(global, 'clearInterval');
+    const setIntervalSpy = vi.spyOn(globalThis, 'setInterval');
+    const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
 
     const { result, unmount } = renderHook(() => useAdoptionApprovals('123'));
 
@@ -48,3 +48,8 @@ describe('useAdoptionApprovals', () => {
     expect(clearIntervalSpy).toHaveBeenCalledTimes(2); // One for quorumMet, one for unmount
   });
 });
+
+
+
+  // Issues Implemented
+  

@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DisputeStatus } from '../types/dispute.types';
 import { DISPUTE_STATUS_CONFIG } from '../constants/disputeStatusConfig';
 
@@ -42,3 +41,6 @@ export function DisputeStatusBadge({ status, className = '' }: DisputeStatusBadg
     </span>
   );
 }
+
+
+  // Issues Implemented

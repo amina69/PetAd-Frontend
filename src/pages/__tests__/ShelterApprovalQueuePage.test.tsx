@@ -101,3 +101,8 @@ describe("ShelterApprovalQueuePage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/adoption/123#approvals");
   });
 });
+
+
+  // Issues Implemented
+
+  
