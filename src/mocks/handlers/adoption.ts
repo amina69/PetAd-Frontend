@@ -72,9 +72,4 @@ export const adoptionHandlers = [
     }
     return new HttpResponse(null, { status: 204 });
   }),
-  http.get("*/api/adoption/:id/approvals", async () => {
-    await delay(100);
-    return HttpResponse.json([]);
-  }),
-
 ];

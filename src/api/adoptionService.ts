@@ -2,8 +2,8 @@ import { apiClient } from "../lib/api-client";
 import type {
   AdoptionTimelineEntry,
   AdoptionDetails,
-  ApprovalDecision,
   AdminApprovalQueueItem,
+  AdoptionApprovalsResponse,
 } from "../types/adoption";
 
 export interface AdoptionRating {
@@ -52,7 +52,7 @@ export const adoptionService = {
     return apiClient.patch(`/adoption/${adoptionId}/status`, data);
   },
 
-  async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
+  async getApprovals(adoptionId: string): Promise<AdoptionApprovalsResponse> {
     return apiClient.get(`/adoption/${adoptionId}/approvals`);
   },
 

@@ -4,17 +4,18 @@ import { useApiQuery } from "../../hooks/useApiQuery";
 import { StellarTxLink } from "../ui/StellarTxLink";
 import { Skeleton } from "../ui/Skeleton";
 import { EmptyState } from "../ui/emptyState";
-import type { ApprovalDecision } from "../../types/adoption";
+import type { ApprovalDecision, AdoptionApprovalsResponse } from "../../types/adoption";
 
 interface ApprovalHistoryTabProps {
   adoptionId: string;
 }
 
 export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabProps) {
-  const { data: approvals, isLoading, isError } = useApiQuery<ApprovalDecision[]>(
-    ["approvals", adoptionId],
+  const { data, isLoading, isError } = useApiQuery<AdoptionApprovalsResponse>(
+    ["adoption", adoptionId, "approvals"],
     () => adoptionService.getApprovals(adoptionId)
   );
+  const approvals = data?.given;
 
   if (isLoading) {
     return (
