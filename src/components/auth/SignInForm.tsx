@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 interface SignInFormData {
     email: string;
@@ -127,9 +127,9 @@ export function SignInForm() {
                             error={errors.password}
                         />
                         <div className="flex justify-end mt-1">
-                            <a href="/forgot-password" className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
+                            <Link to="/forgot-password" className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
                                 Forget Password?
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -138,12 +138,12 @@ export function SignInForm() {
 
                 <p className="text-center text-sm text-gray-600 mt-2">
                     Don't have an account?{" "}
-                    <a
-                        href="/register"
+                    <Link
+                        to="/register"
                         className="font-semibold text-[#E84D2A] hover:underline"
                     >
                         Create Account
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

@@ -2,7 +2,7 @@
 // Reusable form components and RegisterForm for the PetAd register page
 
 import { useState, type InputHTMLAttributes } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthModal } from "../ui/authModal";
 import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
 
@@ -412,12 +412,12 @@ export function RegisterForm() {
 
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="font-semibold text-[#E84D2A] hover:underline"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
 
