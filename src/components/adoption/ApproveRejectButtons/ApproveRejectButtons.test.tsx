@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest';
 import '@testing-library/jest-dom';
-import { ApproveRejectButtons } from './ApproveRejectButtons';
-import { useRoleGuard } from '../../../hooks/useRoleGuard';
-import { useAdoptionApprovals } from '../../../hooks/useAdoptionApprovals';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import toast from 'react-hot-toast';
+import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { useAdoptionApprovals } from '../../../hooks/useAdoptionApprovals';
+import { useRoleGuard } from '../../../hooks/useRoleGuard';
+import { ApproveRejectButtons } from './ApproveRejectButtons';
 
 // Mock the hooks and toast
 vi.mock('../../../hooks/useRoleGuard');
@@ -34,11 +34,17 @@ describe('ApproveRejectButtons', () => {
     });
 
     mockUseAdoptionApprovals.mockReturnValue({
+      required: 3,
+      given: [],
+      pending: 2,
       hasDecided: false,
       requiredRoles: ['admin'],
       mutateApprovalDecision: mockMutateApprovalDecision,
       isPending: false,
       quorumMet: false,
+      escrowAccountId: 'escrow-123',
+      isLoading: false,
+      isError: false,
       setQuorumMet: vi.fn(),
     });
 
@@ -49,11 +55,17 @@ describe('ApproveRejectButtons', () => {
   describe('Visibility', () => {
     it('does NOT render when user already decided', () => {
       mockUseAdoptionApprovals.mockReturnValue({
+        required: 3,
+        given: [],
+        pending: 2,
         hasDecided: true,
         requiredRoles: ['admin'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: false,
         quorumMet: false,
+        escrowAccountId: 'escrow-123',
+        isLoading: false,
+        isError: false,
         setQuorumMet: vi.fn(),
       });
 
@@ -121,11 +133,17 @@ describe('ApproveRejectButtons', () => {
   describe('State', () => {
     it('Buttons disabled during loading and Spinner visible when isPending === true', () => {
       mockUseAdoptionApprovals.mockReturnValue({
+        required: 3,
+        given: [],
+        pending: 2,
         hasDecided: false,
         requiredRoles: ['admin'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: true,
         quorumMet: false,
+        escrowAccountId: 'escrow-123',
+        isLoading: false,
+        isError: false,
         setQuorumMet: vi.fn(),
       });
 
