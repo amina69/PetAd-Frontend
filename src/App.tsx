@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
+import { GuestRoute } from "./components/auth/GuestRoute";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import FavouritePage from "./pages/FavouritePage";
 import HomePage from "./pages/HomePage";
 import ListingsPage from "./pages/ListingsPage";
@@ -36,13 +38,16 @@ function App() {
     <Routes>
       {/* Auth Routes - No Navbar/Footer*/}
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/reset" element={<ResetPasswordPage />} />
-      <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reset" element={<ResetPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+      </Route>
 
       {/* Main App Routes - With Navbar/Footer */}
-      <Route element={<MainLayout />}>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/favourites" element={<FavouritePage />} />
@@ -109,6 +114,7 @@ function App() {
           element={<AdoptionCompletionDemo />}
         />
         <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
+      </Route>
       </Route>
     </Routes>
   );
