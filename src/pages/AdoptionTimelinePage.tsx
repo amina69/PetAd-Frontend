@@ -26,12 +26,16 @@ export default function AdoptionTimelinePage() {
 
     entries.forEach((entry) => {
       const entryDate = new Date(entry.timestamp);
+      
+      // Coerce undefined fromStatus to null to satisfy strict TimelineEntry type expectations
+      const normalizedEntry = { ...entry, fromStatus: entry.fromStatus ?? null } as unknown as TimelineEntryType;
+
       if (entryDate >= today) {
-        groups[0].items.push(entry);
+        groups[0].items.push(normalizedEntry);
       } else if (entryDate >= yesterday) {
-        groups[1].items.push(entry);
+        groups[1].items.push(normalizedEntry);
       } else {
-        groups[2].items.push(entry);
+        groups[2].items.push(normalizedEntry);
       }
     });
 

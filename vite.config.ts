@@ -15,6 +15,18 @@ export default defineConfig({
     },
   },
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'query-vendor': ['@tanstack/react-query'],
+          'ui-vendor': ['lucide-react', 'react-hot-toast'],
+          'msw-vendor': ['msw']
+        }
+      }
+    }
+  },
   test: {
     environment: "jsdom",
     globals: true,

@@ -7,7 +7,7 @@
  * - Please do NOT modify this file.
  */
 
-const PACKAGE_VERSION = '2.13.6'
+const PACKAGE_VERSION = '2.14.6'
 const INTEGRITY_CHECKSUM = '4db4a41e972cec1b64cc569c66952d82'
 const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
 const activeClientIds = new Set()
@@ -105,7 +105,7 @@ addEventListener('fetch', function (event) {
     return
   }
 
-  // Bypass all requests when there are no active clients
+  // Bypass all requests when there are no active clients.
   // Prevents the self-unregistered worked from handling requests
   // after it's been terminated (still remains active until the next reload).
   if (activeClientIds.size === 0) {

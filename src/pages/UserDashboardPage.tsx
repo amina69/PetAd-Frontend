@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { RoleGuard } from "../components/auth/RoleGuard";
 
 // Mock user data
 const MOCK_USER = {
@@ -90,6 +91,19 @@ export default function UserDashboardPage() {
                                 <p className="text-[13px] text-[#7A8495] mt-1">Create a new adoption listing</p>
                             </button>
                         </div>
+
+                        {/* Protected Administrative Tools Section */}
+                        <RoleGuard allowedRoles={["Admin", "SuperAdmin"]} userRole={MOCK_USER.role}>
+                            <div className="mt-6 pt-6 border-t border-[#ECEFF3]">
+                                <h3 className="text-[14px] font-semibold text-[#0D162B] mb-3">Administrative Tools</h3>
+                                <button
+                                    onClick={() => navigate("/admin/dashboard")}
+                                    className="px-5 py-2.5 bg-[#0D162B] text-white rounded-xl font-semibold text-[13px] hover:bg-gray-900 transition-colors shadow-sm"
+                                >
+                                    Go to Admin Dashboard
+                                </button>
+                            </div>
+                        </RoleGuard>
                     </div>
                 </div>
             </div>

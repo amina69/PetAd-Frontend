@@ -1,16 +1,13 @@
 import { http, HttpResponse, delay } from "msw";
-import type {
-  AdoptionDetails,
-  AdoptionTimelineEntry,
-} from "../../types/adoption";
+import type { AdoptionDetails } from "../../types/adoption";
 
-const MOCK_TIMELINE: AdoptionTimelineEntry[] = [
+const MOCK_TIMELINE = [
   {
     id: "1",
     adoptionId: "adoption-1",
     sdkEvent: "event1",
     message: "Initial adoption request",
-    fromStatus: undefined,
+    fromStatus: null,
     toStatus: "ESCROW_CREATED",
     actor: "System",
     timestamp: "2026-03-25T10:00:00Z",

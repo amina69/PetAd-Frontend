@@ -27,7 +27,6 @@ describe("ApprovalStatusList", () => {
       <ApprovalStatusList
         required={["admin"]}
         given={[]}
-        pending={["admin"]}
       />,
     );
 
@@ -48,7 +47,6 @@ describe("ApprovalStatusList", () => {
       <ApprovalStatusList
         required={["admin"]}
         given={given}
-        pending={[]}
       />,
     );
 
@@ -69,7 +67,6 @@ describe("ApprovalStatusList", () => {
       <ApprovalStatusList
         required={["manager"]}
         given={given}
-        pending={[]}
       />,
     );
 
@@ -89,7 +86,6 @@ describe("ApprovalStatusList", () => {
       <ApprovalStatusList
         required={["admin", "manager"]}
         given={given}
-        pending={["manager"]}
       />,
     );
 
@@ -113,7 +109,6 @@ describe("ApprovalStatusList", () => {
       <ApprovalStatusList
         required={REQUIRED_ROLES}
         given={given}
-        pending={["reviewer"]}
       />,
     );
 

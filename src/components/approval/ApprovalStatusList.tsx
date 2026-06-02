@@ -14,11 +14,6 @@ export interface ApprovalStatusListProps {
    * Matched against `required` by `approverRole`.
    */
   given: ApprovalDecision[];
-  /**
-   * Role names that are still awaiting a decision.
-   * Used as a hint, but state is always re-derived from `given` first.
-   */
-  pending: string[];
 }
 
 type RowState = "approved" | "rejected" | "pending";

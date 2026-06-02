@@ -15,12 +15,13 @@ interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
 }
 
 export interface EnrichedDisputeDetail extends DisputeDetail {
-  escrowOnChainStatus: string;
-  stellarExplorerUrl: string;
+  escrowOnChainStatus?: string;
+  stellarExplorerUrl?: string;
   resolutionTxHash?: string;
 }
 
-function buildStellarExplorerUrl(accountId: string): string {
+function buildStellarExplorerUrl(accountId?: string | null): string {
+  if (!accountId) return "";
   return `https://stellar.expert/explorer/public/account/${encodeURIComponent(accountId)}`;
 }
 
@@ -60,8 +61,8 @@ export function useDisputeDetail(disputeId: string) {
     return {
       ...raw,
       resolution,
-      escrowOnChainStatus: raw.escrow.status,
-      stellarExplorerUrl: buildStellarExplorerUrl(raw.escrow.accountId),
+      escrowOnChainStatus: raw.escrow?.status,
+      stellarExplorerUrl: buildStellarExplorerUrl(raw.escrow?.accountId),
       resolutionTxHash: raw.resolution?.txHash,
     };
   }, [query.data]);
