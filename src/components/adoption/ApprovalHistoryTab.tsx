@@ -1,10 +1,10 @@
-import { Check, X, Clock } from "lucide-react";
+import { Check, Clock, X } from "lucide-react";
 import { adoptionService } from "../../api/adoptionService";
 import { useApiQuery } from "../../hooks/useApiQuery";
-import { StellarTxLink } from "../ui/StellarTxLink";
+import type { AdoptionApprovalsResponse, ApprovalDecision } from "../../types/adoption";
 import { Skeleton } from "../ui/Skeleton";
+import { StellarTxLink } from "../ui/StellarTxLink";
 import { EmptyState } from "../ui/emptyState";
-import type { ApprovalDecision, AdoptionApprovalsResponse } from "../../types/adoption";
 
 interface ApprovalHistoryTabProps {
   adoptionId: string;
@@ -15,7 +15,7 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
     ["adoption", adoptionId, "approvals"],
     () => adoptionService.getApprovals(adoptionId)
   );
-  const approvals = data?.given;
+  const approvals = data?.given ?? [];
 
   if (isLoading) {
     return (

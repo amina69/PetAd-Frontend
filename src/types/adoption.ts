@@ -96,4 +96,5 @@ export interface AdoptionApprovalsResponse {
   pending: number;
   quorumMet: boolean;
   escrowAccountId: string;
+  requiredRoles?: string[];
 }

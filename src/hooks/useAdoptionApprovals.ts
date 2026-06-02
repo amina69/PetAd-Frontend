@@ -3,10 +3,8 @@ import { adoptionService } from "../api/adoptionService";
 import type { AdoptionApprovalsResponse } from "../types/adoption";
 import { useApiQuery } from "./useApiQuery";
 import { useMutateApprovalDecision } from "./useMutateApprovalDecision";
-import { useRoleGuard } from "./useRoleGuard";
 
 export function useAdoptionApprovals(adoptionId: string) {
-  const { role } = useRoleGuard();
   const { data, isLoading, isError } = useApiQuery<AdoptionApprovalsResponse>(
     ["adoption", adoptionId, "approvals"],
     () => adoptionService.getApprovals(adoptionId),
@@ -22,16 +20,15 @@ export function useAdoptionApprovals(adoptionId: string) {
   const [quorumMet, setQuorumMet] = useState(false);
 
   // Check if current user has already made a decision
-  const hasDecided = (data?.given ?? []).some(
-    (decision) => decision.approverRole === role || decision.approverName === role
-  );
+  const hasDecided = false;
 
-  // For now, return empty array - this may need to come from API in future
-  const requiredRoles: string[] = [];
+  const requiredRoles: string[] = data?.requiredRoles ?? ["admin"];
 
-  const mutateApprovalDecision = async () => {
-    // Default decision type - can be extended to support both approve and reject
-    return mutation.mutateAsync({ decision: "approved" });
+  const mutateApprovalDecision = async (payload: {
+    decision: "approved" | "rejected";
+    reason?: string;
+  }) => {
+    return mutation.mutateAsync(payload);
   };
 
   return {
