@@ -46,7 +46,7 @@ export function ApproveRejectButtons({ adoptionId }: ApproveRejectButtonsProps) 
         onClick={handleApprove}
         disabled={isPending}
         aria-label="Approve adoption"
-        className="relative flex items-center justify-center px-4 py-2 font-medium text-green-600 border-2 border-green-600 rounded-lg hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[100px]"
+        className="relative flex items-center justify-center px-4 py-2 font-medium text-green-600 border-2 border-green-600 rounded-lg hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-25"
       >
         {isPending ? (
           <span className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" aria-label="Loading spinner"></span>

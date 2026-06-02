@@ -12,7 +12,7 @@ test.describe("Notification preferences flow", () => {
     const track = wrapper.locator("div").first();
     const inner = track.locator("div").first();
 
-    // Initially should be enabled (translated)
+    
     const classBefore = await inner.getAttribute("class");
     expect(classBefore).toContain("translate-x-4");
 
@@ -36,7 +36,7 @@ test.describe("Notification preferences flow", () => {
     const classAfter = await inner.getAttribute("class");
     expect(classAfter).not.toContain("translate-x-4");
 
-    // Reload and assert persisted
+    
     await page.reload();
     await expect(
       page.getByRole("heading", { name: "Notification Preferences" }),
@@ -46,7 +46,7 @@ test.describe("Notification preferences flow", () => {
     const classReload = await innerAfterReload.getAttribute("class");
     expect(classReload).not.toContain("translate-x-4");
 
-    // Reset to defaults and assert PATCH payload contains all true
+    
     await page.getByRole("button", { name: "Reset to defaults" }).click();
     await page.getByRole("button", { name: "Reset" }).click();
 

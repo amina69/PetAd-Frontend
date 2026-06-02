@@ -135,9 +135,9 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-full bg-[#F7F7F8] py-6 sm:py-8 lg:py-10">
-            <div className="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-7">
+            <div className="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-8">
 
-                <div className="w-full lg:w-[336px] border border-[#EBEDF0] rounded-xl px-6 py-7 sm:px-7 sm:py-8 bg-white flex flex-col items-center">
+                <div className="w-full lg:w-[336px] border border-[#EBEDF0] rounded-xl px-6 py-7 sm:px-7 sm:py-8 bg-white shadow-sm flex flex-col items-center">
 
                     <div className="relative mb-5">
                         <div className="w-36 h-36 rounded-full overflow-hidden border border-[#EBEDF0]">
@@ -191,7 +191,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="flex-1 border border-[#EBEDF0] rounded-xl bg-white overflow-hidden flex flex-col min-h-[560px]">
+                <div className="flex-1 border border-[#EBEDF0] rounded-xl bg-white shadow-sm overflow-hidden flex flex-col min-h-[560px]">
 
                     <div className="flex bg-white border-b border-[#ECEFF3]">
                         <button

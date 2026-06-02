@@ -38,6 +38,8 @@ describe('ApproveRejectButtons', () => {
       requiredRoles: ['admin'],
       mutateApprovalDecision: mockMutateApprovalDecision,
       isPending: false,
+      quorumMet: false,
+      setQuorumMet: vi.fn(),
     });
 
     // Make mutateApprovalDecision return a resolved promise by default
@@ -51,6 +53,8 @@ describe('ApproveRejectButtons', () => {
         requiredRoles: ['admin'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: false,
+        quorumMet: false,
+        setQuorumMet: vi.fn(),
       });
 
       const { container } = render(<ApproveRejectButtons adoptionId={defaultAdoptionId} />);
@@ -121,6 +125,8 @@ describe('ApproveRejectButtons', () => {
         requiredRoles: ['admin'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: true,
+        quorumMet: false,
+        setQuorumMet: vi.fn(),
       });
 
       render(<ApproveRejectButtons adoptionId={defaultAdoptionId} />);

@@ -180,8 +180,8 @@ export function DocumentUploadModal({
                         <FileUploadZone
                             id="document-upload"
                             label="Select File"
-                            onChange={setFile}
-                            selectedFile={file}
+                            onChange={(files) => setFile(files[0] ?? null)}
+                            selectedFiles={file ? [file] : []}
                         />
                     </div>
 

@@ -1,5 +1,8 @@
+import { StatusBadge } from './StatusBadge';
+
 interface DocumentExpiryBadgeProps {
   expiresAt: string | null;
+  status?: string;
 }
 
 export function DocumentExpiryBadge({ expiresAt }: DocumentExpiryBadgeProps) {
@@ -8,24 +11,34 @@ export function DocumentExpiryBadge({ expiresAt }: DocumentExpiryBadgeProps) {
   const now = new Date();
   const expiry = new Date(expiresAt);
   const msUntilExpiry = expiry.getTime() - now.getTime();
-  const daysUntilExpiry = msUntilExpiry / (1000 * 60 * 60 * 24);
+  const daysUntilExpiry = Math.ceil(msUntilExpiry / (1000 * 60 * 60 * 24));
 
-  const config =
-    daysUntilExpiry < 0
-      ? { label: 'Expired', textClass: 'text-red-700', bgClass: 'bg-red-100' }
-      : daysUntilExpiry <= 30
-        ? { label: 'Expiring soon', textClass: 'text-amber-700', bgClass: 'bg-amber-100' }
-        : {
-            label: `Expires ${expiry.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`,
-            textClass: 'text-blue-700',
-            bgClass: 'bg-blue-100',
-          };
+  const expiryDateStr = expiry.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 
-  return (
-    <span
-      className={`rounded-full px-2 py-1 text-xs font-medium ${config.textClass} ${config.bgClass}`}
-    >
-      {config.label}
-    </span>
-  );
+  if (daysUntilExpiry < 0) {
+    return (
+      <StatusBadge
+        color="red"
+        label="Expired — re-upload required"
+        tooltip={`Expired on ${expiryDateStr}`}
+      />
+    );
+  }
+
+  if (daysUntilExpiry <= 7) {
+    const dayLabel = daysUntilExpiry === 1 ? 'day' : 'days';
+    return (
+      <StatusBadge
+        color="amber"
+        label={`Expiring in ${daysUntilExpiry} ${dayLabel}`}
+        tooltip={`Expires on ${expiryDateStr}`}
+      />
+    );
+  }
+
+  return null;
 }

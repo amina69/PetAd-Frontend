@@ -43,6 +43,17 @@ describe("ShelterApprovalQueuePage", () => {
     mockNavigate.mockClear();
   });
 
+  it("renders loading skeleton initially", () => {
+    // Return an unresolved promise to keep it in loading state
+    mockGetAdminApprovalQueue.mockReturnValue(new Promise(() => {}));
+    
+    renderWithProviders(<ShelterApprovalQueuePage />);
+    
+    // Look for skeleton items
+    const skeletons = screen.getAllByTestId('skeleton');
+    expect(skeletons.length).toBeGreaterThan(0);
+  });
+
   it("renders the shelter approval queue with items", async () => {
     mockGetAdminApprovalQueue.mockResolvedValue({
       items: [
@@ -90,3 +101,8 @@ describe("ShelterApprovalQueuePage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/adoption/123#approvals");
   });
 });
+
+
+  // Issues Implemented
+
+  

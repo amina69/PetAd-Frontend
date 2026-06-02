@@ -6,10 +6,10 @@ describe("AdminStatusOverrideModal", () => {
     render(
       <AdminStatusOverrideModal
         isOpen={true}
-        onClose={() => {}}
+        onClose={() => { }}
         adoptionId="123"
         currentStatus="PENDING"
-        onSubmit={() => {}}
+        onSubmit={() => { }}
       />
     );
 
@@ -21,10 +21,10 @@ describe("AdminStatusOverrideModal", () => {
     render(
       <AdminStatusOverrideModal
         isOpen={true}
-        onClose={() => {}}
+        onClose={() => { }}
         adoptionId="123"
         currentStatus="PENDING"
-        onSubmit={() => {}}
+        onSubmit={() => { }}
       />
     );
 
