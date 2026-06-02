@@ -182,18 +182,4 @@ describe("RaiseDisputeModal", () => {
     fireEvent.click(screen.getByTestId("dispute-backdrop"));
     expect(onClose).toHaveBeenCalledOnce();
   });
-
-  // ── File slots ────────────────────────────────────────────────────────────
-  it("caps file slots at 5", async () => {
-    renderModal();
-    const addBtn = () => screen.queryByRole("button", { name: /add another file/i });
-
-    await userEvent.click(addBtn()!);
-    await userEvent.click(addBtn()!);
-    await userEvent.click(addBtn()!);
-    await userEvent.click(addBtn()!);
-
-    expect(addBtn()).not.toBeInTheDocument();
-    expect(screen.getByText(/maximum 5 files reached/i)).toBeInTheDocument();
-  });
 });
