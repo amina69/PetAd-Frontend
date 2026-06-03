@@ -1,10 +1,28 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { adoptionService } from "../api/adoptionService";
-import type { AdoptionApprovalsResponse } from "../types/adoption";
+import type { AdoptionApprovalsResponse, ApprovalDecision } from "../types/adoption";
 import { useApiQuery } from "./useApiQuery";
 import { useMutateApprovalDecision } from "./useMutateApprovalDecision";
 
-export function useAdoptionApprovals(adoptionId: string) {
+export interface AdoptionApprovalsHookResult {
+  required: number;
+  given: ApprovalDecision[];
+  pending: number;
+  quorumMet: boolean;
+  escrowAccountId: string | null;
+  isLoading: boolean;
+  isError: boolean;
+  hasDecided: boolean;
+  requiredRoles: string[];
+  mutateApprovalDecision: (payload: {
+    decision: "approved" | "rejected";
+    reason?: string;
+  }) => Promise<unknown>;
+  isPending: boolean;
+  setQuorumMet: Dispatch<SetStateAction<boolean>>;
+}
+
+export function useAdoptionApprovals(adoptionId: string): AdoptionApprovalsHookResult {
   const { data, isLoading, isError } = useApiQuery<AdoptionApprovalsResponse>(
     ["adoption", adoptionId, "approvals"],
     () => adoptionService.getApprovals(adoptionId),
