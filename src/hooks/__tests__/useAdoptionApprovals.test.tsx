@@ -1,5 +1,7 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { queryClient } from '../../lib/query-client';
 import { useAdoptionApprovals } from '../useAdoptionApprovals';
 
 describe('useAdoptionApprovals', () => {
@@ -13,7 +15,11 @@ describe('useAdoptionApprovals', () => {
   });
 
   it('starts polling on mount and stops when quorum is met', () => {
-    const { result } = renderHook(() => useAdoptionApprovals('123'));
+    const { result } = renderHook(() => useAdoptionApprovals('123'), {
+      wrapper: ({ children }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      ),
+    });
 
     // Check that the hook returns the expected properties
     expect(result.current).toHaveProperty('required');
