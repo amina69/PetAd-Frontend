@@ -1,6 +1,10 @@
-import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { InlineError } from "../InlineError";
+
+vi.mock("lucide-react", () => ({
+  AlertCircle: () => <svg data-testid="alert-icon" />,
+}));
 
 describe("InlineError", () => {
   it("renders the error message", () => {

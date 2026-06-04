@@ -89,3 +89,12 @@ export interface AdminApprovalQueueItem {
   daysWaiting: number;
   isOverdue: boolean;
 }
+
+export interface AdoptionApprovalsResponse {
+  required: number;
+  given: ApprovalDecision[];
+  pending: number;
+  quorumMet: boolean;
+  escrowAccountId: string;
+  requiredRoles?: string[];
+}

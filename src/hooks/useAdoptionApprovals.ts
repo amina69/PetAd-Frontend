@@ -1,75 +1,66 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { adoptionService } from "../api/adoptionService";
+import type { AdoptionApprovalsResponse, ApprovalDecision } from "../types/adoption";
+import { useApiQuery } from "./useApiQuery";
+import { useMutateApprovalDecision } from "./useMutateApprovalDecision";
 
-export function useAdoptionApprovals(adoptionId: string) {
-  const [hasDecided, setHasDecided] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-  const [quorumMet, setQuorumMet] = useState(false);
-  
-  // Mocking required roles for this approval
-  const requiredRoles = ['admin', 'manager', 'reviewer'];
-  
-  // Polling logic
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  
-  const startPolling = useCallback(() => {
-    if (timerRef.current) return;
-    timerRef.current = setInterval(() => {
-      // Mock API call check
-      if (quorumMet) {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
-      }
-    }, 5000);
-  }, [quorumMet]);
-  
-  useEffect(() => {
-    if (!quorumMet) {
-      startPolling();
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+export interface AdoptionApprovalsHookResult {
+  required: number;
+  given: ApprovalDecision[];
+  pending: number;
+  quorumMet: boolean;
+  escrowAccountId: string | null;
+  isLoading: boolean;
+  isError: boolean;
+  hasDecided: boolean;
+  requiredRoles: string[];
+  mutateApprovalDecision: (payload: {
+    decision: "approved" | "rejected";
+    reason?: string;
+  }) => Promise<unknown>;
+  isPending: boolean;
+  setQuorumMet: Dispatch<SetStateAction<boolean>>;
+}
+
+export function useAdoptionApprovals(adoptionId: string): AdoptionApprovalsHookResult {
+  const { data, isLoading, isError } = useApiQuery<AdoptionApprovalsResponse>(
+    ["adoption", adoptionId, "approvals"],
+    () => adoptionService.getApprovals(adoptionId),
+    {
+      refetchInterval: (query) => {
+        if (query.state.data?.quorumMet) return false;
+        return 30_000;
+      },
     }
-    
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [quorumMet, startPolling]);
+  );
 
-  const mutateApprovalDecision = useCallback((payload?: { decision: "APPROVED" | "REJECTED"; reason?: string }) => {
-    console.log(`[Mock] mutateApprovalDecision for ${adoptionId}:`, payload);
-    setIsPending(true);
+  const mutation = useMutateApprovalDecision(adoptionId);
+  const [quorumMet, setQuorumMet] = useState(false);
 
-    return new Promise<void>((resolve) => {
-      // Simulate an API call
-      setTimeout(() => {
-        setIsPending(false);
-        setHasDecided(true);
-        // Simulate that this decision met the quorum for demo purposes
-        if (payload?.decision === 'APPROVED') {
-          setQuorumMet(true);
-        }
-        resolve();
-      }, 1000);
-    });
-  }, [adoptionId]);
+  // Check if current user has already made a decision
+  const hasDecided = false;
+
+  const requiredRoles: string[] = data?.requiredRoles ?? ["admin"];
+
+  const mutateApprovalDecision = async (payload: {
+    decision: "approved" | "rejected";
+    reason?: string;
+  }) => {
+    return mutation.mutateAsync(payload);
+  };
 
   return {
+    required: data?.required ?? 0,
+    given: data?.given ?? [],
+    pending: data?.pending ?? 0,
+    quorumMet: (quorumMet || data?.quorumMet) ?? false,
+    escrowAccountId: data?.escrowAccountId ?? null,
+    isLoading,
+    isError,
     hasDecided,
     requiredRoles,
     mutateApprovalDecision,
-    isPending,
-    quorumMet,
-    setQuorumMet // exposed for testing / mock data setting
+    isPending: mutation.isPending,
+    setQuorumMet,
   };
 }
-
-  // Issues Implemented
-
-  

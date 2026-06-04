@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useRoleGuard } from '../../../hooks/useRoleGuard';
 import { useAdoptionApprovals } from '../../../hooks/useAdoptionApprovals';
+import { useRoleGuard } from '../../../hooks/useRoleGuard';
 import { RejectionReasonModal } from '../../modals/RejectionReasonModal';
 
 export interface ApproveRejectButtonsProps {
@@ -22,7 +22,7 @@ export function ApproveRejectButtons({ adoptionId }: ApproveRejectButtonsProps) 
 
   const handleApprove = async () => {
     try {
-      await mutateApprovalDecision();
+      await mutateApprovalDecision({ decision: "approved" });
       toast.success("Your approval has been recorded");
     } catch (error) {
       console.error(error);
@@ -30,10 +30,10 @@ export function ApproveRejectButtons({ adoptionId }: ApproveRejectButtonsProps) 
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (reason: string) => {
     try {
-      await mutateApprovalDecision();
-      toast.success("Your approval has been recorded");
+      await mutateApprovalDecision({ decision: "rejected", reason });
+      toast.success("Your rejection has been recorded");
     } catch (error) {
       toast.error("Failed to record rejection");
       throw error; // Re-throw so modal can handle it
