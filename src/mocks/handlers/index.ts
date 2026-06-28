@@ -6,6 +6,7 @@ import { notifyHandlers } from "./notify";
 import { filesHandlers } from "./files";
 import { adoptionHandlers } from "./adoption";
 import { custodyHandlers } from "./custody";
+import { listingsHandlers } from "./listings";
 
 /**
  * All MSW request handlers, combined from every domain module.
@@ -20,4 +21,5 @@ export const handlers = [
 	...filesHandlers,
 	...adoptionHandlers,
 	...custodyHandlers,
+	...listingsHandlers,
 ];

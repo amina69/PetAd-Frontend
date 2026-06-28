@@ -3,3 +3,5 @@ export { RegisterForm, FormInput, PasswordInput, GoogleButton, OrDivider, Submit
 export { SignInForm } from './SignInForm';
 export { ProtectedRoute } from './ProtectedRoute';
 export { GuestRoute } from './GuestRoute';
+export { PublicRoute } from './PublicRoute';
+export { AuthGateModal } from './AuthGateModal';
