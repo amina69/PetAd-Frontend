@@ -22,4 +22,5 @@ export const handlers = [
 	...filesHandlers,
 	...adoptionHandlers,
 	...custodyHandlers,
+	...listingsHandlers,
 ];

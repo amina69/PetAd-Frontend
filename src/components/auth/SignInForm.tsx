@@ -15,15 +15,26 @@ interface SignInFormErrors {
     submit?: string;
 }
 
+/** Read the returnTo target from the query-string, then sessionStorage fallback. */
+function getReturnTo(searchParams: URLSearchParams): string {
+    const fromQuery = searchParams.get("returnTo");
+    if (fromQuery) return decodeURIComponent(fromQuery);
+    return sessionStorage.getItem("petad_return_to") ?? "/home";
+}
+
 export function SignInForm() {
     const [formData, setFormData] = useState<SignInFormData>({
         email: "",
         password: "",
     });
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const [errors, setErrors] = useState<SignInFormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
+
+    // Show a hint if the user was interrupted mid-action
+    const pendingActionHint = sessionStorage.getItem("petad_pending_action_hint");
 
     const validate = (): boolean => {
         const newErrors: SignInFormErrors = {};
@@ -87,6 +98,16 @@ export function SignInForm() {
                 Welcome Pet Lover!
             </h2>
 
+            {/* Pending-action hint banner */}
+            {pendingActionHint && (
+                <div
+                    role="status"
+                    className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-sm text-orange-700 text-center"
+                >
+                    Sign in to continue: <strong>{pendingActionHint}</strong>
+                </div>
+            )}
+
             <div className="flex flex-col gap-5">
                 <GoogleButton
                     label="Continue with Google"
@@ -127,7 +148,10 @@ export function SignInForm() {
                             error={errors.password}
                         />
                         <div className="flex justify-end mt-1">
-                            <Link to="/forgot-password" className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
+                            <Link
+                                to="/forgot-password"
+                                className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+                            >
                                 Forget Password?
                             </Link>
                         </div>
@@ -137,7 +161,7 @@ export function SignInForm() {
                 </form>
 
                 <p className="text-center text-sm text-gray-600 mt-2">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link
                         to="/register"
                         className="font-semibold text-[#E84D2A] hover:underline"
