@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mswjs/interceptors':
+        specifier: ^0.41.9
+        version: 0.41.9
       '@tailwindcss/vite':
         specifier: ^4.2.0
         version: 4.3.0(vite@7.3.5(@types/node@24.12.4)(jiti@2.7.0)(lightningcss@1.32.0))
@@ -16,14 +19,13 @@ importers:
         version: 5.101.0(react@19.2.7)
       axios:
         specifier: ^1.16.1
-<<<<<<< HEAD
         version: 1.17.0
-=======
-        version: 1.16.1
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
       date-fns:
         specifier: ^4.1.0
         version: 4.4.0
+      graphql:
+        specifier: ^16.13.2
+        version: 16.14.1
       lucide-react:
         specifier: ^0.575.0
         version: 0.575.0(react@19.2.7)
@@ -45,6 +47,9 @@ importers:
       tailwindcss:
         specifier: ^4.2.0
         version: 4.3.0
+      type-fest:
+        specifier: ^5.6.0
+        version: 5.7.0
       undici:
         specifier: ^8.1.0
         version: 8.3.0
@@ -101,7 +106,7 @@ importers:
         specifier: ^29.0.1
         version: 29.1.1
       msw:
-        specifier: ^2.12.14
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@24.12.4)(typescript@5.9.3)
       typescript:
         specifier: ~5.9.3
@@ -251,13 +256,8 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^4.0.0
 
-<<<<<<< HEAD
   '@csstools/css-syntax-patches-for-csstree@1.1.5':
     resolution: {integrity: sha512-oNjBvzLq2GPZtJphCjLqXow/cHySHSgtxvKZb7OqSZ/xHgw6NWNhfad+6AB9cLeVm6eA9d/qMll3JdEHjy6M+A==}
-=======
-  '@csstools/css-syntax-patches-for-csstree@1.1.4':
-    resolution: {integrity: sha512-wgsqt92b7C7tQhIdPNxj0n9zuUbQlvAuI1exyzeNrOKOi62SD7ren8zqszmpVREjAOqg8cD2FqYhQfAuKjk4sw==}
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
     peerDependencies:
       css-tree: ^3.2.1
     peerDependenciesMeta:
@@ -1056,13 +1056,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-<<<<<<< HEAD
   axios@1.17.0:
     resolution: {integrity: sha512-J8SwNxprqqpbfenehxWYXE7CW+wM1BB4w3+N+g+/Wx40xM4rsLrfPmHHxSWIxJLYDgSY/HqlFPIYb2/S3rxafw==}
-=======
-  axios@1.16.1:
-    resolution: {integrity: sha512-caYkukvroVPO8KrzuJEb50Hm07KwfBZPEC3VeFHTsqWHvKTsy54hjJz9BS/cdaypROE2rH6xvm9mHX4fgWkr3A==}
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1210,13 +1205,8 @@ packages:
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
-<<<<<<< HEAD
   enhanced-resolve@5.22.2:
     resolution: {integrity: sha512-0rxICaFZ7NQho/sHely2bvOPRP0Eu2B0NZ9zM54YvRvWMn7jfz3DmnOZDR9LlXDdDcqntAVc6Hfy4gr/tdH/Ag==}
-=======
-  enhanced-resolve@5.22.1:
-    resolution: {integrity: sha512-6QEuw3zoX1SJQc7b87aBXke/no+mG2bTBgw29gWMQonLmpEkWoCAVkl+M49e48AZlWzxiDzDZzYdp6kobcyLww==}
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
     engines: {node: '>=10.13.0'}
 
   entities@8.0.0:
@@ -2391,11 +2381,7 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 4.0.0
 
-<<<<<<< HEAD
   '@csstools/css-syntax-patches-for-csstree@1.1.5(css-tree@3.2.1)':
-=======
-  '@csstools/css-syntax-patches-for-csstree@1.1.4(css-tree@3.2.1)':
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
     optionalDependencies:
       css-tree: 3.2.1
 
@@ -2724,11 +2710,7 @@ snapshots:
   '@tailwindcss/node@4.3.0':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-<<<<<<< HEAD
       enhanced-resolve: 5.22.2
-=======
-      enhanced-resolve: 5.22.1
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -3097,11 +3079,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-<<<<<<< HEAD
   axios@1.17.0:
-=======
-  axios@1.16.1:
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
@@ -3236,11 +3214,7 @@ snapshots:
 
   emoji-regex@8.0.0: {}
 
-<<<<<<< HEAD
   enhanced-resolve@5.22.2:
-=======
-  enhanced-resolve@5.22.1:
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -3613,11 +3587,7 @@ snapshots:
       '@asamuzakjp/css-color': 5.1.11
       '@asamuzakjp/dom-selector': 7.1.1
       '@bramus/specificity': 2.4.2
-<<<<<<< HEAD
       '@csstools/css-syntax-patches-for-csstree': 1.1.5(css-tree@3.2.1)
-=======
-      '@csstools/css-syntax-patches-for-csstree': 1.1.4(css-tree@3.2.1)
->>>>>>> 358b80ba15d1cd5c9a74c5ac959a8f0229990802
       '@exodus/bytes': 1.15.1
       css-tree: 3.2.1
       data-urls: 7.0.0

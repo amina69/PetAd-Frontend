@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { authService } from "../../api/authService";
+import { ApiError } from "../../lib/api-errors";
 
 interface SignInFormData {
     email: string;
@@ -67,25 +69,20 @@ export function SignInForm() {
         setIsLoading(true);
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve("Success");
-                }, 1500);
+            const response = await authService.login({
+                email: formData.email.trim(),
+                password: formData.password,
             });
-
-            // ── Post-login: set a demo token, clear gate state, restore route ──
-            localStorage.setItem("auth_token", "demo_token");
-            const returnTo = getReturnTo(searchParams);
-            sessionStorage.removeItem("petad_return_to");
-            sessionStorage.removeItem("petad_pending_action_hint");
-
-            navigate(returnTo, { replace: true });
+            localStorage.setItem("auth_token", response.token);
+            navigate("/home");
         } catch (err: unknown) {
-            setErrors((prev) => ({
-                ...prev,
-                submit: err instanceof Error ? err.message : "Failed to sign in. Please try again.",
-            }));
+            const message =
+                err instanceof ApiError && err.status === 401
+                    ? "Invalid email or password"
+                    : err instanceof Error
+                    ? err.message
+                    : "Failed to sign in. Please try again.";
+            setErrors((prev) => ({ ...prev, submit: message }));
         } finally {
             setIsLoading(false);
         }
