@@ -43,7 +43,14 @@ describe("useDisputeCount", () => {
   });
 
   it("admin sees total count of open and under_review disputes", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: true, isUser: false, role: "admin" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: true,
+      isShelter: false,
+      isUser: false,
+      canApprove: true,
+      role: "ADMIN",
+      hasAccess: vi.fn().mockReturnValue(true),
+    });
     // open: 2 disputes, under_review: 1 dispute → total: 3
     mockGet
       .mockResolvedValueOnce({ data: [{ id: "d1" }, { id: "d2" }] })
@@ -59,7 +66,14 @@ describe("useDisputeCount", () => {
   });
 
   it("admin fetches both open and under_review endpoints", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: true, isUser: false, role: "admin" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: true,
+      isShelter: false,
+      isUser: false,
+      canApprove: true,
+      role: "ADMIN",
+      hasAccess: vi.fn().mockReturnValue(true),
+    });
     mockGet
       .mockResolvedValueOnce({ data: [] })
       .mockResolvedValueOnce({ data: [] });
@@ -75,7 +89,14 @@ describe("useDisputeCount", () => {
   });
 
   it("user sees only their own open disputes (single endpoint)", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: false, isUser: true, role: "user" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: false,
+      isShelter: false,
+      isUser: true,
+      canApprove: false,
+      role: "USER",
+      hasAccess: vi.fn().mockReturnValue(false),
+    });
     mockGet.mockResolvedValueOnce({ data: [{ id: "d1" }] });
 
     const queryClient = createTestQueryClient();
@@ -89,7 +110,14 @@ describe("useDisputeCount", () => {
   });
 
   it("displays '9+' when count exceeds 9", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: true, isUser: false, role: "admin" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: true,
+      isShelter: false,
+      isUser: false,
+      canApprove: true,
+      role: "ADMIN",
+      hasAccess: vi.fn().mockReturnValue(true),
+    });
     // open: 7, under_review: 5 → total: 12
     mockGet
       .mockResolvedValueOnce({ data: Array.from({ length: 7 }, (_, i) => ({ id: `o${i}` })) })
@@ -105,7 +133,14 @@ describe("useDisputeCount", () => {
   });
 
   it("displays exact count when count is exactly 9", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: false, isUser: true, role: "user" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: false,
+      isShelter: false,
+      isUser: true,
+      canApprove: false,
+      role: "USER",
+      hasAccess: vi.fn().mockReturnValue(false),
+    });
     mockGet.mockResolvedValueOnce({
       data: Array.from({ length: 9 }, (_, i) => ({ id: `d${i}` })),
     });
@@ -120,7 +155,14 @@ describe("useDisputeCount", () => {
   });
 
   it("resets count to 0 when user visits /disputes", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: false, isUser: true, role: "user" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: false,
+      isShelter: false,
+      isUser: true,
+      canApprove: false,
+      role: "USER",
+      hasAccess: vi.fn().mockReturnValue(false),
+    });
     mockGet.mockResolvedValue({ data: [] });
 
     const queryClient = createTestQueryClient();
@@ -135,7 +177,14 @@ describe("useDisputeCount", () => {
   });
 
   it("resets count to 0 when admin visits /admin/disputes", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: true, isUser: false, role: "admin" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: true,
+      isShelter: false,
+      isUser: false,
+      canApprove: true,
+      role: "ADMIN",
+      hasAccess: vi.fn().mockReturnValue(true),
+    });
     mockGet.mockResolvedValue({ data: [] });
 
     const queryClient = createTestQueryClient();
@@ -149,7 +198,14 @@ describe("useDisputeCount", () => {
   });
 
   it("does not reset count when visiting an unrelated route", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: false, isUser: true, role: "user" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: false,
+      isShelter: false,
+      isUser: true,
+      canApprove: false,
+      role: "USER",
+      hasAccess: vi.fn().mockReturnValue(false),
+    });
     // refetchOnMount: false → cached value persists, no immediate fetch
     mockGet.mockResolvedValue({ data: [] });
 
@@ -166,7 +222,14 @@ describe("useDisputeCount", () => {
   });
 
   it("returns count 0 when no disputes exist", async () => {
-    mockUseRoleGuard.mockReturnValue({ isAdmin: false, isUser: true, role: "user" });
+    mockUseRoleGuard.mockReturnValue({
+      isAdmin: false,
+      isShelter: false,
+      isUser: true,
+      canApprove: false,
+      role: "USER",
+      hasAccess: vi.fn().mockReturnValue(false),
+    });
     mockGet.mockResolvedValueOnce({ data: [] });
 
     const queryClient = createTestQueryClient();

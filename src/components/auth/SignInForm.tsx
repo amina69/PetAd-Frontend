@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { authService } from "../../api/authService";
+import { ApiError } from "../../lib/api-errors";
 
 interface SignInFormData {
     email: string;
@@ -56,22 +58,20 @@ export function SignInForm() {
         setIsLoading(true);
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    // You can simulate an error here to test the error state:
-                    // reject(new Error("Invalid credentials"));
-                    resolve("Success");
-                }, 1500);
+            const response = await authService.login({
+                email: formData.email.trim(),
+                password: formData.password,
             });
-            console.log("Sign in successful with:", formData.email);
-            navigate("/home"); // Redirect to homepage after successful sign in
-            // NOTE: Here you would typically redirect or dispatch a login action
+            localStorage.setItem("auth_token", response.token);
+            navigate("/home");
         } catch (err: unknown) {
-            setErrors((prev) => ({ 
-                ...prev, 
-                submit: err instanceof Error ? err.message : "Failed to sign in. Please try again." 
-            }));
+            const message =
+                err instanceof ApiError && err.status === 401
+                    ? "Invalid email or password"
+                    : err instanceof Error
+                    ? err.message
+                    : "Failed to sign in. Please try again.";
+            setErrors((prev) => ({ ...prev, submit: message }));
         } finally {
             setIsLoading(false);
         }
@@ -127,9 +127,9 @@ export function SignInForm() {
                             error={errors.password}
                         />
                         <div className="flex justify-end mt-1">
-                            <a href="/forgot-password" className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
+                            <Link to="/forgot-password" className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
                                 Forget Password?
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -138,12 +138,12 @@ export function SignInForm() {
 
                 <p className="text-center text-sm text-gray-600 mt-2">
                     Don't have an account?{" "}
-                    <a
-                        href="/register"
+                    <Link
+                        to="/register"
                         className="font-semibold text-[#E84D2A] hover:underline"
                     >
                         Create Account
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

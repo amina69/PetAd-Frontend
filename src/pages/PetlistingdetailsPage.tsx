@@ -162,14 +162,18 @@ export default function PetListingDetailsPage() {
         /* ── Top Section ── */
         .pld-top {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
           gap: 40px;
           margin-bottom: 32px;
         }
-        @media (max-width: 768px) { .pld-top { grid-template-columns: 1fr; } }
+        .pld-gallery { min-width: 0; display: flex; gap: 12px; }
+        .pld-details { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        
+        @media (max-width: 992px) { 
+          .pld-top { grid-template-columns: 1fr; } 
+        }
 
         /* ── Gallery ── */
-        .pld-gallery { display: flex; gap: 12px; }
         .pld-gallery__thumbs { display: flex; flex-direction: column; gap: 10px; }
         .pld-gallery__thumb {
           width: 60px; height: 60px;
@@ -193,7 +197,6 @@ export default function PetListingDetailsPage() {
         .pld-gallery__main img { width: 100%; height: 100%; object-fit: cover; }
 
         /* ── Details Panel ── */
-        .pld-details { display: flex; flex-direction: column; gap: 16px; }
         .pld-details__name { font-size: 24px; font-weight: 800; color: #0D162B; letter-spacing: -0.01em; }
         .pld-details__badge {
           display: inline-block;

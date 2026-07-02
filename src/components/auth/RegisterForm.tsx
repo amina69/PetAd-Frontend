@@ -2,9 +2,11 @@
 // Reusable form components and RegisterForm for the PetAd register page
 
 import { useState, type InputHTMLAttributes } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthModal } from "../ui/authModal";
 import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
+import { authService } from "../../api/authService";
+import { ApiError } from "../../lib/api-errors";
 
 // ─── Reusable: FormInput ──────────────────────────────────────────────────────
 
@@ -289,6 +291,7 @@ export function RegisterForm() {
   });
 
   const [errors, setErrors] = useState<RegisterFormErrors>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showIdentityModal, setShowIdentityModal] = useState(false);
@@ -336,10 +339,26 @@ export function RegisterForm() {
     e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
-    // TODO: wire to API
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsLoading(false);
-    setShowSuccessModal(true);
+    setSubmitError(null);
+    try {
+      await authService.register({
+        email: formData.email.trim(),
+        fullName: formData.fullName.trim(),
+        nin: formData.nin.trim(),
+        password: formData.password,
+      });
+      setShowSuccessModal(true);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        setErrors((prev) => ({ ...prev, email: "An account with this email already exists" }));
+      } else {
+        setSubmitError(
+          err instanceof Error ? err.message : "Registration failed. Please try again."
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogle = () => {
@@ -365,6 +384,11 @@ export function RegisterForm() {
           noValidate
           className="flex flex-col gap-4"
         >
+          {submitError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+              {submitError}
+            </div>
+          )}
           <FormInput
             id="email"
             label="Email Address"
@@ -412,12 +436,12 @@ export function RegisterForm() {
 
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="font-semibold text-[#E84D2A] hover:underline"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
 

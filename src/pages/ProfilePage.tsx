@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import ownerImg from "../assets/owner.png";
 import dogImg from "../assets/dog.png";
-import { DocumentUploadModal } from "../components/modals";
-import { AdoptionDetailsModal } from "../components/ui/AdoptionDetailsModal";
-import { ListingDetailsModal } from "../components/ui/ListingDetailsModal";
+import { EmptyState } from "../components/approval/EmptyState";
+
+// Lazy load heavy modal components to optimize initial page load
+const DocumentUploadModal = lazy(() => import("../components/modals").then(m => ({ default: m.DocumentUploadModal })));
+const AdoptionDetailsModal = lazy(() => import("../components/ui/AdoptionDetailsModal").then(m => ({ default: m.AdoptionDetailsModal })));
+const ListingDetailsModal = lazy(() => import("../components/ui/ListingDetailsModal").then(m => ({ default: m.ListingDetailsModal })));
 
 interface AdoptionRecordItem {
     id: string;
@@ -135,13 +138,13 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-full bg-[#F7F7F8] py-6 sm:py-8 lg:py-10">
-            <div className="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-7">
+            <div className="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-8">
 
-                <div className="w-full lg:w-[336px] border border-[#EBEDF0] rounded-xl px-6 py-7 sm:px-7 sm:py-8 bg-white flex flex-col items-center">
+                <div className="w-full lg:w-[336px] border border-[#EBEDF0] rounded-xl px-6 py-7 sm:px-7 sm:py-8 bg-white shadow-sm flex flex-col items-center">
 
                     <div className="relative mb-5">
                         <div className="w-36 h-36 rounded-full overflow-hidden border border-[#EBEDF0]">
-                            <img src={ownerImg} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={ownerImg} alt="Profile" loading="lazy" className="w-full h-full object-cover" />
                         </div>
                         <button className="absolute bottom-1 right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center border border-[#D6DAE0] text-[#4A5568] hover:text-[#0D162B] transition-colors">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
@@ -191,7 +194,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="flex-1 border border-[#EBEDF0] rounded-xl bg-white overflow-hidden flex flex-col min-h-[560px]">
+                <div className="flex-1 border border-[#EBEDF0] rounded-xl bg-white shadow-sm overflow-hidden flex flex-col min-h-[560px]">
 
                     <div className="flex bg-white border-b border-[#ECEFF3]">
                         <button
@@ -228,7 +231,7 @@ export default function ProfilePage() {
                                         <div className="flex flex-col gap-4 md:grid md:grid-cols-[1fr_120px_100px] md:items-center md:gap-4">
                                             <div className="flex flex-1 items-center gap-4 min-w-0">
                                                 <div className="w-14 h-14 rounded-md overflow-hidden shrink-0 bg-[#F3F4F6]">
-                                                    <img src={record.petImage} alt={record.petName} className="w-full h-full object-cover" />
+                                                    <img src={record.petImage} alt={record.petName} loading="lazy" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div className="min-w-0">
                                                     <h3 className="text-[16px] leading-8 font-bold text-[#0D162B]">{record.petName}</h3>
@@ -251,18 +254,16 @@ export default function ProfilePage() {
                     )}
 
                     {activeTab === "adoption" && adoptionRecords.length === 0 && (
-                        <div className="flex-1 flex flex-col items-center justify-center p-8">
-                            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-                                <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-[22px] sm:text-[24px] font-bold text-[#0D162B] mb-2 text-center">
-                                You haven&apos;t adopted any pets yet.
-                            </h3>
-                            <p className="text-[15px] text-gray-500 mb-8 text-center max-w-md">
-                                When you adopt a pet through PetAd, your adoption history will appear here.
-                            </p>
+                    <EmptyState
+                        className="m-4 lg:m-8"
+                        title="You haven't adopted any pets yet."
+                        description="When you adopt a pet through PetAd, your adoption history will appear here."
+                        icon={
+                            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        }
+                        action={
                             <button
                                 type="button"
                                 onClick={() => navigate("/listings")}
@@ -270,7 +271,8 @@ export default function ProfilePage() {
                             >
                                 Explore Pets
                             </button>
-                        </div>
+                        }
+                    />
                     )}
 
                     {activeTab === "listing" && listingRecords.length > 0 && (
@@ -286,7 +288,7 @@ export default function ProfilePage() {
                                         <div className="flex flex-col gap-4 md:grid md:grid-cols-[1fr_120px_100px] md:items-center md:gap-4">
                                             <div className="flex flex-1 items-center gap-4 min-w-0">
                                                 <div className="w-14 h-14 rounded-md overflow-hidden shrink-0 bg-[#F3F4F6]">
-                                                    <img src={record.petImage} alt={record.petName} className="w-full h-full object-cover" />
+                                                    <img src={record.petImage} alt={record.petName} loading="lazy" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div className="min-w-0">
                                                     <h3 className="text-[16px] leading-8 font-semibold text-[#0D162B]">{record.petName}</h3>
@@ -309,18 +311,16 @@ export default function ProfilePage() {
                     )}
 
                     {activeTab === "listing" && listingRecords.length === 0 && (
-                        <div className="flex-1 flex flex-col items-center justify-center p-8">
-                            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-                                <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                            </div>
-                            <h3 className="text-[22px] sm:text-[24px] font-bold text-[#0D162B] mb-2 text-center">
-                                You haven&apos;t listed any pets yet.
-                            </h3>
-                            <p className="text-[15px] text-gray-500 mb-8 text-center max-w-md">
-                                List a pet for adoption and your listings will appear here.
-                            </p>
+                    <EmptyState
+                        className="m-4 lg:m-8"
+                        title="You haven't listed any pets yet."
+                        description="List a pet for adoption and your listings will appear here."
+                        icon={
+                            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        }
+                        action={
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-4">
                                 <button
                                     type="button"
@@ -337,29 +337,38 @@ export default function ProfilePage() {
                                     Explore Pets
                                 </button>
                             </div>
-                        </div>
+                        }
+                    />
                     )}
 
                 </div>
 
             </div>
 
-            <AdoptionDetailsModal
-                isOpen={!!adoptionDetailsId}
-                onClose={() => setAdoptionDetailsId(null)}
-                data={adoptionDetails}
-                onListerClick={handleListerClick}
-            />
-            <ListingDetailsModal
-                isOpen={!!listingDetailsId}
-                onClose={() => setListingDetailsId(null)}
-                data={listingDetails}
-                onAdopterClick={handleAdopterClick}
-            />
-            <DocumentUploadModal
-                isOpen={isUploadModalOpen}
-                onClose={() => setIsUploadModalOpen(false)}
-            />
+            <Suspense fallback={null}>
+                {adoptionDetailsId && (
+                    <AdoptionDetailsModal
+                        isOpen={!!adoptionDetailsId}
+                        onClose={() => setAdoptionDetailsId(null)}
+                        data={adoptionDetails}
+                        onListerClick={handleListerClick}
+                    />
+                )}
+                {listingDetailsId && (
+                    <ListingDetailsModal
+                        isOpen={!!listingDetailsId}
+                        onClose={() => setListingDetailsId(null)}
+                        data={listingDetails}
+                        onAdopterClick={handleAdopterClick}
+                    />
+                )}
+                {isUploadModalOpen && (
+                    <DocumentUploadModal
+                        isOpen={isUploadModalOpen}
+                        onClose={() => setIsUploadModalOpen(false)}
+                    />
+                )}
+            </Suspense>
         </div>
     );
 }

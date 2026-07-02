@@ -102,47 +102,37 @@ export const disputeHandlers = [
 	http.get("/api/disputes", async ({ request }) => {
 		await delay(getDelay(request));
 		const url = new URL(request.url);
-		
+
 		const statusParam = url.searchParams.get("status");
 		const overdueParam = url.searchParams.get("overdue");
 		const cursorParam = url.searchParams.get("cursor");
-		
+
 		let results = MOCK_DISPUTES;
 
-		// 1) Filter status
 		if (statusParam && statusParam !== "all") {
-			results = results.filter(d => d.status === statusParam);
+			results = results.filter((d) => d.status === statusParam);
 		}
 
-		// 2) Filter overdue
 		if (overdueParam === "true") {
-			results = results.filter(d => d.isOverdue === true);
+			results = results.filter((d) => d.isOverdue === true);
 		}
 
-		// 3) Pagination (using ID as cursor for simplicity)
-		// Assume page size is 2 to make testing pagination easy
 		const pageSize = 2;
 		let startIndex = 0;
 		if (cursorParam) {
-			const index = results.findIndex(d => d.id === cursorParam);
-			if (index !== -1) {
-				startIndex = index + 1; // start after the cursor
-			}
+			const index = results.findIndex((d) => d.id === cursorParam);
+			if (index !== -1) startIndex = index + 1;
 		}
 
 		const data = results.slice(startIndex, startIndex + pageSize);
 		const lastItem = data[data.length - 1];
-		
-		// Determine if there's more data
-		const nextCursor = (startIndex + pageSize < results.length && lastItem) ? lastItem.id : undefined;
+		const nextCursor =
+			startIndex + pageSize < results.length && lastItem ? lastItem.id : undefined;
 
-		return HttpResponse.json<DisputeListResponse>({
-			data,
-			nextCursor
-		});
+		return HttpResponse.json<DisputeListResponse>({ data, nextCursor });
 	}),
 
-	// GET /api/disputes/:id — detail payload used by dispute detail hook
+	// GET /api/disputes/:id — detail payload
 	http.get("/api/disputes/:id", async ({ request, params }) => {
 		await delay(getDelay(request));
 		const id = String(params.id ?? "");
@@ -157,17 +147,11 @@ export const disputeHandlers = [
 		if (id === "dispute-resolved") {
 			return HttpResponse.json({
 				id,
-				raisedBy: {
-					name: "Alice Smith",
-					role: "ADOPTER",
-				},
+				raisedBy: { name: "Alice Smith", role: "ADOPTER" },
 				reason: "Health condition mismatch",
 				status: "RESOLVED",
 				slaStatus: "ON_TIME",
-				escrow: {
-					status: "RELEASED",
-					accountId: "GDRS77ACCOUNT12345",
-				},
+				escrow: { status: "RELEASED", accountId: "GDRS77ACCOUNT12345" },
 				evidence: [
 					{
 						id: "ev-r-1",
@@ -176,25 +160,17 @@ export const disputeHandlers = [
 						sha256: "resolved-evidence-sha256",
 					},
 				],
-				resolution: {
-					txHash: "txhash-resolved-123456",
-				},
+				resolution: { txHash: "txhash-resolved-123456" },
 			});
 		}
 
 		return HttpResponse.json({
 			id,
-			raisedBy: {
-				name: "Bob Johnson",
-				role: "ADOPTER",
-			},
+			raisedBy: { name: "Bob Johnson", role: "ADOPTER" },
 			reason: "Delayed handover",
 			status: "OPEN",
 			slaStatus: "AT_RISK",
-			escrow: {
-				status: "LOCKED",
-				accountId: "GABC88ACCOUNT67890",
-			},
+			escrow: { status: "LOCKED", accountId: "GABC88ACCOUNT67890" },
 			evidence: [
 				{
 					id: "ev-o-1",
@@ -206,21 +182,44 @@ export const disputeHandlers = [
 		});
 	}),
 
-	// POST /api/disputes — raise a new dispute
+	// POST /api/disputes — raise a new dispute (handles both JSON and FormData)
 	http.post("/api/disputes", async ({ request }) => {
 		await delay(getDelay(request));
-		const body = (await request.json()) as {
-			adoptionId: string;
-			raisedBy: string;
-			reason: string;
-			description: string;
-		};
+
+		let adoptionId = "";
+		let raisedBy = "";
+		let reason = "";
+		let description = "";
+
+		const contentType = request.headers.get("content-type") ?? "";
+
+		if (contentType.includes("multipart/form-data")) {
+			// FormData path (with file evidence)
+			const formData = await request.formData();
+			adoptionId = String(formData.get("adoptionId") ?? "");
+			raisedBy = String(formData.get("raisedBy") ?? "");
+			reason = String(formData.get("reason") ?? "");
+			description = reason;
+		} else {
+			// JSON path (no files)
+			const body = (await request.json()) as {
+				adoptionId: string;
+				raisedBy: string;
+				reason: string;
+				description?: string;
+			};
+			adoptionId = body.adoptionId;
+			raisedBy = body.raisedBy;
+			reason = body.reason;
+			description = body.description ?? reason;
+		}
+
 		const created: Dispute = {
 			id: `dispute-${Date.now()}`,
-			adoptionId: body.adoptionId,
-			raisedBy: body.raisedBy,
-			reason: body.reason,
-			description: body.description,
+			adoptionId,
+			raisedBy,
+			reason,
+			description,
 			status: "open",
 			isOverdue: false,
 			pet: { id: "pet-new", name: "Unknown" },
@@ -230,7 +229,7 @@ export const disputeHandlers = [
 			timeline: [
 				{
 					event: "Dispute raised",
-					actor: body.raisedBy,
+					actor: raisedBy,
 					timestamp: new Date().toISOString(),
 				},
 			],
@@ -238,6 +237,7 @@ export const disputeHandlers = [
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 		};
+
 		MOCK_DISPUTES.push(created);
 		return HttpResponse.json<Dispute>(created, { status: 201 });
 	}),
@@ -247,11 +247,11 @@ export const disputeHandlers = [
 		await delay(getDelay(request));
 		const body = (await request.json()) as { resolution: string; resolvedBy: string };
 		const index = MOCK_DISPUTES.findIndex((d) => d.id === params.id);
-		
+
 		if (index === -1) {
 			return HttpResponse.json({ message: "Not found" }, { status: 404 });
 		}
-		
+
 		const base = MOCK_DISPUTES[index];
 		const updated: Dispute = {
 			...base,
@@ -268,9 +268,8 @@ export const disputeHandlers = [
 			],
 			updatedAt: new Date().toISOString(),
 		};
-		
+
 		MOCK_DISPUTES[index] = updated;
-		
 		return HttpResponse.json<Dispute>(updated);
 	}),
 ];

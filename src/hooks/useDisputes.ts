@@ -13,7 +13,7 @@ export function useDisputes({ status, overdue }: UseDisputesParams = {}) {
 
   const query = useInfiniteQuery({
     queryKey: ["disputes", queryParams],
-    queryFn: async ({ pageParam }: { pageParam: string | undefined | unknown }) => {
+    queryFn: ({ pageParam }) => {
       const params = new URLSearchParams();
       
       if (status && status !== "all") {

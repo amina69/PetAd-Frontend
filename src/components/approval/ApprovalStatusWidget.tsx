@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
-import { CheckCircle2, Users } from 'lucide-react';
+import { CheckCircle2, Users, Clock, XCircle } from 'lucide-react';
 import { StellarTxLink } from '../ui/StellarTxLink';
+
+export interface ApprovalRowData {
+  id: string;
+  approverName: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
 
 export interface ApprovalStatusWidgetProps {
   /** Current number of approvals received */
@@ -9,6 +15,8 @@ export interface ApprovalStatusWidgetProps {
   required: number;
   /** Optional Stellar account ID to link to explorer */
   escrowAccountId?: string;
+  /** Optional list of approvals to render rows */
+  approvals?: ApprovalRowData[];
 }
 
 /**
@@ -21,6 +29,7 @@ export const ApprovalStatusWidget: React.FC<ApprovalStatusWidgetProps> = ({
   received,
   required,
   escrowAccountId,
+  approvals,
 }) => {
   const isQuorumMet = useMemo(() => received >= required, [received, required]);
   const percentage = useMemo(
@@ -70,6 +79,33 @@ export const ApprovalStatusWidget: React.FC<ApprovalStatusWidgetProps> = ({
           <p className="text-sm text-slate-500 italic">
             Waiting for {required - received} more approval{required - received !== 1 ? 's' : ''}...
           </p>
+        )}
+
+        {approvals && approvals.length > 0 && (
+          <div className="mt-6 space-y-2 border-t border-slate-100 pt-4">
+            {approvals.map((approval) => (
+              <div key={approval.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
+                <span className="text-sm font-medium text-slate-700">{approval.approverName}</span>
+                <div className="flex items-center">
+                  {approval.status === 'approved' && (
+                    <span data-testid={`status-badge-approved-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                      <CheckCircle2 className="w-3 h-3" /> Approved
+                    </span>
+                  )}
+                  {approval.status === 'rejected' && (
+                    <span data-testid={`status-badge-rejected-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
+                      <XCircle className="w-3 h-3" /> Rejected
+                    </span>
+                  )}
+                  {approval.status === 'pending' && (
+                    <span data-testid={`status-badge-pending-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
+                      <Clock className="w-3 h-3" /> Pending
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {escrowAccountId && (

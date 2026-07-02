@@ -1,0 +1,106 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DisputeStatusBadge > Snapshots for all statuses > matches snapshot for CLOSED 1`] = `
+<span
+  aria-label="Closed: Dispute has been closed."
+  class="relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-100 text-gray-800 border-gray-200  "
+  data-testid="dispute-badge-CLOSED"
+  role="status"
+  tabindex="0"
+>
+  Closed
+  <span
+    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+    role="tooltip"
+  >
+    Dispute has been closed.
+    <span
+      class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+    />
+  </span>
+</span>
+`;
+
+exports[`DisputeStatusBadge > Snapshots for all statuses > matches snapshot for OPEN 1`] = `
+<span
+  aria-label="Open: Dispute has been created and awaits review."
+  class="relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-red-100 text-red-800 border-red-200  "
+  data-testid="dispute-badge-OPEN"
+  role="status"
+  tabindex="0"
+>
+  Open
+  <span
+    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+    role="tooltip"
+  >
+    Dispute has been created and awaits review.
+    <span
+      class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+    />
+  </span>
+</span>
+`;
+
+exports[`DisputeStatusBadge > Snapshots for all statuses > matches snapshot for RESOLVED 1`] = `
+<span
+  aria-label="Resolved: Dispute has been resolved successfully."
+  class="relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-green-100 text-green-800 border-green-200  "
+  data-testid="dispute-badge-RESOLVED"
+  role="status"
+  tabindex="0"
+>
+  Resolved
+  <span
+    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+    role="tooltip"
+  >
+    Dispute has been resolved successfully.
+    <span
+      class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+    />
+  </span>
+</span>
+`;
+
+exports[`DisputeStatusBadge > Snapshots for all statuses > matches snapshot for SLA_BREACHED 1`] = `
+<span
+  aria-label="SLA Breached: Resolution SLA time has been exceeded."
+  class="relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-red-100 text-red-800 border-red-200 animate-pulse "
+  data-testid="dispute-badge-SLA_BREACHED"
+  role="status"
+  tabindex="0"
+>
+  SLA Breached
+  <span
+    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+    role="tooltip"
+  >
+    Resolution SLA time has been exceeded.
+    <span
+      class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+    />
+  </span>
+</span>
+`;
+
+exports[`DisputeStatusBadge > Snapshots for all statuses > matches snapshot for UNDER_REVIEW 1`] = `
+<span
+  aria-label="Under Review: Dispute is currently being reviewed."
+  class="relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-amber-100 text-amber-800 border-amber-200  "
+  data-testid="dispute-badge-UNDER_REVIEW"
+  role="status"
+  tabindex="0"
+>
+  Under Review
+  <span
+    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+    role="tooltip"
+  >
+    Dispute is currently being reviewed.
+    <span
+      class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+    />
+  </span>
+</span>
+`;

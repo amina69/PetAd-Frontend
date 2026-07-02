@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePendingApprovalsCount } from "../../hooks/usePendingApprovalsCount";
+import { useRoleGuard } from "../../hooks/useRoleGuard";
 import {
   setBannerDismissed,
   shouldShowBanner,
@@ -8,18 +9,21 @@ import { Link } from "react-router-dom";
 
 export default function ApprovalBanner() {
   const { count, isLoading } = usePendingApprovalsCount();
+  const { canApprove } = useRoleGuard();
   const [visible, setVisible] = useState(false);
 
-  const role = localStorage.getItem("role");
-  const allowed = role === "ADMIN" || role === "SHELTER";
-
   useEffect(() => {
-    if (!allowed || isLoading) return;
+    if (!canApprove || isLoading) return;
+
+    if (count === 0) {
+      setVisible(false);
+      return;
+    }
 
     if (count > 0 && shouldShowBanner(count)) {
       setVisible(true);
     }
-  }, [count, isLoading, allowed]);
+  }, [count, isLoading, canApprove]);
 
   if (!visible) return null;
 

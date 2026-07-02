@@ -1,0 +1,8 @@
+export type DisputeStatus =
+  | 'OPEN'
+  | 'UNDER_REVIEW'
+  | 'RESOLVED'
+  | 'CLOSED'
+  | 'SLA_BREACHED';
+
+  // Issues Implemented
