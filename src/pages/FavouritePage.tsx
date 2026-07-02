@@ -150,9 +150,7 @@ export default function FavouritePage() {
 
                 {/* Pet Grid */}
                 {filteredPets.length > 0 ? (
-                    <div
-                    className="flex flex-wrap gap-[20px]"
-                    >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {filteredPets.map((pet) => (
                             <PetCard
                                 key={pet.id}

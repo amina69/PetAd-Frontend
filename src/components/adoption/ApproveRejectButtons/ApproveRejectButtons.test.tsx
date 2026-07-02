@@ -27,17 +27,21 @@ describe('ApproveRejectButtons', () => {
     vi.clearAllMocks();
 
     mockUseRoleGuard.mockReturnValue({
-      role: 'admin',
+      role: 'ADMIN',
       isAdmin: true,
+      isShelter: false,
       isUser: false,
+      canApprove: true,
       hasAccess: vi.fn().mockReturnValue(true),
     });
 
     mockUseAdoptionApprovals.mockReturnValue({
       hasDecided: false,
-      requiredRoles: ['admin'],
+      requiredRoles: ['ADMIN'],
       mutateApprovalDecision: mockMutateApprovalDecision,
       isPending: false,
+      quorumMet: false,
+      setQuorumMet: vi.fn(),
     });
 
     // Make mutateApprovalDecision return a resolved promise by default
@@ -48,9 +52,11 @@ describe('ApproveRejectButtons', () => {
     it('does NOT render when user already decided', () => {
       mockUseAdoptionApprovals.mockReturnValue({
         hasDecided: true,
-        requiredRoles: ['admin'],
+        requiredRoles: ['ADMIN'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: false,
+        quorumMet: false,
+        setQuorumMet: vi.fn(),
       });
 
       const { container } = render(<ApproveRejectButtons adoptionId={defaultAdoptionId} />);
@@ -59,9 +65,11 @@ describe('ApproveRejectButtons', () => {
 
     it('does NOT render when user role not in requiredRoles', () => {
       mockUseRoleGuard.mockReturnValue({
-        role: 'user',
+        role: 'USER',
         isAdmin: false,
+        isShelter: false,
         isUser: true,
+        canApprove: false,
         hasAccess: vi.fn().mockReturnValue(false),
       });
 
@@ -118,9 +126,11 @@ describe('ApproveRejectButtons', () => {
     it('Buttons disabled during loading and Spinner visible when isPending === true', () => {
       mockUseAdoptionApprovals.mockReturnValue({
         hasDecided: false,
-        requiredRoles: ['admin'],
+        requiredRoles: ['ADMIN'],
         mutateApprovalDecision: mockMutateApprovalDecision,
         isPending: true,
+        quorumMet: false,
+        setQuorumMet: vi.fn(),
       });
 
       render(<ApproveRejectButtons adoptionId={defaultAdoptionId} />);

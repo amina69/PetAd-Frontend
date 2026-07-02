@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/query-client'
 import { ToastProvider } from './components/toast/ToastProvider'
+import { ThemeProvider } from './components/theme-provider'
 import './index.css'
 import App from './App.tsx'
 
@@ -52,7 +53,7 @@ async function bootstrap() {
     return
   }
 
-  if (import.meta.env.VITE_MSW === 'true') {
+  if (import.meta.env.DEV && import.meta.env.VITE_MSW === 'true') {
     const { worker } = await import('./mocks/browser')
     await worker.start({
       onUnhandledRequest: 'warn',
@@ -65,11 +66,13 @@ async function bootstrap() {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <BrowserRouter> {/* 2. Wrap your App */}
-            <App />
-          </BrowserRouter>
-        </ToastProvider>
+        <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
+          <ToastProvider>
+            <BrowserRouter> {/* 2. Wrap your App */}
+              <App />
+            </BrowserRouter>
+          </ToastProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>,
   )

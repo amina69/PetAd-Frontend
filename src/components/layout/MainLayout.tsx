@@ -6,7 +6,7 @@ import ApprovalBanner from "./ApprovalBanner";
 
 export function MainLayout({ children }: PropsWithChildren) {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       
       
       <ApprovalBanner />

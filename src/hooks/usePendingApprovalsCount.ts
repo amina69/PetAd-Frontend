@@ -1,16 +1,38 @@
-import { useEffect, useState } from "react";
+import { useApiQuery } from "./useApiQuery";
+import { useRoleGuard } from "./useRoleGuard";
+import { apiClient } from "../lib/api-client";
 
-export const usePendingApprovalsCount = () => {
-  const [count, setCount] = useState(0);
-  const [isLoading, setLoading] = useState(true);
+const POLL_INTERVAL_MS = 300_000;
+const MAX_DISPLAY = 9;
 
-  useEffect(() => {
-    fetch("/shelter/approvals?status=PENDING&limit=0")
-      .then((res) => res.json())
-      .then((data) => setCount(data?.count || 0))
-      .catch(() => setCount(0))
-      .finally(() => setLoading(false));
-  }, []);
+interface PendingApprovalsResponse {
+  count?: number;
+  total?: number;
+}
 
-  return { count, isLoading };
-};
+export function usePendingApprovalsCount() {
+  const { canApprove } = useRoleGuard();
+
+  const query = useApiQuery<PendingApprovalsResponse>(
+    ["pending-approvals-count"],
+    () =>
+      apiClient.get<PendingApprovalsResponse>(
+        "/shelter/approvals?status=PENDING&limit=0",
+      ),
+    {
+      enabled: canApprove,
+      refetchInterval: POLL_INTERVAL_MS,
+      refetchIntervalInBackground: true,
+      staleTime: 0,
+    },
+  );
+
+  const count = query.data?.count ?? query.data?.total ?? 0;
+
+  return {
+    count,
+    displayCount: count > MAX_DISPLAY ? `${MAX_DISPLAY}+` : String(count),
+    isLoading: query.isLoading,
+    isError: query.isError,
+  };
+}

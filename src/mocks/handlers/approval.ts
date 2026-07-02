@@ -30,6 +30,22 @@ export const approvalHandlers = [
 		]);
 	}),
 
+	// GET /api/shelter/approvals?status=PENDING&limit=0 — pending approval count
+	http.get(`${BASE_URL}/shelter/approvals`, async ({ request }: { request: Request }) => {
+		await delay(500);
+		const url = new URL(request.url);
+		const status = url.searchParams.get("status");
+		const limit = url.searchParams.get("limit");
+
+		if (status !== "PENDING" || limit !== "0") {
+			return HttpResponse.json({ count: 0 });
+		}
+
+		return HttpResponse.json({
+			count: 12,
+		});
+	}),
+
 	// GET /api/admin/approvals — admin approval queue
 	http.get(`${BASE_URL}/admin/approvals`, async ({ request }: { request: Request }) => {
 		await delay(1000);
