@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import type { ApprovalStatus } from '../features/approval';
 
 export function useAdoptionApprovals(adoptionId: string) {
   const [hasDecided, setHasDecided] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [quorumMet, setQuorumMet] = useState(false);
+  const [, setStatus] = useState<ApprovalStatus>('pending');
   
   // Mocking required roles for this approval
   const requiredRoles = ['admin', 'manager', 'reviewer'];
@@ -51,6 +53,7 @@ export function useAdoptionApprovals(adoptionId: string) {
       setTimeout(() => {
         setIsPending(false);
         setHasDecided(true);
+        setStatus(payload?.decision === 'APPROVED' ? 'approved' : 'rejected');
         // Simulate that this decision met the quorum for demo purposes
         if (payload?.decision === 'APPROVED') {
           setQuorumMet(true);

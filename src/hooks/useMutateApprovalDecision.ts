@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import type { ApprovalStatus } from "../features/approval";
 
 type DecisionPayload = {
-  decision: "approved" | "rejected";
+  decision: Exclude<ApprovalStatus, "pending">;
   reason?: string;
 };
 

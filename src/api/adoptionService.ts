@@ -5,6 +5,10 @@ import type {
   ApprovalDecision,
   AdminApprovalQueueItem,
 } from "../types/adoption";
+import type {
+  ApprovalListParams,
+  ApprovalRequest,
+} from "../features/approval";
 
 export interface AdoptionRating {
   rating: number;
@@ -54,6 +58,24 @@ export const adoptionService = {
 
   async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
     return apiClient.get(`/adoption/${adoptionId}/approvals`);
+  },
+
+  async getApprovalRequests(
+    params: ApprovalListParams = {},
+  ): Promise<ApprovalRequest[]> {
+    const searchParams = new URLSearchParams();
+    if (params.status) searchParams.append("status", params.status);
+    if (params.page !== undefined) {
+      searchParams.append("page", String(params.page));
+    }
+    if (params.pageSize !== undefined) {
+      searchParams.append("pageSize", String(params.pageSize));
+    }
+
+    const queryString = searchParams.toString();
+    return apiClient.get(
+      `/shelter/approvals${queryString ? `?${queryString}` : ""}`,
+    );
   },
 
   async getAdminApprovalQueue(
