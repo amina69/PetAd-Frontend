@@ -7,7 +7,7 @@
 # PetAd Frontend 🐾
 
 <!-- Updated toast/snackbar support for high-priority live notifications (close #C10) -->
-<!-- Note: E2E test for dispute with evidence attachment has been noted -->
+<!-- Added ApprovalCard component support (close #A9) -->
 
 A modern, responsive web application for pet adoption and temporary custody management, powered by blockchain-backed trust guarantees (Stellar trust layer integration).
 
@@ -24,13 +24,4 @@ PetAd Frontend is the client-side application for the PetAd platform, enabling u
 - **❤️ Adoption Workflows** - Streamlined adoption process from inquiry to completion
 - **⏰ Temporary Custody** - Request and manage short-term pet care arrangements
 - **👤 User Profiles** - Personalized dashboards for pet seekers and caretakers
-- **📄 Document Management** - Secure upload and verification of required documents
-- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests
-
-***
-
-## 🛠️ Tech Stack
-
-| Technology         | Purpose                   |
-|
-| ------------
+- **📄 Document Manageme
