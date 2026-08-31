@@ -12,12 +12,24 @@ interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
     txHash?: string;
     splitDistribution?: DisputeResolution["splitDistribution"];
   } | null;
+  comments?: Array<{
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  }>;
 }
 
 export interface EnrichedDisputeDetail extends DisputeDetail {
   escrowOnChainStatus?: string;
   stellarExplorerUrl?: string;
   resolutionTxHash?: string;
+  comments?: Array<{
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  }>;
 }
 
 function buildStellarExplorerUrl(accountId?: string | null): string {
@@ -29,7 +41,7 @@ export function useDisputeDetail(disputeId: string) {
   const query = useApiQuery<DisputeDetailApiResponse>(
     ["dispute-detail", disputeId],
     () => apiClient.get<DisputeDetailApiResponse>(`/disputes/${disputeId}`),
-    { enabled: Boolean(disputeId) },
+    { enabled: Boolean(disputeId), staleTime: 15000 },
   );
 
   const enrichedData = useMemo<EnrichedDisputeDetail | undefined>(() => {
@@ -39,7 +51,6 @@ export function useDisputeDetail(disputeId: string) {
 
     const raw = query.data;
 
-    // Map API resolution shape to our typed DisputeResolution
     let resolution: DisputeResolution | null = null;
     if (
       raw.resolution &&
@@ -64,6 +75,7 @@ export function useDisputeDetail(disputeId: string) {
       escrowOnChainStatus: raw.escrow?.status,
       stellarExplorerUrl: buildStellarExplorerUrl(raw.escrow?.accountId),
       resolutionTxHash: raw.resolution?.txHash,
+      comments: raw.comments ?? [],
     };
   }, [query.data]);
 

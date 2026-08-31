@@ -7,6 +7,7 @@ export interface DisputeStatusConfig {
   hasPulse?: boolean;
 }
 
+// TODO: Integration point for useAddDisputeComment optimistic updates
 export const DISPUTE_STATUS_CONFIG: Record<DisputeStatus, DisputeStatusConfig> = {
   OPEN: {
     label: 'Open',
@@ -35,7 +36,3 @@ export const DISPUTE_STATUS_CONFIG: Record<DisputeStatus, DisputeStatusConfig> =
     hasPulse: true,
   },
 };
-
-
-  // Issues Implemented
-
