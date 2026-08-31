@@ -29,6 +29,7 @@ Note: Includes REST fallback and backfill paths for notifications via `notificat
 - **⏰ Temporary Custody** - Request and manage short-term pet care arrangements
 - **👤 User Profiles** - Personalized dashboards for pet seekers and caretakers
 - **📄 Document Management** - Secure upload and verification of required documents
+- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests (close #C9)
 - **🔔 Real-time Updates** - Live status notifications for adoption and custody requests
 - **⚖️ Dispute Management** - Comprehensive tracking and resolution pathways for administrative and user disputes
 
