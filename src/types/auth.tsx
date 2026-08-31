@@ -18,3 +18,22 @@ export interface User {
   email: string;
   role: UserRole;
 }
+
+// ─── Password Reset ───────────────────────────────────────────────────────
+
+export interface PasswordResetRequestPayload {
+  email: string;
+}
+
+export interface PasswordResetPayload {
+  token: string;
+  password: string;
+}
+
+export interface PasswordResetRequestResponse {
+  message: string;
+}
+
+export interface PasswordResetResponse {
+  message: string;
+}

@@ -1,10 +1,11 @@
 import { apiClient } from "../lib/api-client";
-import type {
-  AdoptionTimelineEntry,
-  AdoptionDetails,
-  ApprovalDecision,
-  AdminApprovalQueueItem,
-} from "../types/adoption";
+import {
+  adminApprovalQueueResponseSchema,
+  approvalResponseSchema,
+  type AdminApprovalQueueResponse,
+  type ApprovalResponse,
+} from "../features/approval/schemas/approvalSchemas";
+import type { AdoptionTimelineEntry, AdoptionDetails } from "../types/adoption";
 
 export interface AdoptionRating {
   rating: number;
@@ -52,13 +53,19 @@ export const adoptionService = {
     return apiClient.patch(`/adoption/${adoptionId}/status`, data);
   },
 
-  async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
-    return apiClient.get(`/adoption/${adoptionId}/approvals`);
+  async getApprovals(adoptionId: string): Promise<ApprovalResponse[]> {
+    const data = await apiClient.get<unknown>(
+      `/adoption/${adoptionId}/approvals`
+    );
+
+    // Validate the API response at runtime to catch backend contract drift
+    // before the data reaches the consuming hooks.
+    return approvalResponseSchema.array().parse(data);
   },
 
   async getAdminApprovalQueue(
     filters: AdminApprovalFilters
-  ): Promise<{ items: AdminApprovalQueueItem[]; nextCursor?: string }> {
+  ): Promise<AdminApprovalQueueResponse> {
     const params = new URLSearchParams();
     if (filters.shelter) params.append("shelter", filters.shelter);
     if (filters.status) params.append("status", filters.status);
@@ -70,6 +77,7 @@ export const adoptionService = {
       queryString ? `?${queryString}` : ""
     }`;
 
-    return apiClient.get(endpoint);
+    const data = await apiClient.get<unknown>(endpoint);
+    return adminApprovalQueueResponseSchema.parse(data);
   },
 };
