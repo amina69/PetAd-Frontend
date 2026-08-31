@@ -8,6 +8,8 @@ import { EvidenceList } from './EvidenceList';
 import { AddEvidenceButton } from './AddEvidenceButton';
 import { EvidenceUploadModal } from '../modals/EvidenceUploadModal';
 
+// TODO: Implement DisputeThread component as specified in B10
+
 interface Props {
   dispute: DisputeDetail;
 }

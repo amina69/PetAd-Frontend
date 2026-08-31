@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { SubmitButton } from "../ui/submitButton";
+import { rejectRequestSchema } from "../../features/approval/schemas/approvalSchemas";
 
 interface RejectionReasonModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ export function RejectionReasonModal({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const isValid = reason.trim().length >= MIN_REASON_LENGTH;
+  const isValid = rejectRequestSchema.safeParse({ reason: reason.trim() }).success;
   const remainingChars = MIN_REASON_LENGTH - reason.trim().length;
 
   // Focus trap implementation
@@ -101,8 +102,15 @@ export function RejectionReasonModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isValid) {
-      setError(`Please provide at least ${MIN_REASON_LENGTH} characters`);
+    const parsed = rejectRequestSchema.safeParse({ reason: reason.trim() });
+    if (!parsed.success) {
+      const reasonIssue = parsed.error.issues.find(
+        (issue) => issue.path[0] === "reason",
+      );
+      setError(
+        reasonIssue?.message ??
+          "Please provide at least 20 characters explaining the rejection",
+      );
       return;
     }
 
