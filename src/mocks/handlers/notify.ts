@@ -1,4 +1,5 @@
 // TODO: No backend model yet - align field names when Notification is added to Prisma schema.
+// Simulated real-time events enabled for local development when VITE_MSW=true. close #C14
 import { delay, http, HttpResponse } from "msw";
 import type {
   Notification,
@@ -179,10 +180,9 @@ export const notifyHandlers = [
           ...body,
         };
       }
+      return HttpResponse.json<NotificationPreferences>(mockNotificationPreferences);
     } catch {
-      // If parsing fails, continue and return 204 to keep tests resilient
+      return new HttpResponse(null, { status: 400 });
     }
-
-    return new HttpResponse(null, { status: 204 });
   }),
 ];
