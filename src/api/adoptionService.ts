@@ -1,10 +1,11 @@
 import { apiClient } from "../lib/api-client";
-import type {
-  AdoptionTimelineEntry,
-  AdoptionDetails,
-  ApprovalDecision,
-  AdminApprovalQueueItem,
-} from "../types/adoption";
+import {
+  adminApprovalQueueResponseSchema,
+  approvalResponseSchema,
+  type AdminApprovalQueueItem,
+  type ApprovalResponse,
+} from "../features/approval/schemas/approvalSchemas";
+import type { AdoptionTimelineEntry, AdoptionDetails } from "../types/adoption";
 
 export interface AdoptionRating {
   rating: number;
@@ -23,6 +24,8 @@ export interface AdminApprovalFilters {
   status?: string;
   overdueOnly?: boolean;
   cursor?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export const adoptionService = {
@@ -52,24 +55,31 @@ export const adoptionService = {
     return apiClient.patch(`/adoption/${adoptionId}/status`, data);
   },
 
-  async getApprovals(adoptionId: string): Promise<ApprovalDecision[]> {
-    return apiClient.get(`/adoption/${adoptionId}/approvals`);
+  async getApprovals(adoptionId: string): Promise<ApprovalResponse[]> {
+    const data = await apiClient.get<unknown>(
+      `/adoption/${adoptionId}/approvals`
+    );
+
+    // Validate the API response at runtime to catch backend contract drift
+    // before the data reaches the consuming hooks.
+    return approvalResponseSchema.array().parse(data);
   },
 
   async getAdminApprovalQueue(
     filters: AdminApprovalFilters
-  ): Promise<{ items: AdminApprovalQueueItem[]; nextCursor?: string }> {
+  ): Promise<{ items: AdminApprovalQueueItem[]; nextCursor?: string | null; total?: number; page?: number; pageSize?: number }> {
     const params = new URLSearchParams();
     if (filters.shelter) params.append("shelter", filters.shelter);
     if (filters.status) params.append("status", filters.status);
     if (filters.overdueOnly) params.append("overdueOnly", "true");
     if (filters.cursor) params.append("cursor", filters.cursor);
+    if (filters.page) params.append("page", String(filters.page));
+    if (filters.pageSize) params.append("pageSize", String(filters.pageSize));
 
     const queryString = params.toString();
-    const endpoint = `/admin/approvals${
-      queryString ? `?${queryString}` : ""
-    }`;
+    const endpoint = `/admin/approvals${queryString ? `?${queryString}` : ""}`;
 
-    return apiClient.get(endpoint);
+    const data = await apiClient.get<unknown>(endpoint);
+    return adminApprovalQueueResponseSchema.parse(data);
   },
 };

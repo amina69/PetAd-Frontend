@@ -1,5 +1,5 @@
-import { apiClient } from "../lib/api-client";
 import type { SettlementSummary } from "../types/escrow";
+import { ApiError } from "../lib/api-errors";
 
 
 /**
@@ -9,14 +9,27 @@ import type { SettlementSummary } from "../types/escrow";
  */
 export const escrowService = {
   async retrySettlement(escrowId: string): Promise<void> {
-    return apiClient.post(`/escrow/${escrowId}/retry-settlement`);
+    const response = await fetch(`/api/escrow/${escrowId}/retry-settlement`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new ApiError("Failed to retry settlement", {
+        status: response.status,
+      });
+    }
   },
 
-  /**
-   * Fetch the settlement breakdown for the given escrow.
-   * @param escrowId - The ID of the escrow.
-   */
   async getSettlementSummary(escrowId: string): Promise<SettlementSummary> {
-    return apiClient.get<SettlementSummary>(`/escrow/${escrowId}/settlement-summary`);
+    const response = await fetch(`/api/escrow/${escrowId}/settlement-summary`);
+
+    if (!response.ok) {
+      throw new ApiError("Failed to fetch settlement summary", {
+        status: response.status,
+      });
+    }
+
+    return (await response.json()) as SettlementSummary;
   },
 };

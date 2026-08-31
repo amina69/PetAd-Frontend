@@ -88,7 +88,7 @@ export function EscrowStatusCard({
         </div>
       </dl>
 
-      {data.txHash ? (
+      {data.txHash && (
         <div className="mt-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             Transaction
@@ -97,20 +97,20 @@ export function EscrowStatusCard({
             <StellarTxLink id={data.txHash} type="tx" />
           </div>
         </div>
-      ) : null}
+      )}
 
-      {data.status === "SETTLED" ? (
+      {data.status === "SETTLED" && (
         <p className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-900">
           Settlement complete. Polling stops after this terminal state is
           reached.
         </p>
-      ) : null}
+      )}
 
-      {data.status === "SETTLEMENT_FAILED" && data.failureReason ? (
+      {data.status === "SETTLEMENT_FAILED" && data.failureReason && (
         <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-900">
           {data.failureReason}
         </p>
-      ) : null}
+      )}
     </section>
   );
 }

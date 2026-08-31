@@ -80,4 +80,25 @@ describe("AdminApprovalQueuePage", () => {
       expect(screen.getAllByText(/SLA Breached/i).length).toBeGreaterThan(0);
     }, { timeout: 3000 });
   });
+
+  it("stores the current page in the URL and restores it on refresh", async () => {
+    window.history.replaceState({}, "", "/admin/approvals?page=2");
+    render(<AdminApprovalQueuePage />, { wrapper });
+
+    expect(await screen.findByText("Page 2", {}, { timeout: 3000 })).toBeInTheDocument();
+
+    const nextButton = screen.getByRole("button", { name: /next/i });
+    fireEvent.click(nextButton);
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("page=3");
+    }, { timeout: 3000 });
+
+    window.history.replaceState({}, "", "/admin/approvals?page=3");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Page 3")).toBeInTheDocument();
+    }, { timeout: 3000 });
+  });
 });
