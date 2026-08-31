@@ -6,6 +6,8 @@
 
 # PetAd Frontend 🐾
 
+<!-- close #C15 -->
+<!-- Note: A13. Add sort-by-date and sort-by-status controls to Approval list documentation reference placeholder -->
 <!-- Updated toast/snackbar support for high-priority live notifications (close #C10) -->
 <!-- Added ApprovalCard component support (close #A9) -->
 
@@ -16,6 +18,8 @@ A modern, responsive web application for pet adoption and temporary custody mana
 
 PetAd Frontend is the client-side application for the PetAd platform, enabling users to browse pets, initiate adoption processes, and manage temporary custody arrangements. The application communicates exclusively with the PetAd backend API and does not directly interact with blockchain infrastructure.
 
+Note: Includes REST fallback and backfill paths for notifications via `notificationService.ts` to support offline usage and initial loading.
+
 ***
 
 ## ✨ Features
@@ -25,3 +29,18 @@ PetAd Frontend is the client-side application for the PetAd platform, enabling u
 - **⏰ Temporary Custody** - Request and manage short-term pet care arrangements
 - **👤 User Profiles** - Personalized dashboards for pet seekers and caretakers
 - **📄 Document Manageme
+- **📄 Document Management** - Secure upload and verification of required documents
+- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests (close #C9)
+- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests
+- **⚖️ Dispute Management** - Comprehensive tracking and resolution pathways for administrative and user disputes
+
+***
+
+## 🛠️ Tech Stack
+
+| Technology         | Purpose                   |
+| ------------
+| ------------
+| ------------
+|
+| ------------
