@@ -20,6 +20,15 @@ vi.mock("../../hooks/useNotifications", () => ({
   useNotifications: vi.fn(),
 }));
 
+vi.mock("../../context/NotificationSocketContext", () => ({
+  useNotificationSocket: () => ({
+    connectionState: "connected",
+    reconnectAttempts: 0,
+    lastConnectedAt: Date.now(),
+    reconnect: vi.fn(),
+  }),
+}));
+
 vi.mock("../../components/notifications", () => ({
   NotificationItem: ({
     notification,

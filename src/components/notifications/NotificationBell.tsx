@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
 import { useNotificationCount } from "../../lib/hooks/useNotificationCount";
+import { useNotificationSocket } from "../../context/NotificationSocketContext";
+import type { NotificationConnectionState } from "../../context/NotificationSocketContext";
+
+const CONNECTION_INDICATOR_COLORS: Record<NotificationConnectionState, string> = {
+  connected: "bg-green-500",
+  reconnecting: "bg-amber-500",
+  disconnected: "bg-red-500",
+};
 
 export interface NotificationBellProps {
   onClick: () => void;
@@ -9,6 +17,7 @@ export interface NotificationBellProps {
 
 export function NotificationBell({ onClick, className }: NotificationBellProps) {
   const { count } = useNotificationCount();
+  const { connectionState } = useNotificationSocket();
   const prevCountRef = useRef<number | null>(null);
   const [bellAnimKey, setBellAnimKey] = useState(0);
 
@@ -24,7 +33,10 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
   }, [count]);
 
   const badgeText = count > 9 ? "9+" : String(count);
-  const ariaLabel = `Notifications, ${count} unread`;
+  const indicatorColor = CONNECTION_INDICATOR_COLORS[connectionState];
+  const ariaLabel = connectionState === "connected"
+    ? `Notifications, ${count} unread`
+    : `Notifications, ${count} unread, connection ${connectionState}`;
 
   return (
     <button
@@ -41,6 +53,14 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
       >
         <Bell size={20} strokeWidth={2} />
       </span>
+
+      {/* Connection state indicator dot */}
+      <span
+        data-testid="connection-indicator"
+        className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${indicatorColor} ${connectionState === "reconnecting" ? "animate-pulse" : ""}`}
+        aria-label={`Notification connection: ${connectionState}`}
+      />
+
       {count > 0 ? (
         <span
           data-testid="notification-bell-badge"

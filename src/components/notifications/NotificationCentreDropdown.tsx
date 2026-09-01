@@ -13,6 +13,7 @@ import { NotificationItem } from "./index";
 import { useMutateMarkRead } from "../../hooks/useMutateMarkRead";
 import { useMutateMarkAllRead } from "../../hooks/useMutateMarkAllRead";
 import { notificationRouter } from "../../lib/notificationRouter";
+import { useNotificationSocket } from "../../context/NotificationSocketContext";
 import type { Notification, NotificationsPage } from "../../types/notifications";
 
 
@@ -64,6 +65,7 @@ export function NotificationCentreDropdown({
 
   const { markRead, isPending: isMarkingRead } = useMutateMarkRead();
   const { markAllRead, isPending: isMarkingAll } = useMutateMarkAllRead();
+  const { connectionState, reconnect } = useNotificationSocket();
 
 
   const { data, isLoading, isError } = useQuery<NotificationsPage>({
@@ -226,6 +228,39 @@ export function NotificationCentreDropdown({
               </button>
             )}
           </div>
+
+          {/* Connection state banner */}
+          {connectionState !== "connected" && (
+            <div
+              data-testid="connection-banner"
+              className={`px-4 py-2 text-xs font-medium flex items-center justify-between ${
+                connectionState === "reconnecting"
+                  ? "bg-amber-50 text-amber-700 border-b border-amber-100"
+                  : "bg-red-50 text-red-700 border-b border-red-100"
+              }`}
+            >
+              <span className="flex items-center gap-1.5">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    connectionState === "reconnecting" ? "bg-amber-500 animate-pulse" : "bg-red-500"
+                  }`}
+                />
+                {connectionState === "reconnecting"
+                  ? "Reconnecting... notifications may be delayed"
+                  : "Disconnected — notifications paused"}
+              </span>
+              {connectionState === "disconnected" && (
+                <button
+                  type="button"
+                  data-testid="reconnect-button"
+                  onClick={reconnect}
+                  className="text-red-600 hover:text-red-800 underline font-semibold"
+                >
+                  Reconnect
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Body */}
           <div

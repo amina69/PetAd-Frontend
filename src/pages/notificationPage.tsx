@@ -2,6 +2,7 @@ import { useRef, useEffect, useCallback, useMemo, useState } from "react";
 import { useNotifications } from "../hooks/useNotifications";
 import { NotificationItem } from "../components/notifications";
 import { EmptyState } from "../components/ui/emptyState";
+import { useNotificationSocket } from "../context/NotificationSocketContext";
 import type { Notification, NotificationFilter } from "../types/notifications";
 
 
@@ -98,6 +99,8 @@ export default function NotificationsListPage() {
     markRead,
   } = useNotifications(filter);
 
+  const { connectionState, reconnect } = useNotificationSocket();
+
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.isRead).length,
     [notifications],
@@ -147,6 +150,39 @@ export default function NotificationsListPage() {
           </span>
         )}
       </div>
+
+      {/* Connection state banner */}
+      {connectionState !== "connected" && (
+        <div
+          data-testid="connection-banner"
+          className={`mb-4 px-4 py-3 rounded-lg flex items-center justify-between ${
+            connectionState === "reconnecting"
+              ? "bg-amber-50 border border-amber-200 text-amber-700"
+              : "bg-red-50 border border-red-200 text-red-700"
+          }`}
+        >
+          <span className="flex items-center gap-2 text-sm">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                connectionState === "reconnecting" ? "bg-amber-500 animate-pulse" : "bg-red-500"
+              }`}
+            />
+            {connectionState === "reconnecting"
+              ? "Reconnecting to notification service..."
+              : "Disconnected from notification service"}
+          </span>
+          {connectionState === "disconnected" && (
+            <button
+              type="button"
+              data-testid="reconnect-button"
+              onClick={reconnect}
+              className="text-sm font-medium text-red-600 hover:text-red-800 underline"
+            >
+              Reconnect
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Filter tabs */}
       <div
