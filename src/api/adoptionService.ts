@@ -1,4 +1,12 @@
 import { apiClient } from "../lib/api-client";
+import type {
+  AdoptionTimelineEntry,
+  AdoptionDetails,
+} from "../types/adoption";
+import type {
+  ApprovalListParams,
+  ApprovalRequest,
+} from "../features/approval";
 import {
   adminApprovalQueueResponseSchema,
   approvalResponseSchema,
@@ -61,6 +69,24 @@ export const adoptionService = {
     // Validate the API response at runtime to catch backend contract drift
     // before the data reaches the consuming hooks.
     return approvalResponseSchema.array().parse(data);
+  },
+
+  async getApprovalRequests(
+    params: ApprovalListParams = {},
+  ): Promise<ApprovalRequest[]> {
+    const searchParams = new URLSearchParams();
+    if (params.status) searchParams.append("status", params.status);
+    if (params.page !== undefined) {
+      searchParams.append("page", String(params.page));
+    }
+    if (params.pageSize !== undefined) {
+      searchParams.append("pageSize", String(params.pageSize));
+    }
+
+    const queryString = searchParams.toString();
+    return apiClient.get(
+      `/shelter/approvals${queryString ? `?${queryString}` : ""}`,
+    );
   },
 
   async getAdminApprovalQueue(
