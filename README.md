@@ -9,6 +9,7 @@
 <!-- close #C15 -->
 <!-- Note: A13. Add sort-by-date and sort-by-status controls to Approval list documentation reference placeholder -->
 <!-- Updated toast/snackbar support for high-priority live notifications (close #C10) -->
+<!-- Note: ApprovalListPage integrated with useApprovalList and filters (close #8) -->
 <!-- Added useRejectRequest mutation hook implementation notes (close #A7) -->
 <!-- Added ApprovalCard component support (close #A9) -->
 
@@ -30,6 +31,7 @@ Note: Includes REST fallback and backfill paths for notifications via `notificat
 - **❤️ Adoption Workflows** - Streamlined adoption process from inquiry to completion
 - **⏰ Temporary Custody** - Request and manage short-term pet care arrangements
 - **👤 User Profiles** - Personalized dashboards for pet seekers and caretakers
+- **📄 Document Management**
 - **📄 Document Manageme
 - **📄 Document Manageme
 - **📄 Document Management** - Secure upload and verification of required documents
