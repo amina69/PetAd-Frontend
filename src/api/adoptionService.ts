@@ -13,7 +13,6 @@ import {
   type AdminApprovalQueueResponse,
   type ApprovalResponse,
 } from "../features/approval/schemas/approvalSchemas";
-import type { AdoptionTimelineEntry, AdoptionDetails } from "../types/adoption";
 
 export interface AdoptionRating {
   rating: number;
