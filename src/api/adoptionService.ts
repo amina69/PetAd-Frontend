@@ -2,8 +2,6 @@ import { apiClient } from "../lib/api-client";
 import type {
   AdoptionTimelineEntry,
   AdoptionDetails,
-  ApprovalDecision,
-  AdminApprovalQueueItem,
 } from "../types/adoption";
 import type {
   ApprovalListParams,
@@ -15,7 +13,6 @@ import {
   type AdminApprovalQueueResponse,
   type ApprovalResponse,
 } from "../features/approval/schemas/approvalSchemas";
-import type { AdoptionTimelineEntry, AdoptionDetails } from "../types/adoption";
 
 export interface AdoptionRating {
   rating: number;
