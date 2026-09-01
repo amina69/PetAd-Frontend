@@ -159,4 +159,73 @@ describe('FileUploadZone', () => {
 
     expect(clickSpy).toHaveBeenCalled();
   });
+
+  it('rejects oversized files with a specific error message', () => {
+    const onChange = vi.fn();
+    render(
+      <FileUploadZone id="test-upload" onChange={onChange} selectedFiles={[]} maxFileSize={1024} />,
+    );
+
+    const input = screen.getByTestId('file-input') as HTMLInputElement;
+    // Create a file larger than 1024 bytes
+    const bigContent = new Uint8Array(2048).fill(65);
+    const bigFile = new File([bigContent], 'big-file.pdf', { type: 'application/pdf' });
+
+    fireEvent.change(input, { target: { files: [bigFile] } });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText(/File too large/)).toBeInTheDocument();
+    expect(screen.getByText(/big-file\.pdf/)).toBeInTheDocument();
+    expect(screen.getByText(/maximum is 1\.0 KB/)).toBeInTheDocument();
+  });
+
+  it('rejects a mix of valid and oversized files, reporting the first oversized one', () => {
+    const onChange = vi.fn();
+    render(
+      <FileUploadZone id="test-upload" onChange={onChange} selectedFiles={[]} maxFiles={2} maxFileSize={1024} />,
+    );
+
+    const input = screen.getByTestId('file-input') as HTMLInputElement;
+    const smallFile = new File(['ok'], 'small.pdf', { type: 'application/pdf' });
+    const bigContent = new Uint8Array(2048).fill(65);
+    const bigFile = new File([bigContent], 'oversized.png', { type: 'image/png' });
+
+    fireEvent.change(input, { target: { files: [smallFile, bigFile] } });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText(/File too large/)).toBeInTheDocument();
+    expect(screen.getByText(/oversized\.png/)).toBeInTheDocument();
+  });
+
+  it('defaults maxFileSize to 10 MB when not specified', () => {
+    const onChange = vi.fn();
+    render(
+      <FileUploadZone id="test-upload" onChange={onChange} selectedFiles={[]} />,
+    );
+
+    const input = screen.getByTestId('file-input') as HTMLInputElement;
+    // 11 MB file should be rejected with default limit
+    const bigContent = new Uint8Array(11 * 1024 * 1024).fill(65);
+    const bigFile = new File([bigContent], 'huge.pdf', { type: 'application/pdf' });
+
+    fireEvent.change(input, { target: { files: [bigFile] } });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText(/File too large/)).toBeInTheDocument();
+    expect(screen.getByText(/maximum is 10\.0 MB/)).toBeInTheDocument();
+  });
+
+  it('accepts files within the size limit', () => {
+    const onChange = vi.fn();
+    render(
+      <FileUploadZone id="test-upload" onChange={onChange} selectedFiles={[]} maxFileSize={1024} />,
+    );
+
+    const input = screen.getByTestId('file-input') as HTMLInputElement;
+    const smallFile = new File(['ok'], 'small.pdf', { type: 'application/pdf' });
+
+    fireEvent.change(input, { target: { files: [smallFile] } });
+
+    expect(onChange).toHaveBeenCalledWith([smallFile]);
+  });
 });
