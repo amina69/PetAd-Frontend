@@ -4,7 +4,7 @@ import { RefreshCw } from "lucide-react";
 import { useApprovalList } from "../features/approval/hooks/useApprovalList";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
-import type { DecisionStatus } from "../types/adoption";
+
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -12,7 +12,7 @@ import type { DecisionStatus } from "../types/adoption";
  *  page size so the layout does not visually jump when real data arrives. */
 const SKELETON_COUNT = 6;
 
-type FilterTab = "all" | DecisionStatus;
+type FilterTab = "all" | "PENDING" | "APPROVED" | "REJECTED";
 
 const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: "all", label: "All" },
