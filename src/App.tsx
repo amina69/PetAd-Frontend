@@ -29,6 +29,8 @@ import CustodyTimelinePage from "./pages/CustodyTimelinePage";
 import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
 import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
+import DisputeListPage from "./pages/DisputeListPage";
+import DisputeThread from "./pages/DisputeThread";
 import ShelterApprovalQueuePage from "./pages/ShelterApprovalQueuePage";
 import MyDisputesPage from "./pages/MyDisputesPage";
 
@@ -99,7 +101,9 @@ function App() {
               element={<ShelterApprovalQueuePage />}
             />
             <Route path="/disputes" element={<MyDisputesPage />} />
+            <Route path="/disputes/list" element={<DisputeListPage />} />
             <Route path="/disputes/:id" element={<DisputeDetailPage />} />
+            <Route path="/disputes/:id/thread" element={<DisputeThread />} />
             <Route
               path="/custody/:custodyId/timeline"
               element={<CustodyTimelinePage />}
