@@ -30,10 +30,17 @@ async function cleanupServiceWorkers() {
 
     const isMswWorker = scriptUrl.endsWith('/mockServiceWorker.js')
 
-    if (!isMswWorker) {
-      await registration.unregister()
-      removedStaleWorker = true
+    // In development the MSW worker may be legitimately active (VITE_MSW=true),
+    // so it is left alone. In a production build it can never start again — the
+    // guard below is dev-only and dist/mockServiceWorker.js is not shipped — so
+    // a leftover registration (e.g. from having loaded the dev app on the same
+    // origin) would silently keep intercepting fetches and must be removed.
+    if (isMswWorker && import.meta.env.DEV) {
+      continue
     }
+
+    await registration.unregister()
+    removedStaleWorker = true
   }
 
   if (removedStaleWorker && !sessionStorage.getItem(STALE_SW_RELOAD_KEY)) {
@@ -53,6 +60,11 @@ async function bootstrap() {
     return
   }
 
+  // Tree-shaking contract: MSW must only be reachable through this branch.
+  // `import.meta.env.DEV` and `import.meta.env.VITE_MSW` are statically replaced
+  // by Vite, so in a production build this becomes `if (false) {...}` and Rollup
+  // drops the dynamic import together with src/mocks/browser.ts and every
+  // handler under src/mocks/handlers/**.
   if (import.meta.env.DEV && import.meta.env.VITE_MSW === 'true') {
     const { worker } = await import('./mocks/browser')
     await worker.start({
