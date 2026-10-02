@@ -1,3 +1,7 @@
+// Runtime env validation must run before anything else — an invalid
+// environment aborts startup here with a clear, named error.
+import './lib/env'
+import { env } from './lib/env'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -56,6 +60,7 @@ async function bootstrap() {
     return
   }
 
+  if (import.meta.env.DEV && env.VITE_MSW === 'true') {
   if (import.meta.env.DEV && import.meta.env.VITE_MSW === 'true') {
     // Dynamic import keeps MSW (and src/mocks/**) out of production bundles:
     // Rollup statically evaluates the DEV guard above and tree-shakes the

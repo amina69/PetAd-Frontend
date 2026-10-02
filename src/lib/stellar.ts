@@ -1,3 +1,5 @@
+import { env } from "./env";
+
 /**
  * Stellar utility functions for explorer URLs and transaction hash formatting
  */
@@ -12,7 +14,8 @@ export function stellarExplorerUrl(txHash: string): string {
     throw new Error("Transaction hash is required");
   }
 
-  const network = import.meta.env.VITE_STELLAR_NETWORK || "testnet";
+  // Validated at boot by src/lib/env.ts (no silent fallback).
+  const network = env.VITE_STELLAR_NETWORK;
   const baseUrl = network === "mainnet" 
     ? "https://stellar.expert/explorer/public/tx/"
     : "https://stellar.expert/explorer/testnet/tx/";

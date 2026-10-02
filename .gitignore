@@ -10,7 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.locals
+*.local
 
 # Local issue notes (not shipped)
 issues/
