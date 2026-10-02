@@ -4,6 +4,10 @@ import { ArrowLeft } from "lucide-react";
 import { TimelineEntry } from "../components/ui/TimelineEntry";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
+import {
+  DisputeThread,
+  type DisputeThreadComment,
+} from "../components/dispute/DisputeThread";
 import type { DisputeDetails, DisputeEvent } from "../types/dispute";
 import type { AdoptionTimelineEntry } from "../types/adoption";
 
@@ -92,6 +96,18 @@ export default function DisputeDetailPage() {
       .map(mapDisputeEventToTimelineEntry);
   }, [dispute]);
 
+  // The dispute discussion mirrors the event log so the thread is reachable on
+  // the routed dispute page and renders its empty/loaded states (B12).
+  const threadComments = useMemo<DisputeThreadComment[]>(() => {
+    if (!dispute?.events) return [];
+    return dispute.events.map((event) => ({
+      id: event.id,
+      authorName: event.actor ?? "System",
+      content: event.message ?? `Dispute ${event.type.toLowerCase()}`,
+      createdAt: event.createdAt,
+    }));
+  }, [dispute]);
+
   if (isError) {
     return (
       <div className="mx-auto max-w-3xl p-4 md:p-8">
@@ -155,6 +171,12 @@ export default function DisputeDetailPage() {
           </div>
         )}
       </div>
+
+      <DisputeThread
+        comments={threadComments}
+        isLoading={isLoading}
+        isError={isError}
+      />
     </div>
   );
 }
