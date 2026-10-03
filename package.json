@@ -14,8 +14,9 @@
     "check:msw": "node scripts/check-msw-production.mjs --mode production",
     "lint": "eslint .",
     "test": "vitest run",
-    "preview": "vite preview",
-    "e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "e2e": "playwright test",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mswjs/interceptors": "^0.41.9",
