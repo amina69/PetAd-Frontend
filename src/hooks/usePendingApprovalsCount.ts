@@ -25,6 +25,7 @@ export function usePendingApprovalsCount() {
       enabled: canApprove,
       refetchInterval: POLL_INTERVAL_MS,
       refetchIntervalInBackground: true,
+      // Approval counts are a live queue indicator; every poll must revalidate.
       staleTime: 0,
     },
   );

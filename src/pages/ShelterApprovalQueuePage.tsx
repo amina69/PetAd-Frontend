@@ -42,7 +42,7 @@ export default function ShelterApprovalQueuePage() {
           <h1 className="text-3xl font-extrabold text-[#0D162B] tracking-tight">
             Pending Shelter Approvals
           </h1>
-          <p className="mt-2 text-gray-500 font-medium">
+          <p className="mt-2 text-gray-700 font-medium">
             Review and approve pending adoptions for your shelter.
           </p>
         </div>
@@ -74,10 +74,10 @@ export default function ShelterApprovalQueuePage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 border-b border-gray-100">
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Pet</th>
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Adopter</th>
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Submitted</th>
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Waiting</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">Pet</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">Adopter</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">Submitted</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">Waiting</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">

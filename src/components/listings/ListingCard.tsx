@@ -25,6 +25,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         <img 
           src={listing.imageUrl} 
           alt={listing.name} 
+          loading="lazy"
           className="w-full h-full object-cover"
         />
       </div>

@@ -91,6 +91,7 @@ describe("NotificationBell", () => {
     expect(screen.getByTestId("notification-bell-icon-wrap").className).toContain(
       "animate-notification-bell",
     );
+    expect(screen.getByRole("status")).toHaveTextContent("1 new notification. 2 unread total.");
   });
 
   it("shows green indicator when connected", () => {

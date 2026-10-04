@@ -65,6 +65,7 @@ export function InterestPetCard({
           <img
             src={pet.imageUrl}
             alt={pet.name}
+            loading="lazy"
             className=" w-full h-full lg:w-32 lg:h-25 object-center"
           />
         </div>

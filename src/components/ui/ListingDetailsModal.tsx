@@ -92,6 +92,7 @@ export function ListingDetailsModal({
                                 <img
                                     src={data.pet.imageUrl}
                                     alt={data.pet.name}
+                                    loading="lazy"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -116,6 +117,7 @@ export function ListingDetailsModal({
                                 <img
                                     src={data.adopter.imageUrl}
                                     alt={data.adopter.fullName}
+                                    loading="lazy"
                                     className="w-full h-full object-cover"
                                 />
                             </div>

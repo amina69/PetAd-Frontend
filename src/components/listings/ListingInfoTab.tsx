@@ -35,6 +35,7 @@ export default function ListingInfoTab() {
             <img
               src={img}
               alt={`Pet image ${i + 1}`}
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </button>
@@ -46,6 +47,7 @@ export default function ListingInfoTab() {
         <img
           src={mockListing.images[activeImage]}
           alt={mockListing.name}
+          loading="lazy"
           className="w-full h-full object-cover"
         />
         {/* Mobile thumbnails */}
@@ -58,7 +60,7 @@ export default function ListingInfoTab() {
                 activeImage === i ? "border-[#E84D2A]" : "border-transparent"
               }`}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={img} alt="" loading="lazy" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

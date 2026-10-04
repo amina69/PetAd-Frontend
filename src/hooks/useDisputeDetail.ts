@@ -41,7 +41,11 @@ export function useDisputeDetail(disputeId: string) {
   const query = useApiQuery<DisputeDetailApiResponse>(
     ["dispute-detail", disputeId],
     () => apiClient.get<DisputeDetailApiResponse>(`/disputes/${disputeId}`),
-    { enabled: Boolean(disputeId), staleTime: 15000 },
+    {
+      enabled: Boolean(disputeId),
+      // Dispute status can change during review, so keep detail views fresh.
+      staleTime: 15000,
+    },
   );
 
   const enrichedData = useMemo<EnrichedDisputeDetail | undefined>(() => {

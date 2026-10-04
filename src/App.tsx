@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
@@ -5,32 +6,51 @@ import { GuestRoute } from "./components/auth/GuestRoute";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
-import FavouritePage from "./pages/FavouritePage";
-import HomePage from "./pages/HomePage";
-import ListingsPage from "./pages/ListingsPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
-import ForgetPasswordPage from "./pages/forgetPasswordPage";
-import InterestPage from "./pages/interestPage";
-import NotificationPage from "./pages/notificationPage";
-import NotificationPreferencesPage from "./pages/NotificationPreferencesPage";
-import NotificationsPage from "./pages/settings/NotificationsPage";
-import ResetPasswordPage from "./pages/resetPasswordPage";
-import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
-import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
-import EditAdoptionListing from "./pages/EditAdoptionListing";
-import ListingDetailsPage from "./pages/ListingDetailsPage";
-import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
-import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
-import ModalPreview from "./pages/ModalPreview";
-import StatusPollingDemo from "./pages/StatusPollingDemo";
-import CustodyTimelinePage from "./pages/CustodyTimelinePage";
-import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
-import AdminDisputeListPage from "./pages/AdminDisputeListPage";
-import DisputeDetailPage from "./pages/DisputeDetailPage";
-import ShelterApprovalQueuePage from "./pages/ShelterApprovalQueuePage";
-import MyDisputesPage from "./pages/MyDisputesPage";
+
+const FavouritePage = lazy(() => import("./pages/FavouritePage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ListingsPage = lazy(() => import("./pages/ListingsPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const ForgetPasswordPage = lazy(() => import("./pages/forgetPasswordPage"));
+const InterestPage = lazy(() => import("./pages/interestPage"));
+const NotificationPage = lazy(() => import("./pages/notificationPage"));
+const NotificationPreferencesPage = lazy(() =>
+  import("./pages/NotificationPreferencesPage"),
+);
+const NotificationsPage = lazy(() => import("./pages/settings/NotificationsPage"));
+const ResetPasswordPage = lazy(() => import("./pages/resetPasswordPage"));
+const AdoptionCompletionDemo = lazy(() =>
+  import("./pages/AdoptionCompletionDemo").then(({ AdoptionCompletionDemo }) => ({
+    default: AdoptionCompletionDemo,
+  })),
+);
+const PetListingDetailsPage = lazy(() => import("./pages/PetlistingdetailsPage"));
+const EditAdoptionListing = lazy(() => import("./pages/EditAdoptionListing"));
+const ListingDetailsPage = lazy(() => import("./pages/ListingDetailsPage"));
+const SettlementSummaryPage = lazy(() =>
+  import("./pages/SettlementSummaryPage").then(({ SettlementSummaryPage }) => ({
+    default: SettlementSummaryPage,
+  })),
+);
+const AdoptionTimelinePage = lazy(() => import("./pages/AdoptionTimelinePage"));
+const ModalPreview = lazy(() => import("./pages/ModalPreview"));
+const StatusPollingDemo = lazy(() => import("./pages/StatusPollingDemo"));
+const CustodyTimelinePage = lazy(() => import("./pages/CustodyTimelinePage"));
+const AdminApprovalQueuePage = lazy(() => import("./pages/AdminApprovalQueuePage"));
+const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
+const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
+const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
+const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
+
+function RouteLoadingFallback() {
+  return (
+    <div role="status" aria-live="polite">
+      Loading page…
+    </div>
+  );
+}
 
 function App() {
   useNotificationDeepLink();
@@ -41,7 +61,8 @@ function App() {
      * provider reads the correct current pathname when requireAuth() is called.
      */
     <AuthGateProvider>
-      <Routes>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Routes>
         {/* ── Root redirect ─────────────────────────────────────────────── */}
         <Route path="/" element={<Navigate to="/home" replace />} />
 
@@ -115,7 +136,8 @@ function App() {
 
         {/* ── Catch-all ─────────────────────────────────────────────────── */}
         <Route path="*" element={<Navigate to="/home" replace />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </AuthGateProvider>
   );
 }

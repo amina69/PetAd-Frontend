@@ -139,10 +139,11 @@ export function AdminStatusOverrideModal({
           </div>
 
           <div>
-            <label className="mb-2 block text-[13px] font-medium text-gray-700">
+            <label htmlFor="override-status" className="mb-2 block text-[13px] font-medium text-gray-700">
               Select New Status
             </label>
             <select
+              id="override-status"
               value={targetStatus}
               onChange={(e) => setTargetStatus(e.target.value)}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 text-[14px] text-gray-700 outline-none transition focus:ring-2 focus:ring-[#E84D2A]/30"
@@ -157,10 +158,11 @@ export function AdminStatusOverrideModal({
           </div>
 
           <div>
-            <label className="mb-2 block text-[13px] font-medium text-gray-700">
+            <label htmlFor="override-reason" className="mb-2 block text-[13px] font-medium text-gray-700">
               Reason
             </label>
             <textarea
+              id="override-reason"
               placeholder="Enter reason for overriding the status"
               value={reason}
               onChange={(e) => setReason(e.target.value)}

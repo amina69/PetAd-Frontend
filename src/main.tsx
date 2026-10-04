@@ -28,9 +28,12 @@ async function cleanupServiceWorkers() {
       continue
     }
 
+    // MSW only ever runs in dev with VITE_MSW=true, so any mockServiceWorker.js
+    // registration we encounter here (e.g. left behind by an earlier dev visit)
+    // is stale in this build and must be removed, not kept.
     const isMswWorker = scriptUrl.endsWith('/mockServiceWorker.js')
 
-    if (!isMswWorker) {
+    if (isMswWorker || !import.meta.env.DEV) {
       await registration.unregister()
       removedStaleWorker = true
     }
@@ -54,6 +57,9 @@ async function bootstrap() {
   }
 
   if (import.meta.env.DEV && import.meta.env.VITE_MSW === 'true') {
+    // Dynamic import keeps MSW (and src/mocks/**) out of production bundles:
+    // Rollup statically evaluates the DEV guard above and tree-shakes the
+    // entire branch when VITE_MSW is unset at build time.
     const { worker } = await import('./mocks/browser')
     await worker.start({
       onUnhandledRequest: 'warn',

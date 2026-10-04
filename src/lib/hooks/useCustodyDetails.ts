@@ -8,6 +8,8 @@ export function useCustodyDetails(custodyId: string | undefined) {
     queryKey: ["custody-details", custodyId],
     queryFn: () => custodyService.getDetails(custodyId!),
     enabled,
+    // Custody history is immutable after recording, so the shared cache is sufficient.
+    staleTime: 30_000,
   });
 
   return {

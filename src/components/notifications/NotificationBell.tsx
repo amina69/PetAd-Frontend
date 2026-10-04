@@ -20,6 +20,7 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
   const { connectionState } = useNotificationSocket();
   const prevCountRef = useRef<number | null>(null);
   const [bellAnimKey, setBellAnimKey] = useState(0);
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     if (prevCountRef.current === null) {
@@ -28,6 +29,11 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
     }
     if (count > prevCountRef.current) {
       setBellAnimKey((k) => k + 1);
+      const newNotifications = count - prevCountRef.current;
+      setAnnouncement(
+        `${newNotifications} new notification${newNotifications === 1 ? "" : "s"}. ` +
+          `${count} unread total.`,
+      );
     }
     prevCountRef.current = count;
   }, [count]);
@@ -39,37 +45,42 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
     : `Notifications, ${count} unread, connection ${connectionState}`;
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors ${className ?? ""}`}
-      aria-label={ariaLabel}
-    >
-      <span
-        key={bellAnimKey}
-        data-testid="notification-bell-icon-wrap"
-        className={`inline-flex ${bellAnimKey > 0 ? "animate-notification-bell" : ""}`}
-        aria-hidden="true"
+    <>
+      <button
+        type="button"
+        onClick={onClick}
+        className={`relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors ${className ?? ""}`}
+        aria-label={ariaLabel}
       >
-        <Bell size={20} strokeWidth={2} />
-      </span>
-
-      {/* Connection state indicator dot */}
-      <span
-        data-testid="connection-indicator"
-        className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${indicatorColor} ${connectionState === "reconnecting" ? "animate-pulse" : ""}`}
-        aria-label={`Notification connection: ${connectionState}`}
-      />
-
-      {count > 0 ? (
         <span
-          data-testid="notification-bell-badge"
-          className="absolute -top-1 -right-1 flex min-w-5 h-5 px-1 items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white"
+          key={bellAnimKey}
+          data-testid="notification-bell-icon-wrap"
+          className={`inline-flex ${bellAnimKey > 0 ? "animate-notification-bell" : ""}`}
           aria-hidden="true"
         >
-          {badgeText}
+          <Bell size={20} strokeWidth={2} />
         </span>
-      ) : null}
-    </button>
+
+      {/* Connection state indicator dot */}
+        <span
+          data-testid="connection-indicator"
+          className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${indicatorColor} ${connectionState === "reconnecting" ? "animate-pulse" : ""}`}
+          aria-label={`Notification connection: ${connectionState}`}
+        />
+
+        {count > 0 ? (
+          <span
+            data-testid="notification-bell-badge"
+            className="absolute -top-1 -right-1 flex min-w-5 h-5 px-1 items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white"
+            aria-hidden="true"
+          >
+            {badgeText}
+          </span>
+        ) : null}
+      </button>
+      <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </span>
+    </>
   );
 }

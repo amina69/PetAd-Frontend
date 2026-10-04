@@ -31,3 +31,18 @@ jobs:
 
       - name: Run unit tests
         run: npm test
+
+      # Guard self-test (issue #526): prove that a production target resolved
+      # with VITE_MSW=true fails, and that a clean production env passes.
+      - name: Verify MSW production guard
+        run: |
+          echo "Checking that VITE_MSW=true fails for a production target..."
+          if VITE_MSW=true node scripts/check-msw-production.mjs --mode production; then
+            echo "::error::MSW guard failed to reject VITE_MSW=true in production"
+            exit 1
+          fi
+          echo "Guard correctly rejected a misconfigured production env."
+
+          echo "Checking that a clean production target passes..."
+          VITE_MSW=false node scripts/check-msw-production.mjs --mode production
+          echo "Guard correctly allowed a clean production env."

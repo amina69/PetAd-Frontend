@@ -111,7 +111,9 @@ function DocumentReviewItem({
           {/* Inline Reject Input */}
           {showRejectInput && (
             <div className="mt-3 flex flex-col gap-2">
+              <label htmlFor="reject-reason" className="sr-only">Reason for rejection</label>
               <textarea
+                id="reject-reason"
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Enter reason for rejection..."

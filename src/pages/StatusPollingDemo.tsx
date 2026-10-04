@@ -25,7 +25,7 @@ export default function StatusPollingDemo() {
             </h2>
 
             {adoptionLoading ? (
-              <div className="text-gray-500">Loading adoption status...</div>
+              <div className="text-gray-700">Loading adoption status...</div>
             ) : adoptionData ? (
               <div className="space-y-2">
                 <div className="flex justify-between">
@@ -77,7 +77,7 @@ export default function StatusPollingDemo() {
             </h2>
 
             {custodyLoading ? (
-              <div className="text-gray-500">Loading custody status...</div>
+              <div className="text-gray-700">Loading custody status...</div>
             ) : custodyData ? (
               <div className="space-y-2">
                 <div className="flex justify-between">

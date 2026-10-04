@@ -36,6 +36,7 @@ export function PetOwnerModal({ isOpen, onClose, ownerImage }: PetOwnerModalProp
                         <img
                             src={ownerImage}
                             alt="Pet Owner"
+                            loading="lazy"
                             className="w-full h-full object-cover"
                         />
                     </div>

@@ -93,7 +93,7 @@ const RelatedCard = ({ listing, onClick }: { listing: typeof relatedListings[0];
   return (
     <div className="pld-related-card" onClick={onClick}>
       <div className="pld-related-card__img-wrap">
-        <img src={listing.image} alt={listing.name} className="pld-related-card__img" />
+        <img src={listing.image} alt={listing.name} loading="lazy" className="pld-related-card__img" />
         <div className="pld-related-card__actions">
           <button className="pld-related-card__action-btn" onClick={(e) => { e.stopPropagation(); setFav(f => !f); }}>
             <HeartIcon filled={fav} />
@@ -364,7 +364,7 @@ export default function PetListingDetailsPage() {
                     className={`pld-gallery__thumb ${i === activeImage ? "pld-gallery__thumb--active" : ""}`}
                     onClick={() => setActiveImage(i)}
                   >
-                    <img src={img} alt={`Pet image ${i + 1}`} />
+                    <img src={img} alt={`Pet image ${i + 1}`} loading="lazy" />
                   </div>
                 ))}
               </div>
@@ -439,7 +439,7 @@ export default function PetListingDetailsPage() {
           {/* ── Tab Content ── */}
           {activeTab === "owner" ? (
             <div className="pld-owner">
-              <img src={pet.owner.avatar} alt={pet.owner.name} className="pld-owner__avatar" />
+              <img src={pet.owner.avatar} alt={pet.owner.name} loading="lazy" className="pld-owner__avatar" />
               <div className="pld-owner__fields">
                 <div className="pld-owner__field">
                   <span className="pld-owner__field-label">Full Name</span>

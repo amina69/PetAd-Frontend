@@ -35,6 +35,7 @@ export function useApprovalList(params: ApprovalListParams = {}) {
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: approvalKeys.list(params),
     queryFn: () => approvalService.getApprovals(params),
+    // Lists are stable between operator actions, so avoid refetching on every render.
     staleTime: 60_000,
     refetchOnWindowFocus: false,
   });

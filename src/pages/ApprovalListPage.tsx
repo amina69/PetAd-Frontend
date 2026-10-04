@@ -171,6 +171,7 @@ export default function ApprovalListPage() {
               key={tab.value}
               role="tab"
               aria-selected={activeTab === tab.value}
+              aria-controls="approval-status-panel"
               data-testid={`tab-${tab.value}`}
               onClick={() => handleTabChange(tab.value)}
               className={[
@@ -186,7 +187,7 @@ export default function ApprovalListPage() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div id="approval-status-panel" role="tabpanel" tabIndex={0} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           {isLoading ? (
             /* ── Loading state: skeleton cards matching ApprovalCard dimensions ── */
             <div

@@ -1,6 +1,7 @@
 // TODO: No backend model yet - align field names when Notification is added to Prisma schema.
 // Simulated real-time events enabled for local development when VITE_MSW=true. close #C14
 import { delay, http, HttpResponse } from "msw";
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "../../types/notifications";
 import type {
   Notification,
   NotificationFilter,
@@ -84,14 +85,43 @@ let mockNotifications: Notification[] = [
   },
 ];
 
-let mockNotificationPreferences: NotificationPreferences = {
-  APPROVAL_REQUESTED: true,
-  ESCROW_FUNDED: true,
-  DISPUTE_RAISED: true,
-  SETTLEMENT_COMPLETE: true,
-  DOCUMENT_EXPIRING: true,
-  CUSTODY_EXPIRING: true,
-};
+// Preferences are persisted so that they survive a full page reload /
+// new browser session, emulating the backend round-trip. Without this the
+// in-memory MSW state resets on every reload and preferences only appear to
+// change in component state. @see issue #481
+const PREFERENCES_STORAGE_KEY = "petad:notification-preferences";
+
+function readStoredPreferences(): NotificationPreferences {
+  if (typeof localStorage === "undefined") {
+    return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+  }
+
+  try {
+    const raw = localStorage.getItem(PREFERENCES_STORAGE_KEY);
+    if (!raw) return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+
+    const parsed = JSON.parse(raw) as Partial<NotificationPreferences> | null;
+    if (!parsed || typeof parsed !== "object") {
+      return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+    }
+
+    return { ...DEFAULT_NOTIFICATION_PREFERENCES, ...parsed };
+  } catch {
+    return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+  }
+}
+
+function persistPreferences(preferences: NotificationPreferences): void {
+  if (typeof localStorage === "undefined") return;
+
+  try {
+    localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+  } catch {
+    // Storage may be unavailable (private mode/quota) — fall back to memory.
+  }
+}
+
+let mockNotificationPreferences: NotificationPreferences = readStoredPreferences();
 
 const PAGE_SIZE = 10;
 
@@ -179,6 +209,7 @@ export const notifyHandlers = [
           ...mockNotificationPreferences,
           ...body,
         };
+        persistPreferences(mockNotificationPreferences);
       }
       return HttpResponse.json<NotificationPreferences>(mockNotificationPreferences);
     } catch {

@@ -34,6 +34,8 @@ export function useEscrowTimeline(
 				`/adoption/${adoptionId}/escrow/timeline`,
 			),
 		enabled,
+			// Timeline events are append-only; refresh periodically without each navigation refetching.
+			staleTime: 30_000,
 	});
 
 	return {

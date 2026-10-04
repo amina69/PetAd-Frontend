@@ -29,6 +29,7 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerCli
                 <img
                     src={pet.imageUrl}
                     alt={pet.name}
+                    loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
@@ -67,7 +68,7 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerCli
                         className="w-10 h-10 rounded-full bg-white p-[0.5px] shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-[#0D1B2A]/50"
                         aria-label="View Pet Owner Information"
                     >
-                        <img src={mockOwnerImg} alt="Lister" className="w-full h-full rounded-full object-cover" />
+                        <img src={mockOwnerImg} alt="Lister" loading="lazy" className="w-full h-full rounded-full object-cover" />
                     </button>
                 </div>
 

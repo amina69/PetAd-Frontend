@@ -2,6 +2,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Keep the keyboard position visible across every route and component. */
+@layer base {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid #e84d2a;
+    outline-offset: 3px;
+  }
+}
+
 :root {
   --status-badge-gray-bg: var(--color-gray-100, #f3f4f6);
   --status-badge-gray-text: var(--color-gray-700, #374151);
