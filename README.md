@@ -51,6 +51,26 @@ Note: Includes REST fallback and backfill paths for notifications via `notificat
 
 ---
 
+## 🧑‍💻 Development
+
+**New to the project? Start here → [`docs/local-dev.md`](docs/local-dev.md)**
+
+It covers how to choose between the offline MSW mocks (`VITE_MSW=true`) and a real staging backend
+(`VITE_MSW=false VITE_API_URL=…`), and what is and isn't testable in each mode.
+
+```bash
+pnpm install
+pnpm dev        # http://localhost:4321 — offline, MSW mocks
+```
+
+Other docs:
+
+- [`docs/local-dev.md`](docs/local-dev.md) — local dev vs. staging backend workflow
+- [`docs/guest-mode.md`](docs/guest-mode.md) — guest browsing mode and auth gating
+- [`docs/notifications.md`](docs/notifications.md) — real-time notification transport decisions
+
+---
+
 ## 📦 Prerequisites
 
 Before you begin, ensure you have the following installed:
