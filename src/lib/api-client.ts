@@ -1,5 +1,6 @@
 import type { ApiClientConfig } from "../types/auth";
 import { ApiError, ValidationApiError } from "./api-errors";
+import { env } from "./env";
 class ApiClient {
 	private baseURL: string;
 	private defaultHeaders: Record<string, string>;
@@ -207,11 +208,8 @@ export function getApiClient(): ApiClient {
 	return apiClientInstance;
 }
 
-const isMockServiceWorkerEnabled = import.meta.env.VITE_MSW === "true";
-const defaultApiUrl = isMockServiceWorkerEnabled ? "/api" : "http://localhost:3000/api";
-
-// Vite environment variable
-const API_URL = import.meta.env.VITE_API_URL ?? defaultApiUrl;
+// Validated at boot by src/lib/env.ts (no silent fallback).
+const API_URL = env.VITE_API_URL;
 
 export const apiClient = createApiClient({
 	baseURL: API_URL,
