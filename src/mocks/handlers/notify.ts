@@ -85,43 +85,32 @@ let mockNotifications: Notification[] = [
   },
 ];
 
-// Preferences are persisted so that they survive a full page reload /
-// new browser session, emulating the backend round-trip. Without this the
-// in-memory MSW state resets on every reload and preferences only appear to
-// change in component state. @see issue #481
+// Preferences are mirrored to localStorage because MSW handler module state is
+// re-created on every page load; without this, a saved preference would appear
+// to reset after a reload and E2E flows covering persistence would be flaky.
 const PREFERENCES_STORAGE_KEY = "petad:notification-preferences";
 
-function readStoredPreferences(): NotificationPreferences {
-  if (typeof localStorage === "undefined") {
-    return { ...DEFAULT_NOTIFICATION_PREFERENCES };
-  }
-
+function readStoredPreferences(): NotificationPreferences | null {
+  if (typeof localStorage === "undefined") return null;
   try {
     const raw = localStorage.getItem(PREFERENCES_STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_NOTIFICATION_PREFERENCES };
-
-    const parsed = JSON.parse(raw) as Partial<NotificationPreferences> | null;
-    if (!parsed || typeof parsed !== "object") {
-      return { ...DEFAULT_NOTIFICATION_PREFERENCES };
-    }
-
-    return { ...DEFAULT_NOTIFICATION_PREFERENCES, ...parsed };
+    return raw ? (JSON.parse(raw) as NotificationPreferences) : null;
   } catch {
-    return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+    return null;
   }
 }
 
-function persistPreferences(preferences: NotificationPreferences): void {
+function storePreferences(preferences: NotificationPreferences): void {
   if (typeof localStorage === "undefined") return;
-
   try {
     localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
   } catch {
-    // Storage may be unavailable (private mode/quota) — fall back to memory.
+    // Storage unavailable (private mode / quota) — fall back to in-memory only.
   }
 }
 
-let mockNotificationPreferences: NotificationPreferences = readStoredPreferences();
+let mockNotificationPreferences: NotificationPreferences =
+  readStoredPreferences() ?? { ...DEFAULT_NOTIFICATION_PREFERENCES };
 
 const PAGE_SIZE = 10;
 
@@ -164,6 +153,14 @@ export const notifyHandlers = [
     return HttpResponse.json<NotificationsPage>(response);
   }),
 
+  // GET /api/notifications/preferences - get notification preferences
+  // NOTE: registered before `/notifications/:id` so the literal path is not
+  // swallowed by the dynamic segment (which would 404 as id="preferences").
+  http.get("**/api/notifications/preferences", async ({ request }) => {
+    await delay(getDelay(request));
+    return HttpResponse.json<NotificationPreferences>(mockNotificationPreferences);
+  }),
+
   http.get("/api/notifications/:id", async ({ params, request }) => {
     await delay(getDelay(request));
     const { id } = params;
@@ -192,12 +189,6 @@ export const notifyHandlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
-  // GET /api/notifications/preferences - get notification preferences
-  http.get("**/api/notifications/preferences", async ({ request }) => {
-    await delay(getDelay(request));
-    return HttpResponse.json<NotificationPreferences>(mockNotificationPreferences);
-  }),
-
   // PATCH /api/notifications/preferences - update notification preferences
   http.patch("**/api/notifications/preferences", async ({ request }) => {
     await delay(getDelay(request));
@@ -209,7 +200,7 @@ export const notifyHandlers = [
           ...mockNotificationPreferences,
           ...body,
         };
-        persistPreferences(mockNotificationPreferences);
+        storePreferences(mockNotificationPreferences);
       }
       return HttpResponse.json<NotificationPreferences>(mockNotificationPreferences);
     } catch {

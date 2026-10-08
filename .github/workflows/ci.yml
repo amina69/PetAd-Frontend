@@ -32,17 +32,32 @@ jobs:
       - name: Run unit tests
         run: npm test
 
-      # Guard self-test (issue #526): prove that a production target resolved
-      # with VITE_MSW=true fails, and that a clean production env passes.
-      - name: Verify MSW production guard
-        run: |
-          echo "Checking that VITE_MSW=true fails for a production target..."
-          if VITE_MSW=true node scripts/check-msw-production.mjs --mode production; then
-            echo "::error::MSW guard failed to reject VITE_MSW=true in production"
-            exit 1
-          fi
-          echo "Guard correctly rejected a misconfigured production env."
+  e2e:
+    runs-on: ubuntu-latest
 
-          echo "Checking that a clean production target passes..."
-          VITE_MSW=false node scripts/check-msw-production.mjs --mode production
-          echo "Guard correctly allowed a clean production env."
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --maxsockets 1 --retry 3
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

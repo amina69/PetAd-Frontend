@@ -66,7 +66,8 @@ test.describe("Notification preferences persistence", () => {
 
     // Clean up so the shared mock backend is left in its default state.
     await page.getByRole("button", { name: "Reset to defaults" }).click();
-    await page.getByRole("button", { name: "Reset" }).click();
+    // exact: true — otherwise this also matches "Reset to defaults" (strict mode violation).
+    await page.getByRole("button", { name: "Reset", exact: true }).click();
     await expect(page.getByText("Saved")).toBeVisible();
 
     const knobAfterReset = toggleKnob(page, "Escrow Funded");
