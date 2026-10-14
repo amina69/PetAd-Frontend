@@ -65,5 +65,12 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     exclude: ["e2e/**", "node_modules/**", "dist/**"],
+    // Validated env values for unit tests (src/lib/env.ts runs at import
+    // time); keeps `npm test` green in fresh clones and CI without a .env.
+    env: {
+      VITE_API_URL: "/api",
+      VITE_MSW: "false",
+      VITE_STELLAR_NETWORK: "testnet",
+    },
   },
 }));
