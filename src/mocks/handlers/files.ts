@@ -97,4 +97,15 @@ export const filesHandlers = [
 		);
 		return HttpResponse.json<Document[]>(docs);
 	}),
+
+	// GET /api/documents/:id/verify — verify a document's integrity.
+	// DocumentRow calls this lazily for any document that has not been
+	// verified yet, so the mock backend has to answer it too.
+	http.get("/api/documents/:id/verify", async ({ request, params }) => {
+		await delay(getDelay(request));
+		return HttpResponse.json({
+			verified: true,
+			hash: `mock-anchor-hash-${params.id}`,
+		});
+	}),
 ];

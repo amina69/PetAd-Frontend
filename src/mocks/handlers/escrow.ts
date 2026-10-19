@@ -21,6 +21,8 @@ interface Escrow {
 	signatures: { id: string; signer: string; timestamp: string }[];
 	required_approvals: number;
 	escrow_account_id: string;
+	/** Set when a dispute has been raised against this record. */
+	disputeId?: string | null;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -55,9 +57,36 @@ function getDelay(request: Request): number {
 }
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
-// Note: GET /escrow is not in the current backend — escrow is embedded in the adoption response.
+// Note: GET /escrow (list) is not in the current backend — escrow is embedded in
+// the adoption response. GET /escrow/:id is the single-record read used by the
+// payment status panel.
 
 export const escrowHandlers = [
+	// GET /escrow/:id — the escrow record behind the payment status panel.
+	// The payload mirrors the backend record (keys, secrets and transaction
+	// hashes included) so the UI layer is exercised against the real shape and
+	// can prove it never surfaces any of it.
+	http.get("/api/escrow/:id", async ({ request, params }) => {
+		await delay(getDelay(request));
+		const id = params.id as string;
+
+		if (id === "not-found") {
+			return new HttpResponse(null, { status: 404 });
+		}
+
+		// A dedicated id so the disputed state (and its dispute link) can be
+		// inspected locally without touching the other escrow fixtures.
+		const isDisputed = id === "escrow-disputed";
+
+		return HttpResponse.json<Escrow>({
+			...BASE_ESCROW,
+			id,
+			status: isDisputed ? "DISPUTED" : BASE_ESCROW.status,
+			disputeId: isDisputed ? "dispute-001" : null,
+			updatedAt: new Date().toISOString(),
+		});
+	}),
+
 	// POST /escrow — createEscrow (called internally; exposed for Phase 2 testing)
 	http.post("/api/escrow", async ({ request }) => {
 		await delay(getDelay(request));

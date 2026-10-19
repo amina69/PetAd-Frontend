@@ -5,6 +5,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DocumentRow } from '../DocumentRow';
 import type { Document } from '../../../types/documents';
 
+/**
+ * The lazy integrity check fires a request whenever a document has not been
+ * verified yet. These tests are about rendering, so the request is stubbed with
+ * a promise that never settles — otherwise every render would hit the network
+ * and resolve after the test environment was torn down.
+ */
+vi.mock('../../../api/documentService', () => ({
+  documentService: {
+    verifyDocument: vi.fn(() => new Promise(() => {})),
+  },
+}));
+
 const BASE_DOC: Document = {
   id: 'doc-001',
   fileName: 'vaccination-certificate.pdf',

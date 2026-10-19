@@ -6,6 +6,19 @@ import type { Document } from '../../../types/documents';
 
 vi.mock('../../../api/documentService');
 
+/**
+ * `process` exists at runtime under Vitest but is not part of the DOM type
+ * surface, so it is reached through a locally typed accessor.
+ */
+const nodeProcess = (
+  globalThis as unknown as {
+    process?: {
+      on: (event: string, listener: (reason: unknown) => void) => void;
+      off: (event: string, listener: (reason: unknown) => void) => void;
+    };
+  }
+).process;
+
 const BASE_DOC: Document = {
   id: 'doc-001',
   fileName: 'test.pdf',
@@ -64,5 +77,46 @@ describe('DocumentRow Lazy Verification', () => {
 
     expect(screen.getByText('Verified on Stellar')).toBeInTheDocument();
     expect(documentService.verifyDocument).not.toHaveBeenCalled();
+  });
+
+  it('ignores a verification result that arrives after the row unmounts', async () => {
+    let resolveVerify: (value: { verified: boolean; hash: string }) => void = () => {};
+    (documentService.verifyDocument as any).mockReturnValue(
+      new Promise((resolve) => {
+        resolveVerify = resolve;
+      }),
+    );
+
+    const { unmount } = render(
+      <DocumentRow
+        document={BASE_DOC}
+        currentUserId="user-1"
+        currentUserRole="USER"
+        onDelete={vi.fn()}
+      />
+    );
+
+    unmount();
+
+    // Simulate the environment being torn down before the request settles.
+    // Writing to React state at that point throws, so the row has to ignore a
+    // result that arrives after it was unmounted.
+    const rejections: unknown[] = [];
+    const onUnhandledRejection = (reason: unknown) => rejections.push(reason);
+    nodeProcess?.on('unhandledRejection', onUnhandledRejection);
+
+    const globalScope = globalThis as unknown as { window: unknown };
+    const originalWindow = globalScope.window;
+
+    try {
+      delete globalScope.window;
+      resolveVerify({ verified: true, hash: 'hash-123' });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    } finally {
+      globalScope.window = originalWindow;
+      nodeProcess?.off('unhandledRejection', onUnhandledRejection);
+    }
+
+    expect(rejections).toHaveLength(0);
   });
 });

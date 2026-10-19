@@ -8,6 +8,7 @@ const MOCK_CUSTODY_DETAILS: CustodyDetails = {
   custodianId: "user-1",
   ownerId: "user-2",
   startDate: "2026-03-25T10:00:00Z",
+  escrowId: "escrow-001",
   createdAt: "2026-03-25T10:00:00Z",
   updatedAt: "2026-03-25T10:10:00Z",
 };
