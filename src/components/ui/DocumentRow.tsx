@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FileText, FileImage, Download, Trash2 } from 'lucide-react';
 
 import type { Document } from '../../types/documents';
@@ -49,6 +49,24 @@ export function DocumentRow({
     hash: document.anchorTxHash,
   });
 
+  /**
+   * Tracks whether the row is still mounted.
+   *
+   * The lazy verification below is asynchronous: the request can settle after
+   * the row has been unmounted (the user navigated away, or the test
+   * environment was torn down). Updating React state at that point throws,
+   * so every state write after the request is guarded by this flag.
+   */
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     // Only verify if not already verified or if explicitly unverified (null means unknown)
     if (document.onChainVerified === null) {
@@ -56,18 +74,22 @@ export function DocumentRow({
         setIsVerifying(true);
         try {
           const result = await documentService.verifyDocument(document.id);
+          if (!isMountedRef.current) return;
           setVerificationResult({
             verified: result.verified,
             hash: result.hash,
           });
         } catch (error) {
+          if (!isMountedRef.current) return;
           console.error('Failed to verify document:', error);
           setVerificationResult({
             verified: false,
             hash: null,
           });
         } finally {
-          setIsVerifying(false);
+          if (isMountedRef.current) {
+            setIsVerifying(false);
+          }
         }
       };
       verify();
