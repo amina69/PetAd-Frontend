@@ -53,6 +53,8 @@ export interface CustodyDetails {
   ownerId: string;
   startDate: string;
   endDate?: string;
+  /** Id of the escrow record backing this custody, when one exists. */
+  escrowId?: string | null;
   createdAt: string;
   updatedAt: string;
 }

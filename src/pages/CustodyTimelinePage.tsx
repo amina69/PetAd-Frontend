@@ -4,6 +4,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { useCustodyTimeline, type CustodyTimelineEventType } from "../lib/hooks/useCustodyTimeline";
 import { useCustodyDetails } from "../lib/hooks/useCustodyDetails";
 import { CustodyExpiringBanner } from "../components/custody";
+import { EscrowStatusPanel } from "../features/adoption/components/EscrowStatusPanel";
 import type { CustodyTimelineEvent } from "../api/custodyService";
 
 // ---------------------------------------------------------------------------
@@ -127,6 +128,11 @@ export default function CustodyTimelinePage() {
             custodyId={custodyId}
             endDate={custodyDetails.endDate!}
           />
+        )}
+
+        {/* Payment status — the escrow panel is shared with the adoption screens */}
+        {custodyDetails?.escrowId && (
+          <EscrowStatusPanel escrowId={custodyDetails.escrowId} />
         )}
 
         {/* Timeline Panel */}
