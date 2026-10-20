@@ -39,6 +39,8 @@ const SCREENS = [
   { slug: "custody-timeline", route: "/custody/custody-1/timeline" },
   { slug: "settlement-summary", route: "/adoption/adoption-1/settlement" },
   { slug: "admin-approvals", route: "/admin/approvals" },
+  { slug: "approvals", route: "/approvals" },
+  { slug: "approvals-filtered", route: "/approvals?status=pending&sort=date_desc" },
   { slug: "shelter-approvals", route: "/shelter/approvals" },
   { slug: "my-disputes", route: "/disputes" },
   { slug: "dispute-detail", route: "/disputes/dispute-001" },

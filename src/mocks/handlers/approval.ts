@@ -1,6 +1,14 @@
 import { http, HttpResponse, delay } from "msw";
 
-const BASE_URL = "http://localhost:3000/api";
+/**
+ * Origin-relative base path for the approval endpoints.
+ *
+ * The app talks to `/api` (relative) when MSW is enabled and to
+ * `http://localhost:3000/api` otherwise, so the handlers must be registered
+ * against the path only — an absolute origin would never match in the browser
+ * dev server. Same convention as the other mock handler modules.
+ */
+const BASE_URL = "/api";
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 // NOTE: Real backend contract for approval endpoints pending final confirmation per Epic A.
