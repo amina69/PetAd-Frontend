@@ -3,6 +3,7 @@ import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from 
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { authService } from "../../api/authService";
 import { ApiError } from "../../lib/api-errors";
+import { LiveRegion } from "../common/LiveRegion";
 
 interface SignInFormData {
     email: string;
@@ -65,7 +66,12 @@ export function SignInForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!validate()) return;
+        if (!validate()) {
+            requestAnimationFrame(() => {
+                document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+            });
+            return;
+        }
         setIsLoading(true);
 
         try {
@@ -114,6 +120,12 @@ export function SignInForm() {
             )}
 
             <div className="flex flex-col gap-5">
+                <LiveRegion assertive>
+                    {errors.submit ??
+                        (Object.keys(errors).some((key) => key !== "submit")
+                            ? "Please correct the highlighted fields."
+                            : "")}
+                </LiveRegion>
                 <GoogleButton
                     label="Continue with Google"
                     onClick={handleGoogleSignIn}
@@ -127,7 +139,7 @@ export function SignInForm() {
                     className="flex flex-col gap-5"
                 >
                     {errors.submit && (
-                        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+                        <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
                             {errors.submit}
                         </div>
                     )}

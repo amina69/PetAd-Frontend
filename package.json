@@ -9,7 +9,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run check:bundle",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
+    "bundle:report": "node scripts/check-bundle-size.mjs --report-only",
     "lint": "eslint .",
     "test": "vitest run",
     "preview": "vite preview",

@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 interface Props {
   isOpen: boolean;
@@ -8,15 +9,7 @@ interface Props {
 export function EvidenceUploadModal({ isOpen, onClose }: Props) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useDialogFocus({ isOpen, containerRef: modalRef, onClose });
 
   if (!isOpen) return null;
 
@@ -32,7 +25,7 @@ export function EvidenceUploadModal({ isOpen, onClose }: Props) {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Close modal"
         >
           ✕

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../api/documentService";
 import { FileUploadZone } from "../ui/FileUploadZone";
 import { ApiError, ValidationApiError } from "../../lib/api-errors";
+import { useDialogFocus } from "../../hooks/useDialogFocus";
 
 interface DocumentUploadModalProps {
     isOpen: boolean;
@@ -29,8 +30,7 @@ export function DocumentUploadModal({
     const [isUploading, setIsUploading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-    if (!isOpen) return null;
+    const modalRef = useRef<HTMLDivElement>(null);
 
     const quotaPercentage = (usedQuotaMB / totalQuotaMB) * 100;
     const isQuotaFull = usedQuotaMB >= totalQuotaMB;
@@ -57,6 +57,15 @@ export function DocumentUploadModal({
             onClose();
         }
     };
+
+    useDialogFocus({
+        isOpen,
+        containerRef: modalRef,
+        onClose: handleClose,
+        closeOnEscape: !isUploading,
+    });
+
+    if (!isOpen) return null;
 
     const handleUpload = async () => {
         if (!file) {
@@ -105,7 +114,12 @@ export function DocumentUploadModal({
             onClick={handleClose}
         >
             <div 
+                ref={modalRef}
                 className="relative bg-white rounded-2xl shadow-xl w-full max-w-[480px] p-6 sm:p-8"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="document-upload-title"
+                tabIndex={-1}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button */}
@@ -121,7 +135,7 @@ export function DocumentUploadModal({
                     </button>
                 )}
 
-                <h2 className="text-[22px] font-bold text-[#0D162B] mb-1">
+                <h2 id="document-upload-title" className="text-[22px] font-bold text-[#0D162B] mb-1">
                     Upload Document
                 </h2>
                 <p className="text-[14px] text-gray-500 mb-6">
@@ -187,7 +201,7 @@ export function DocumentUploadModal({
 
                     {/* Error Message */}
                     {errorMsg && (
-                        <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 flex items-start gap-2 text-red-600">
+                        <div role="alert" className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 flex items-start gap-2 text-red-600">
                             <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>

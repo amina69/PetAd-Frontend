@@ -40,7 +40,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 py-4 flex items-center justify-between">
-      <Link to="/home" className="flex items-center gap-2">
+      <Link to="/home" className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A] focus-visible:ring-offset-2">
         <img src={logo} alt="Logo" className="w-8 h-8" />
         <div>
           <p className="font-black text-[18px] leading-none tracking-widest uppercase dark:text-white">
@@ -60,7 +60,7 @@ export function Navbar() {
             <Link
               key={link.path}
               to={link.path}
-              className={`flex items-center gap-2 text-[15px] font-medium transition-colors ${
+              className={`flex items-center gap-2 rounded-md text-[15px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A] focus-visible:ring-offset-2 ${
                 isActive ? "text-[#001323] dark:text-white" : "text-gray-500 hover:text-[#001323] dark:hover:text-white"
               }`}
             >
@@ -77,7 +77,7 @@ export function Navbar() {
       <div className="flex items-center gap-4">
         <Link
           to="/favourites"
-          className="relative p-2.5 bg-gray-50 dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="relative rounded-full bg-gray-50 p-2.5 text-gray-700 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A] focus-visible:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           <Heart size={20} />
           <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-[#001323] dark:bg-blue-600 rounded-full">
