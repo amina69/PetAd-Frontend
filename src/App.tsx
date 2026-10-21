@@ -43,6 +43,7 @@ const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
 const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
 const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
 const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
+const DocumentsPage = lazy(() => import("./pages/DocumentsPage"));
 
 function RouteLoadingFallback() {
   return (
@@ -120,6 +121,7 @@ function App() {
               element={<ShelterApprovalQueuePage />}
             />
             <Route path="/disputes" element={<MyDisputesPage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/disputes/:id" element={<DisputeDetailPage />} />
             <Route
               path="/custody/:custodyId/timeline"
