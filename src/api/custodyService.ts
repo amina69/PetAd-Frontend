@@ -4,8 +4,10 @@ import type { CustodyDetails, AdoptionStatus } from "../types/adoption";
 import type { CustodyArrangement, CustodyStatus } from "../features/custody/types";
 import {
   custodyArrangementSchema,
+  custodyAvailabilitySchema,
   custodyListResponseSchema,
   custodyRequestSchema,
+  type CustodyAvailability,
   type CustodyListResponse,
   type CustodyRequest,
 } from "../features/custody/schemas/custodySchemas";
@@ -20,7 +22,12 @@ export interface CustodyTimelineEvent {
 }
 
 export interface CustodyListParams {
-  status?: CustodyStatus;
+  /**
+   * Status filter. A single status (`"active"`) or a list of statuses
+   * (`["requested", "approved"]`), which is serialised as a comma-separated
+   * value so the dashboard can ask for a whole bucket in one request.
+   */
+  status?: CustodyStatus | CustodyStatus[];
   petId?: string;
   page?: number;
   limit?: number;
@@ -71,7 +78,12 @@ async function withCustodyErrors<T>(request: () => Promise<T>): Promise<T> {
 
 function buildListQuery(params: CustodyListParams): string {
   const searchParams = new URLSearchParams();
-  if (params.status) searchParams.append("status", params.status);
+  if (params.status) {
+    searchParams.append(
+      "status",
+      Array.isArray(params.status) ? params.status.join(",") : params.status,
+    );
+  }
   if (params.petId) searchParams.append("petId", params.petId);
   if (params.page !== undefined) searchParams.append("page", String(params.page));
   if (params.limit !== undefined) searchParams.append("limit", String(params.limit));
@@ -110,6 +122,30 @@ export const custodyService = {
       apiClient.get<unknown>(`/custody/${encodeURIComponent(id)}`),
     );
     return custodyArrangementSchema.parse(response);
+  },
+
+  /**
+   * GET /custody/availability — the days a pet cannot be placed in custody
+   * for (an existing arrangement already covers them).
+   *
+   * The dates come back as date-only strings so the client can hand them
+   * straight to the date range picker without re-interpreting them in a
+   * different time zone.
+   */
+  async getAvailability(
+    petId: string,
+    params: { startDate?: string; endDate?: string } = {},
+  ): Promise<CustodyAvailability> {
+    const searchParams = new URLSearchParams({ petId });
+
+    if (params.startDate) searchParams.append("startDate", params.startDate);
+    if (params.endDate) searchParams.append("endDate", params.endDate);
+
+    const response = await withCustodyErrors(() =>
+      apiClient.get<unknown>(`/custody/availability?${searchParams.toString()}`),
+    );
+
+    return custodyAvailabilitySchema.parse(response);
   },
 
   /**

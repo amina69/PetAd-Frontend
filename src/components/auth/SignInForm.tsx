@@ -74,6 +74,10 @@ export function SignInForm() {
                 password: formData.password,
             });
             localStorage.setItem("auth_token", response.token);
+            // Mirror the signed-in user so the app can tell which side of a
+            // custody arrangement the current user is on (owner/caretaker).
+            // The role is stored separately in "petad_user_role".
+            localStorage.setItem("petad_user", JSON.stringify(response.user));
 
             const returnTo = getReturnTo(searchParams);
             sessionStorage.removeItem("petad_return_to");

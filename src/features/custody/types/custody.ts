@@ -40,4 +40,17 @@ export interface CustodyArrangement {
   notes: string | null;
   /** `null` until an escrow has been created for the arrangement. */
   escrowStatus: CustodyEscrowStatus | null;
+  /**
+   * Id of the escrow backing this arrangement, when the API exposes one.
+   *
+   * Used to read the live escrow snapshot from the escrow endpoint; when it
+   * is absent the arrangement id is used as the escrow id.
+   */
+  escrowId?: string | null;
+  /** Display name of the pet, when the API includes one. */
+  petName?: string | null;
+  /** Display name of the owner, when the API includes one. */
+  ownerName?: string | null;
+  /** Display name of the caretaker, when the API includes one. */
+  caretakerName?: string | null;
 }

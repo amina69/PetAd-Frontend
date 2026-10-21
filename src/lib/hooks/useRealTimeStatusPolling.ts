@@ -37,7 +37,11 @@ export function useRealTimeStatusPolling(
   // Determine if polling should stop based on terminal statuses
   const stopWhen = (data: AdoptionDetails | CustodyDetails | undefined) => {
     if (!data) return false;
-    return data.status === "COMPLETED" || data.status === "CANCELLED";
+    // The Temporary Custody domain uses lower-case statuses
+    // ("completed"), the legacy adoption/custody payloads use upper-case
+    // ("COMPLETED") — compare case-insensitively so both stop polling.
+    const status = String(data.status ?? "").toUpperCase();
+    return status === "COMPLETED" || status === "CANCELLED";
   };
 
   const query = usePolling([entityType, entityId], fetchFn, {

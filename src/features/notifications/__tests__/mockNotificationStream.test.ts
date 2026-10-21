@@ -46,7 +46,13 @@ describe("mock notification stream", () => {
 
     const response = await fetch("/api/notifications?filter=unread&limit=50");
     const page = (await response.json()) as NotificationsPage;
-    expect(page.data[0]).toMatchObject({ id: envelope.payload.id, isRead: false });
+    // The seeded fixtures are stamped with fixed hours of the day (10:00 and
+    // 11:00), so the freshly emitted notification is not necessarily the
+    // first one in the list — look it up by id instead of by position.
+    const stored = page.data.find(
+      (notification) => notification.id === envelope.payload.id,
+    );
+    expect(stored).toMatchObject({ id: envelope.payload.id, isRead: false });
   });
 
   it("cycles through sample event types when no type is given", () => {

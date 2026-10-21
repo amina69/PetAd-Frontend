@@ -66,6 +66,38 @@ const STATUS_CONFIG: Record<
     color: "gray",
     tooltip: "Unknown custody status.",
   },
+  // ── Temporary Custody domain statuses (lower-case) ────────────────────────
+  // See `src/features/custody/types/custody.ts`.
+  requested: {
+    label: "Requested",
+    color: "gray",
+    tooltip: "This custody request has not been approved yet.",
+  },
+  approved: {
+    label: "Approved",
+    color: "blue",
+    tooltip: "This custody request has been approved.",
+  },
+  active: {
+    label: "Active",
+    color: "green",
+    tooltip: "Custody is currently active.",
+  },
+  completed: {
+    label: "Completed",
+    color: "green",
+    tooltip: "Custody has been completed successfully.",
+  },
+  cancelled: {
+    label: "Cancelled",
+    color: "gray",
+    tooltip: "Custody was cancelled before completion.",
+  },
+  disputed: {
+    label: "Disputed",
+    color: "red",
+    tooltip: "A dispute has been raised for this custody.",
+  },
 };
 
 export function CustodyStatusBadge({ status }: CustodyStatusBadgeProps) {
