@@ -52,33 +52,53 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 
-  projects: [
-    /**
-     * Seeds an authenticated session once, then shares it with every browser
-     * project below. Keeps protected-route specs focused on behaviour instead
-     * of repeating login boilerplate.
-     */
-    {
-      name: "setup",
-      testMatch: /auth\.setup\.ts/,
-    },
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"], storageState: AUTH_STATE_PATH },
-      dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
-    },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"], storageState: AUTH_STATE_PATH },
-      dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"], storageState: AUTH_STATE_PATH },
-      dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
-    },
-  ],
+  /**
+   * Chromium is the default local browser. Firefox and WebKit run when CI
+   * (or a local matrix) sets E2E_BROWSERS, for example `E2E_BROWSERS=firefox`.
+   * Upload fixtures live in `e2e/fixtures/`.
+   */
+  projects: (() => {
+    const enabled = new Set(
+      (process.env.E2E_BROWSERS ?? "chromium")
+        .split(",")
+        .map((name) => name.trim().toLowerCase())
+        .filter(Boolean),
+    );
+
+    const deviceByBrowser = {
+      chromium: "Desktop Chrome",
+      firefox: "Desktop Firefox",
+      webkit: "Desktop Safari",
+    } as const;
+
+    const setupBrowser =
+      (["chromium", "firefox", "webkit"] as const).find((name) => enabled.has(name)) ??
+      "chromium";
+
+    const browserProjects = (["chromium", "firefox", "webkit"] as const)
+      .filter((name) => enabled.has(name))
+      .map((name) => ({
+        name,
+        use: {
+          ...devices[deviceByBrowser[name]],
+          storageState: AUTH_STATE_PATH,
+        },
+        dependencies: ["setup"],
+        testIgnore: /auth\.setup\.ts/,
+      }));
+
+    return [
+      /**
+       * Seeds an authenticated session once, then shares it with every browser
+       * project below. Uses the same browser the job installed so a Firefox or
+       * WebKit matrix leg does not try to launch Chromium.
+       */
+      {
+        name: "setup",
+        testMatch: /auth\.setup\.ts/,
+        use: { ...devices[deviceByBrowser[setupBrowser]] },
+      },
+      ...browserProjects,
+    ];
+  })(),
 });

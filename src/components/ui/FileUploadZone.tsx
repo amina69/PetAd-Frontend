@@ -1,16 +1,9 @@
 import { useState, useRef, type DragEvent, type KeyboardEvent, type ChangeEvent } from "react";
+import { UPLOAD_MAX_BYTES, validateUploadFiles } from "../../lib/uploadRules";
 
 const DEFAULT_ACCEPT = ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png";
-const ALLOWED_EXTENSIONS = /\.(pdf|jpe?g|png)$/i;
-const ALLOWED_MIME_TYPES = new Set(["application/pdf", "image/jpeg", "image/png"]);
 
-const DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-
-function formatFileSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+const DEFAULT_MAX_FILE_SIZE = UPLOAD_MAX_BYTES;
 
 interface FileUploadZoneProps {
     id: string;
@@ -21,10 +14,6 @@ interface FileUploadZoneProps {
     onChange: (files: File[]) => void;
     selectedFiles: File[];
     error?: string;
-}
-
-function isAllowedFile(file: File) {
-    return ALLOWED_MIME_TYPES.has(file.type) || ALLOWED_EXTENSIONS.test(file.name);
 }
 
 function formatSelectedFiles(selectedFiles: File[]) {
@@ -59,20 +48,11 @@ export function FileUploadZone({
     };
 
     const validateFiles = (incomingFiles: File[]) => {
-        if (incomingFiles.length > maxFiles) {
-            return `You can upload up to ${maxFiles} file${maxFiles === 1 ? "" : "s"}.`;
-        }
-
-        for (const file of incomingFiles) {
-            if (!isAllowedFile(file)) {
-                return "Unsupported file type. PDF, JPG or PNG only.";
-            }
-            if (maxFileSize && file.size > maxFileSize) {
-                return `File too large — "${file.name}" is ${formatFileSize(file.size)}, maximum is ${formatFileSize(maxFileSize)}.`;
-            }
-        }
-
-        return null;
+        if (incomingFiles.length === 0) return null;
+        return validateUploadFiles(
+            incomingFiles.map((file) => ({ name: file.name, type: file.type, size: file.size })),
+            { maxFiles, maxFileSize },
+        );
     };
 
     const processFiles = (incomingFiles: File[]) => {

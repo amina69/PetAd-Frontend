@@ -2,7 +2,10 @@ import { apiClient } from "../lib/api-client";
 import { type Document } from "../types/documents";
 import { ApiError, ValidationApiError } from "../lib/api-errors";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+const isMockServiceWorkerEnabled = import.meta.env.VITE_MSW === "true";
+const API_URL =
+    import.meta.env.VITE_API_URL ??
+    (isMockServiceWorkerEnabled ? "/api" : "http://localhost:3000/api");
 
 function getToken(): string | null {
     if (typeof window !== "undefined") {
@@ -19,6 +22,7 @@ export interface UploadDocumentOptions {
     file: File;
     type: string;
     onProgress?: (progress: number) => void;
+    signal?: AbortSignal;
 }
 
 export const documentService = {
@@ -28,6 +32,12 @@ export const documentService = {
             const url = `${API_URL}/documents`;
 
             xhr.open("POST", url, true);
+
+            if (options.signal?.aborted) {
+                reject(new ApiError("Upload cancelled", { code: "ABORTED" }));
+                return;
+            }
+            options.signal?.addEventListener("abort", () => xhr.abort(), { once: true });
 
             // Set standard headers
             xhr.setRequestHeader("Accept", "application/json");
@@ -86,12 +96,20 @@ export const documentService = {
                 }));
             };
 
+            xhr.onabort = () => {
+                reject(new ApiError("Upload cancelled", { code: "ABORTED" }));
+            };
+
             const formData = new FormData();
             formData.append("file", options.file);
             formData.append("type", options.type);
 
             xhr.send(formData);
         });
+    },
+
+    deleteDocument: async (documentId: string): Promise<void> => {
+        await apiClient.delete(`/documents/${documentId}`);
     },
 
     getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {

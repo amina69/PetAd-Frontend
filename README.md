@@ -300,6 +300,12 @@ Look for `[MSW] Mocking enabled.` in the browser console to confirm it is active
 | Approval | `src/mocks/handlers/approval.ts` | ✅ Matches backend |
 | Dispute | `src/mocks/handlers/dispute.ts` | ✅ Matches backend |
 | Notifications | `src/mocks/handlers/notify.ts` | ✅ Matches backend |
+| Custody | `src/mocks/handlers/custody.ts` | ✅ Matches backend |
+
+To run the app against the shared staging API instead of these mocks, follow
+[docs/local-dev.md](docs/local-dev.md) (Mode C). Set `VITE_MSW=false` and
+`VITE_API_URL` to the staging base URL, including the `/api` prefix, then
+restart `npm run dev`.
 
 ### Production guard
 

@@ -223,14 +223,14 @@ Derived from the handlers registered in `src/mocks/handlers/index.ts`.
 | Disputes | `GET /api/disputes`, `GET /api/disputes/:id`, `POST /api/disputes`, `PATCH /api/disputes/:id/resolve` |
 | Custody | `GET /api/custody/:id`, `/api/custody/:id/timeline` |
 | Notifications | `GET /api/notifications`, `GET /api/notifications/:id`, `PATCH /api/notifications/:id/read`, `POST /api/notifications/read-all`, `GET|PATCH /api/notifications/preferences` |
-| Files | `GET|POST /api/adoption/:id/documents` |
+| Files | `GET|POST /api/adoption/:id/documents`, `GET|POST /api/documents`, `DELETE /api/documents/:id`, `POST /api/documents/:id/replace` |
+
+`DELETE /api/documents/:id` returns **409** when the document is attached to an application in review (`applicationInReview`). The documents page shows that message and puts the row back.
 
 ### ❌ Not mocked — requires Mode C (staging) or a new handler
 
 | Endpoint | Called from | Note |
 |---|---|---|
-| `POST /api/documents` | `src/api/documentService.ts:28` | Document upload |
-| `PATCH /api/documents/:id/replace` | `src/api/documentService.ts:115` | Re-upload flow |
 | `POST /api/documents/:id/verify` | `src/api/documentService.ts` | Admin document review |
 | `POST /api/documents/:id/review` | `src/api/documentService.ts` | Admin document review |
 
@@ -258,6 +258,43 @@ One more rough edge: `src/hooks/useMutateApprovalDecision.ts` posts to `/adoptio
 (`PATCH /api/adoption/:id/approve`). Treat the approve/reject mutation as **staging-only**.
 
 ---
+
+## Simulate latency with `?delay=`
+
+Every MSW handler that reads `delay` waits that many milliseconds before
+responding. Append the query to the request URL (dev server or a test):
+
+```bash
+curl "http://localhost:4321/api/notifications?delay=2000"
+```
+
+```ts
+await fetch("/api/custody/custody-1?delay=500");
+```
+
+Use this when you need to see loading states. `delay` is ignored by the real
+staging API, so leave it off in Mode C.
+
+## Override a handler in a test
+
+Vitest boots the same handlers through `src/mocks/server.ts`. Replace one
+route for a single test with `server.use`, then `afterEach` resets it:
+
+```ts
+import { http, HttpResponse } from "msw";
+import { server } from "../mocks/server";
+
+it("shows a disputed escrow", async () => {
+  server.use(
+    http.get("/api/escrow/:id", () =>
+      HttpResponse.json({ status: "DISPUTED" }),
+    ),
+  );
+});
+```
+
+`server.resetHandlers()` (already called in `src/test/setup.ts`) drops the
+override so the next test sees the default handler again.
 
 ## Adding a Handler (preferred over needing staging)
 
@@ -290,11 +327,13 @@ Notes that save time later:
 
 - **Port 4321 is `strictPort`.** A stale Vite process will make `pnpm dev` fail outright rather than
   pick another port. Free 4321 before restarting.
-- **`pnpm e2e` ignores your env.** `playwright.config.ts` hardcodes
-  `VITE_MSW=true pnpm dev --host 127.0.0.1 --port 4321` and sets `reuseExistingServer: true`. If you
-  already have a **staging-mode** dev server running on 4321, Playwright will silently reuse it and run
-  the E2E suite against staging. **Stop your dev server before `pnpm e2e`**, or your local run will
-  mutate shared staging data.
+- **`pnpm e2e` / `npm run test:e2e` ignores your env.** `playwright.config.ts` starts
+  `npm run dev -- --host 127.0.0.1 --port 4321` with `VITE_MSW=true`. Locally it reuses a server
+  already on 4321 (`reuseExistingServer` is off in CI). If you already have a **staging-mode** dev
+  server running on 4321, Playwright will silently reuse it and run the E2E suite against staging.
+  **Stop your dev server before `pnpm e2e`**, or your local run will mutate shared staging data.
+  Chromium runs by default. Firefox and WebKit run when `E2E_BROWSERS` includes them (CI sets one
+  browser per matrix job). Upload fixtures live in `e2e/fixtures/`.
 - **CI uses npm, not pnpm** (`.github/workflows/ci.yml`: `npm install`, `npm run lint|build|test`).
   Both lockfiles are committed. Using pnpm locally is fine; just do not "fix" CI by regenerating the
   npm lockfile.
@@ -346,11 +385,11 @@ Notes that save time later:
 | `src/mocks/server.ts` | Same handler array, for Vitest via `src/test/setup.ts` |
 | `src/mocks/handlers/index.ts` | Aggregates all domain handler arrays |
 | `src/mocks/handlers/auth.ts` | Offline register/login/reset; hardcodes `role: "USER"` |
-| `src/api/documentService.ts` | Second `VITE_API_URL` read; `/api/documents*` has no mock |
+| `src/api/documentService.ts` | Second `VITE_API_URL` read; list, upload, replace, and delete are mocked in `files.ts` |
 | `src/hooks/useMutateRaiseDispute.ts` | Third `VITE_API_URL` read |
 | `src/context/NotificationSocketContext.tsx` | WebSocket URL derived from `window.location.host` |
 | `vite.config.ts` | Port 4321 (`strictPort`), `localhost`-bound HMR, no proxy, Vitest config |
-| `playwright.config.ts` | Forces `VITE_MSW=true` for E2E; `reuseExistingServer: true` |
+| `playwright.config.ts` | Forces `VITE_MSW=true` for E2E; reuses port 4321 locally, not in CI |
 | `.github/workflows/ci.yml` | npm-based lint/build/test on Node 20.x |
 
 ---

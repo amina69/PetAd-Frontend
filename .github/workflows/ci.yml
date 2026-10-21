@@ -34,6 +34,10 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
 
     steps:
       - name: Checkout repository
@@ -48,16 +52,18 @@ jobs:
       - name: Install dependencies
         run: npm install --maxsockets 1 --retry 3
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run E2E tests
         run: npm run test:e2e
+        env:
+          E2E_BROWSERS: ${{ matrix.browser }}
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 7

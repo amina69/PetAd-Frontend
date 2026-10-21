@@ -13,6 +13,8 @@ export interface Document {
   anchorTxHash: string | null;
   expiresAt: string | null;
   type: string;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_REVIEW' | null;
+  applicationInReview?: boolean;
   // Admin review fields
   adminReviewStatus?: 'APPROVED' | 'REJECTED' | null;
   rejectionReason?: string | null;

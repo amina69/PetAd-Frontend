@@ -15,6 +15,12 @@ interface Document {
 	adoptionId: string;
 	createdAt: string;
 	updatedAt: string;
+	status?: "PENDING" | "APPROVED" | "REJECTED" | "IN_REVIEW";
+	type?: string;
+	applicationInReview?: boolean;
+	onChainVerified?: boolean | null;
+	anchorTxHash?: string | null;
+	expiresAt?: string | null;
 }
 
 interface UploadDocumentsResponse {
@@ -61,7 +67,121 @@ function getDelay(request: Request): number {
 // Route: POST /adoption/:id/documents (FilesInterceptor, multipart/form-data).
 // Response matches DocumentsService.uploadDocuments() return shape exactly.
 
+const profileDocuments: Document[] = [
+	{
+		id: "doc-profile-1",
+		fileName: "identity.pdf",
+		fileUrl: "https://res.cloudinary.com/petad/image/upload/v1/documents/identity.pdf",
+		publicId: "documents/identity",
+		mimeType: "application/pdf",
+		size: 12000,
+		uploadedById: "current-user",
+		adoptionId: "adoption-001",
+		createdAt: "2026-04-01T08:00:00.000Z",
+		updatedAt: "2026-04-01T08:00:00.000Z",
+		status: "APPROVED",
+		type: "ID",
+		onChainVerified: true,
+		anchorTxHash: null,
+		expiresAt: null,
+	},
+	{
+		id: "doc-in-review",
+		fileName: "application-packet.pdf",
+		fileUrl: "https://res.cloudinary.com/petad/image/upload/v1/documents/application-packet.pdf",
+		publicId: "documents/application-packet",
+		mimeType: "application/pdf",
+		size: 22000,
+		uploadedById: "current-user",
+		adoptionId: "adoption-002",
+		createdAt: "2026-04-02T08:00:00.000Z",
+		updatedAt: "2026-04-02T08:00:00.000Z",
+		status: "IN_REVIEW",
+		type: "Adoption form",
+		applicationInReview: true,
+		onChainVerified: null,
+		anchorTxHash: null,
+		expiresAt: null,
+	},
+];
+
 export const filesHandlers = [
+	http.get("/api/documents", async ({ request }) => {
+		await delay(getDelay(request));
+		return HttpResponse.json(profileDocuments);
+	}),
+
+	http.post("/api/documents", async ({ request }) => {
+		await delay(getDelay(request));
+		const form = await request.formData();
+		const uploaded = form.get("file");
+		const fileName = uploaded instanceof File ? uploaded.name : "uploaded-document.pdf";
+		const now = new Date().toISOString();
+		const created: Document = {
+			id: `doc-${Date.now()}`,
+			fileName,
+			fileUrl: `https://res.cloudinary.com/petad/image/upload/v1/documents/${fileName}`,
+			publicId: `documents/${fileName}`,
+			mimeType: uploaded instanceof File ? uploaded.type || "application/pdf" : "application/pdf",
+			size: uploaded instanceof File ? uploaded.size : 1024,
+			uploadedById: "current-user",
+			adoptionId: "adoption-001",
+			createdAt: now,
+			updatedAt: now,
+			status: "PENDING",
+			type: String(form.get("type") ?? "Other"),
+			onChainVerified: null,
+			anchorTxHash: null,
+			expiresAt: null,
+		};
+		profileDocuments.unshift(created);
+		return HttpResponse.json(created, { status: 201 });
+	}),
+
+	http.delete("/api/documents/:id", async ({ params }) => {
+		const index = profileDocuments.findIndex((doc) => doc.id === params.id);
+		if (index === -1) {
+			return HttpResponse.json({ message: "Document not found" }, { status: 404 });
+		}
+		const existing = profileDocuments[index];
+		if (existing.applicationInReview) {
+			return HttpResponse.json(
+				{
+					message:
+						"This document is attached to an application that is in review and cannot be deleted.",
+				},
+				{ status: 409 },
+			);
+		}
+		profileDocuments.splice(index, 1);
+		return new HttpResponse(null, { status: 204 });
+	}),
+
+	http.post("/api/documents/:id/replace", async ({ request, params }) => {
+		await delay(getDelay(request));
+		const index = profileDocuments.findIndex((doc) => doc.id === params.id);
+		if (index === -1) {
+			return HttpResponse.json({ message: "Document not found" }, { status: 404 });
+		}
+		const form = await request.formData();
+		const uploaded = form.get("file");
+		const existing = profileDocuments[index];
+		const fileName = uploaded instanceof File ? uploaded.name : existing.fileName;
+		const now = new Date().toISOString();
+		profileDocuments[index] = {
+			...existing,
+			fileName,
+			fileUrl: `https://res.cloudinary.com/petad/image/upload/v1/documents/${fileName}`,
+			publicId: `documents/${fileName}`,
+			mimeType: uploaded instanceof File ? uploaded.type || existing.mimeType : existing.mimeType,
+			size: uploaded instanceof File ? uploaded.size : existing.size,
+			updatedAt: now,
+			status: "PENDING",
+			type: String(form.get("type") ?? existing.type ?? "Other"),
+		};
+		return HttpResponse.json(profileDocuments[index]);
+	}),
+
 	// POST /adoption/:id/documents — upload one or more documents
 	// The real endpoint accepts multipart/form-data with a "files" field.
 	// In tests and dev we accept the request and return a shaped mock response.
