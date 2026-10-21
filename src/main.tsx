@@ -8,6 +8,7 @@ import { ThemeProvider } from './components/theme-provider'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
 import './index.css'
 import App from './App.tsx'
+import { AppErrorBoundary } from './components/common/ErrorBoundary'
 
 const STALE_SW_RELOAD_KEY = 'petad:stale-sw-reload'
 
@@ -89,7 +90,9 @@ async function bootstrap() {
             {/* Navbar's NotificationCentreDropdown consumes this context. */}
             <NotificationSocketProvider>
               <BrowserRouter> {/* 2. Wrap your App */}
-                <App />
+                <AppErrorBoundary>
+                  <App />
+                </AppErrorBoundary>
               </BrowserRouter>
             </NotificationSocketProvider>
           </ToastProvider>

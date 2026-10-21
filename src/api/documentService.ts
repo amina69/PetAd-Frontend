@@ -19,6 +19,7 @@ export interface UploadDocumentOptions {
     file: File;
     type: string;
     onProgress?: (progress: number) => void;
+    signal?: AbortSignal;
 }
 
 export const documentService = {
@@ -85,6 +86,18 @@ export const documentService = {
                     isNetworkError: true,
                 }));
             };
+
+            xhr.onabort = () => {
+                reject(new DOMException("Upload cancelled", "AbortError"));
+            };
+
+            if (options.signal) {
+                if (options.signal.aborted) {
+                    xhr.abort();
+                    return;
+                }
+                options.signal.addEventListener("abort", () => xhr.abort(), { once: true });
+            }
 
             const formData = new FormData();
             formData.append("file", options.file);
@@ -172,6 +185,18 @@ export const documentService = {
                     isNetworkError: true,
                 }));
             };
+
+            xhr.onabort = () => {
+                reject(new DOMException("Upload cancelled", "AbortError"));
+            };
+
+            if (options.signal) {
+                if (options.signal.aborted) {
+                    xhr.abort();
+                    return;
+                }
+                options.signal.addEventListener("abort", () => xhr.abort(), { once: true });
+            }
 
             const formData = new FormData();
             formData.append("file", options.file);

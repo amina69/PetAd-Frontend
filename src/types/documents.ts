@@ -1,4 +1,5 @@
 import type { UserRole } from './auth';
+import type { DocumentVerificationStatus } from '../features/documents/statusConfig';
 
 export interface Document {
   id: string;
@@ -13,6 +14,8 @@ export interface Document {
   anchorTxHash: string | null;
   expiresAt: string | null;
   type: string;
+  kind?: string;
+  verificationStatus?: DocumentVerificationStatus;
   // Admin review fields
   adminReviewStatus?: 'APPROVED' | 'REJECTED' | null;
   rejectionReason?: string | null;
