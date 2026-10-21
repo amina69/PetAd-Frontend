@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { renderWithProviders } from '../../../test/renderWithProviders'
 import { AdoptionStatusBadge } from '../AdoptionStatusBadge'
 
 const cases = [
@@ -15,7 +16,7 @@ const cases = [
 
 describe('AdoptionStatusBadge', () => {
   it.each(cases)('renders $status correctly', ({ status, label, variantClass }) => {
-    const { container } = render(<AdoptionStatusBadge status={status} />)
+    const { container } = renderWithProviders(<AdoptionStatusBadge status={status} />)
 
     const labelNode = screen.getByText(label)
     const pill = labelNode.closest('.status-badge') as HTMLElement | null
@@ -30,7 +31,7 @@ describe('AdoptionStatusBadge', () => {
   })
 
   it('fallback works', () => {
-    render(<AdoptionStatusBadge status="UNKNOWN" />)
+    renderWithProviders(<AdoptionStatusBadge status="UNKNOWN" />)
     expect(screen.getByText('Not Found')).toBeTruthy()
   })
 })

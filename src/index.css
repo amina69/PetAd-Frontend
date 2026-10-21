@@ -11,21 +11,33 @@
 }
 
 :root {
+  /* Text/background pairs are the tokens in tailwind.config.ts. Each text
+     colour is at least 4.5:1 on its badge background. */
   --status-badge-gray-bg: var(--color-gray-100, #f3f4f6);
-  --status-badge-gray-text: var(--color-gray-700, #374151);
+  --status-badge-gray-text: var(--color-gray-700, #1f2937);
   --status-badge-blue-bg: var(--color-blue-100, #dbeafe);
-  --status-badge-blue-text: var(--color-blue-700, #1d4ed8);
+  --status-badge-blue-text: var(--color-blue-700, #1e3a8a);
   --status-badge-teal-bg: var(--color-teal-100, #ccfbf1);
-  --status-badge-teal-text: var(--color-teal-700, #0f766e);
+  --status-badge-teal-text: var(--color-teal-700, #115e59);
   --status-badge-green-bg: var(--color-green-100, #dcfce7);
-  --status-badge-green-text: var(--color-green-700, #15803d);
+  --status-badge-green-text: var(--color-green-700, #14532d);
   --status-badge-amber-bg: var(--color-amber-100, #fef3c7);
-  --status-badge-amber-text: var(--color-amber-700, #b45309);
+  --status-badge-amber-text: var(--color-amber-700, #78350f);
   --status-badge-red-bg: var(--color-red-100, #fee2e2);
-  --status-badge-red-text: var(--color-red-700, #b91c1c);
+  --status-badge-red-text: var(--color-red-700, #7f1d1d);
 }
 
 @theme {
+  /* Darkened so small text clears 4.5:1 on white or on the matching *-100 badge. */
+  --color-gray-400: #4b5563;
+  --color-gray-700: #1f2937;
+  --color-blue-700: #1e3a8a;
+  --color-teal-700: #115e59;
+  --color-green-700: #14532d;
+  --color-amber-700: #78350f;
+  --color-red-700: #7f1d1d;
+  --color-yellow-800: #713f12;
+
   --animate-shimmer: shimmer 1.5s infinite linear;
   @keyframes shimmer {
     0% { background-position: 200% 0; }

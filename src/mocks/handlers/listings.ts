@@ -6,8 +6,9 @@
  */
 
 import { http, HttpResponse } from "msw";
+import { buildPet } from "../../test/factories/pet";
 
-const DEMO_LISTINGS = [
+const DEMO_LISTINGS = ([
   {
     id: 1,
     name: "Pet For Adoption",
@@ -41,7 +42,7 @@ const DEMO_LISTINGS = [
     imageUrl: "/assets/golden_retriever.png",
     isPublic: true,
   },
-];
+] as const).map((listing) => buildPet(listing));
 
 /** Returns true when the request carries a valid Bearer token. */
 function isAuthorized(request: Request): boolean {

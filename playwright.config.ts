@@ -66,19 +66,39 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"], storageState: AUTH_STATE_PATH },
       dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
+      testIgnore: [/auth\.setup\.ts/, /visual\//, /a11y\//],
     },
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"], storageState: AUTH_STATE_PATH },
       dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
+      testIgnore: [/auth\.setup\.ts/, /visual\//, /a11y\//],
     },
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"], storageState: AUTH_STATE_PATH },
       dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
+      testIgnore: [/auth\.setup\.ts/, /visual\//, /a11y\//],
+    },
+    {
+      name: "visual",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: AUTH_STATE_PATH,
+        colorScheme: "light",
+      },
+      dependencies: ["setup"],
+      testMatch: /visual\/.*\.spec\.ts/,
+    },
+    {
+      name: "a11y",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: AUTH_STATE_PATH,
+        colorScheme: "light",
+      },
+      dependencies: ["setup"],
+      testMatch: /a11y\/.*\.spec\.ts/,
     },
   ],
 });

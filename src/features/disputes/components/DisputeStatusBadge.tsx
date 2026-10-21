@@ -1,3 +1,4 @@
+import { AlertCircle, CheckCircle2, CircleDot, Clock } from 'lucide-react';
 import type { DisputeStatus } from '../types/dispute.types';
 import { DISPUTE_STATUS_CONFIG } from '../constants/disputeStatusConfig';
 
@@ -5,6 +6,13 @@ interface DisputeStatusBadgeProps {
   status: DisputeStatus;
   className?: string;
 }
+
+const STATUS_ICONS = {
+  red: AlertCircle,
+  amber: Clock,
+  green: CheckCircle2,
+  gray: CircleDot,
+} as const;
 
 const COLOR_STYLES: Record<string, string> = {
   red: 'bg-red-100 text-red-800 border-red-200',
@@ -19,6 +27,7 @@ export function DisputeStatusBadge({ status, className = '' }: DisputeStatusBadg
   const baseClasses = 'relative inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-help group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
   const colorClasses = COLOR_STYLES[config.colorVariant];
   const pulseClass = config.hasPulse ? 'animate-pulse' : '';
+  const Icon = STATUS_ICONS[config.colorVariant];
   
   return (
     <span
@@ -28,6 +37,7 @@ export function DisputeStatusBadge({ status, className = '' }: DisputeStatusBadg
       aria-label={`${config.label}: ${config.description}`}
       data-testid={`dispute-badge-${status}`}
     >
+      <Icon aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" data-testid="status-badge-icon" />
       {config.label}
       
       {/* Tooltip */}

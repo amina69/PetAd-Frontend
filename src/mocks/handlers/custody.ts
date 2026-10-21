@@ -1,7 +1,8 @@
 import { http, HttpResponse, delay } from "msw";
 import type { CustodyDetails } from "../../types/adoption";
+import { buildCustody } from "../../test/factories/custody";
 
-const MOCK_CUSTODY_DETAILS: CustodyDetails = {
+const MOCK_CUSTODY_DETAILS: CustodyDetails = buildCustody({
   id: "custody-1",
   status: "ACTIVE",
   petId: "pet-1",
@@ -10,7 +11,7 @@ const MOCK_CUSTODY_DETAILS: CustodyDetails = {
   startDate: "2026-03-25T10:00:00Z",
   createdAt: "2026-03-25T10:00:00Z",
   updatedAt: "2026-03-25T10:10:00Z",
-};
+});
 
 export const custodyHandlers = [
   http.get("*/api/custody/:id", async ({ params }) => {

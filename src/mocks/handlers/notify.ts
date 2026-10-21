@@ -1,6 +1,7 @@
 // TODO: No backend model yet - align field names when Notification is added to Prisma schema.
 // Simulated real-time events enabled for local development when VITE_MSW=true. close #C14
 import { delay, http, HttpResponse, ws } from "msw";
+import { buildNotification } from "../../test/factories/notification";
 import { DEFAULT_NOTIFICATION_PREFERENCES } from "../../types/notifications";
 import type {
   Notification,
@@ -23,7 +24,7 @@ function iso(base: Date, hours: number): string {
   return date.toISOString();
 }
 
-let mockNotifications: Notification[] = [
+let mockNotifications: Notification[] = ([
   {
     id: "notif-001",
     type: "ESCROW_FUNDED" as NotificationType,
@@ -84,7 +85,7 @@ let mockNotifications: Notification[] = [
     hasArrow: true,
     metadata: { resourceId: "pet-001" },
   },
-];
+] satisfies Notification[]).map((notification) => buildNotification(notification));
 
 // Preferences are mirrored to localStorage because MSW handler module state is
 // re-created on every page load; without this, a saved preference would appear

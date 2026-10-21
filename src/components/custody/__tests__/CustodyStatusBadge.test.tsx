@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { renderWithProviders } from "../../../test/renderWithProviders";
 import { CustodyStatusBadge } from "../CustodyStatusBadge";
 
 const cases = [
@@ -32,7 +33,7 @@ const cases = [
 
 describe("CustodyStatusBadge", () => {
   it.each(cases)("renders $status correctly", ({ status, label, variantClass }) => {
-    const { container } = render(<CustodyStatusBadge status={status} />);
+    const { container } = renderWithProviders(<CustodyStatusBadge status={status} />);
 
     const labelNode = screen.getByText(label);
     const pill = labelNode.closest(".status-badge") as HTMLElement | null;
@@ -46,13 +47,13 @@ describe("CustodyStatusBadge", () => {
   });
 
   it("renders warning icon for EXPIRING_SOON", () => {
-    const { container } = render(<CustodyStatusBadge status="EXPIRING_SOON" />);
+    const { container } = renderWithProviders(<CustodyStatusBadge status="EXPIRING_SOON" />);
     const icon = container.querySelector("svg");
     expect(icon).not.toBeNull();
   });
 
   it("fallback works", () => {
-    render(<CustodyStatusBadge status="UNKNOWN" />);
+    renderWithProviders(<CustodyStatusBadge status="UNKNOWN" />);
     expect(screen.getByText("Not Found")).toBeTruthy();
   });
 });
