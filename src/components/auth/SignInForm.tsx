@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
 import { useNavigate } from "react-router-dom";
+import { consumeReturnPath, establishSession } from "../../features/auth/session";
 
 interface SignInFormData {
     email: string;
@@ -65,7 +66,8 @@ export function SignInForm() {
                 }, 1500);
             });
             console.log("Sign in successful with:", formData.email);
-            navigate("/home"); // Redirect to homepage after successful sign in
+            establishSession("user");
+            navigate(consumeReturnPath("/home"));
             // NOTE: Here you would typically redirect or dispatch a login action
         } catch (err: unknown) {
             setErrors((prev) => ({ 

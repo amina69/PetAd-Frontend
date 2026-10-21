@@ -28,6 +28,7 @@ import AdminDisputeListPage from "./pages/AdminDisputeListPage";
 import DisputeDetailPage from "./pages/DisputeDetailPage";
 import ShelterApprovalQueuePage from "./pages/ShelterApprovalQueuePage";
 import MyDisputesPage from "./pages/MyDisputesPage";
+import { AccountPage } from "./features/auth/AccountPage";
 
 function App() {
   useNotificationDeepLink();
@@ -40,6 +41,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset" element={<ResetPasswordPage />} />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+      <Route path="/account" element={<AccountPage />} />
 
       {/* Main App Routes - With Navbar/Footer */}
       <Route element={<MainLayout />}>
