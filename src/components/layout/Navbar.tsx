@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, ChevronDown, ClipboardList } from "lucide-react";
+import { House, Eye, List, Heart, ChevronDown, ClipboardList, MessageCircle } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
 import { PendingApprovalBadge } from "../badges/PendingApprovalBadge";
@@ -12,6 +12,7 @@ const baseNavLinks = [
   { label: "Home", path: "/home", icon: House },
   { label: "Interests", path: "/interests", icon: Eye },
   { label: "Listings", path: "/listings", icon: List },
+  { label: "Messages", path: "/messages", icon: MessageCircle },
 ];
 
 type NavLink = {
@@ -27,6 +28,15 @@ export function Navbar() {
 
   const navLinks: NavLink[] = [
     ...baseNavLinks,
+    ...(isAdmin
+      ? [
+          {
+            label: "Applications",
+            path: "/admin/applications",
+            icon: ClipboardList,
+          },
+        ]
+      : []),
     ...(canApprove
       ? [
           {
@@ -56,7 +66,9 @@ export function Navbar() {
       <div className="hidden md:flex items-center gap-8">
         {navLinks.map((link) => {
           const Icon = link.icon;
-          const isActive = location.pathname === link.path;
+          const isActive =
+            location.pathname === link.path ||
+            (link.path === "/messages" && location.pathname.startsWith("/messages/"));
           return (
             <Link
               key={link.path}

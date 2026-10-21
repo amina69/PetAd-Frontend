@@ -29,6 +29,8 @@ export interface StatusOverride {
 export interface AdminApprovalFilters {
   shelter?: string;
   status?: string;
+  type?: "ADOPTION" | "CUSTODY";
+  olderThanDays?: number;
   overdueOnly?: boolean;
   cursor?: string;
 }
@@ -94,6 +96,10 @@ export const adoptionService = {
     const params = new URLSearchParams();
     if (filters.shelter) params.append("shelter", filters.shelter);
     if (filters.status) params.append("status", filters.status);
+    if (filters.type) params.append("type", filters.type);
+    if (filters.olderThanDays !== undefined) {
+      params.append("olderThanDays", String(filters.olderThanDays));
+    }
     if (filters.overdueOnly) params.append("overdueOnly", "true");
     if (filters.cursor) params.append("cursor", filters.cursor);
 
@@ -104,5 +110,14 @@ export const adoptionService = {
 
     const data = await apiClient.get<unknown>(endpoint);
     return adminApprovalQueueResponseSchema.parse(data);
+  },
+
+  async decideAdminApproval(
+    applicationId: string,
+    decision: "approve" | "reject",
+  ): Promise<void> {
+    await apiClient.post(
+      `/admin/approvals/${encodeURIComponent(applicationId)}/${decision}`,
+    );
   },
 };

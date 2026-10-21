@@ -232,7 +232,13 @@ interface DisputeDetailMock {
 	slaStatus: string;
 	escrow: { status: string; accountId: string };
 	evidence: { id: string; fileName: string; url: string; sha256: string }[];
-	resolution?: { txHash?: string } | null;
+	resolution?: {
+		type?: "REFUND" | "RELEASE" | "SPLIT";
+		adminNote?: string;
+		resolvedBy?: string;
+		resolvedAt?: string;
+		txHash?: string;
+	} | null;
 	description?: string;
 	comments?: DisputeComment[];
 }
@@ -551,10 +557,15 @@ export const disputeHandlers = [
 		return HttpResponse.json<Dispute>(created, { status: 201 });
 	}),
 
-	// PATCH /api/disputes/:id/resolve — mark a dispute as resolved
-	http.patch("/api/disputes/:id/resolve", async ({ request, params }) => {
+	// POST /api/disputes/:id/resolve — resolve a dispute and record its official note
+	http.post("/api/disputes/:id/resolve", async ({ request, params }) => {
 		await delay(getDelay(request));
-		const body = (await request.json()) as { resolution: string; resolvedBy: string };
+		const body = (await request.json()) as {
+			shelterPercent: number;
+			adopterPercent: number;
+			adminNote?: string;
+			assignedAdminId?: string;
+		};
 		const index = MOCK_DISPUTES.findIndex((d) => d.id === params.id);
 
 		if (index === -1) {
@@ -562,23 +573,93 @@ export const disputeHandlers = [
 		}
 
 		const base = MOCK_DISPUTES[index];
+		const resolvedAt = new Date().toISOString();
+		const note = body.adminNote ?? "The dispute has been resolved.";
+		const resolutionType =
+			body.shelterPercent === 100
+				? "RELEASE"
+				: body.adopterPercent === 100
+					? "REFUND"
+					: "SPLIT";
 		const updated: Dispute = {
 			...base,
 			id: params.id as string,
 			status: "resolved",
-			resolution: body.resolution,
+			resolution: note,
 			timeline: [
 				...base.timeline,
 				{
-					event: `Resolved: ${body.resolution}`,
-					actor: body.resolvedBy,
-					timestamp: new Date().toISOString(),
+					event: `Resolved: ${note}`,
+					actor: body.assignedAdminId ?? "admin-1",
+					timestamp: resolvedAt,
 				},
 			],
-			updatedAt: new Date().toISOString(),
+			updatedAt: resolvedAt,
 		};
 
 		MOCK_DISPUTES[index] = updated;
+		const detail = DISPUTE_DETAIL_MOCKS[String(params.id)];
+		if (detail) {
+			detail.status = "RESOLVED";
+			detail.resolution = {
+				type: resolutionType,
+				adminNote: note,
+				resolvedBy: body.assignedAdminId ?? "Admin",
+				resolvedAt,
+			};
+			detail.comments = [
+				...(detail.comments ?? []),
+				{
+					id: `admin-note-${Date.now()}`,
+					authorName: "Admin",
+					content: note,
+					createdAt: resolvedAt,
+				},
+			];
+		}
 		return HttpResponse.json<Dispute>(updated);
+	}),
+
+	http.patch("/api/disputes/:id/status", async ({ request, params }) => {
+		await delay(getDelay(request));
+		const body = (await request.json()) as {
+			status: "UNDER_REVIEW";
+			adminNote: string;
+			assignedAdminId?: string;
+		};
+		const index = MOCK_DISPUTES.findIndex((dispute) => dispute.id === params.id);
+		if (index === -1) {
+			return HttpResponse.json({ message: "Not found" }, { status: 404 });
+		}
+
+		const updatedAt = new Date().toISOString();
+		const base = MOCK_DISPUTES[index];
+		MOCK_DISPUTES[index] = {
+			...base,
+			status: "under_review",
+			timeline: [
+				...base.timeline,
+				{
+					event: `Status changed to Under Review: ${body.adminNote}`,
+					actor: body.assignedAdminId ?? "admin-1",
+					timestamp: updatedAt,
+				},
+			],
+			updatedAt,
+		};
+		const detail = DISPUTE_DETAIL_MOCKS[String(params.id)];
+		if (detail) {
+			detail.status = "UNDER_REVIEW";
+			detail.comments = [
+				...(detail.comments ?? []),
+				{
+					id: `admin-note-${Date.now()}`,
+					authorName: "Admin",
+					content: body.adminNote,
+					createdAt: updatedAt,
+				},
+			];
+		}
+		return HttpResponse.json({ id: params.id, status: "UNDER_REVIEW" });
 	}),
 ];

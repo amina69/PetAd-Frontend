@@ -38,11 +38,12 @@ const AdoptionTimelinePage = lazy(() => import("./pages/AdoptionTimelinePage"));
 const ModalPreview = lazy(() => import("./pages/ModalPreview"));
 const StatusPollingDemo = lazy(() => import("./pages/StatusPollingDemo"));
 const CustodyTimelinePage = lazy(() => import("./pages/CustodyTimelinePage"));
-const AdminApprovalQueuePage = lazy(() => import("./pages/AdminApprovalQueuePage"));
+const AdminApprovalQueuePage = lazy(() => import("./pages/admin/ApplicationQueuePage"));
 const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
 const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
 const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
 const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
+const MessagesPage = lazy(() => import("./pages/MessagesPage"));
 
 function RouteLoadingFallback() {
   return (
@@ -114,13 +115,16 @@ function App() {
               element={<AdoptionTimelinePage />}
             />
             <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+            <Route path="/admin/applications" element={<AdminApprovalQueuePage />} />
             <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
             <Route
               path="/shelter/approvals"
               element={<ShelterApprovalQueuePage />}
             />
             <Route path="/disputes" element={<MyDisputesPage />} />
-            <Route path="/disputes/:id" element={<DisputeDetailPage />} />
+            <Route path="/disputes/:disputeId" element={<DisputeDetailPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/messages/:id" element={<MessagesPage />} />
             <Route
               path="/custody/:custodyId/timeline"
               element={<CustodyTimelinePage />}

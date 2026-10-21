@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { 
   Search, 
   Filter, 
@@ -10,7 +9,8 @@ import {
   CheckCircle2, 
   MoreHorizontal
 } from "lucide-react";
-import { adoptionService } from "../api/adoptionService";
+import type { AdminApprovalQueueItem } from "../features/approval/schemas/approvalSchemas";
+import { useAdminApplications } from "../hooks/useAdminApplications";
 import { StatusFilterChips } from "../components/ui/StatusFilterChips";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
@@ -23,38 +23,61 @@ const STATUS_OPTIONS = [
 ];
 
 export default function AdminApprovalQueuePage() {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [shelterFilter, setShelterFilter] = useState("");
-  const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [showOverdueOnly, setShowOverdueOnly] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<AdminApprovalQueueItem | null>(null);
+  const [decisionError, setDecisionError] = useState<string | null>(null);
+
+  const statusFilters = useMemo(
+    () => searchParams.get("status")?.split(",").filter(Boolean) ?? [],
+    [searchParams],
+  );
+  const rawType = searchParams.get("type");
+  const applicationType =
+    rawType === "ADOPTION" || rawType === "CUSTODY" ? rawType : "";
+  const rawAge = Number(searchParams.get("olderThanDays"));
+  const olderThanDays = Number.isFinite(rawAge) && rawAge > 0 ? rawAge : undefined;
+
+  const updateUrlFilter = (key: string, value: string) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (value) nextParams.set(key, value);
+    else nextParams.delete(key);
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  const updateStatusFilters = (values: string[]) =>
+    updateUrlFilter("status", values.join(","));
 
   const {
-    data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
     isError,
-    refetch
-  } = useInfiniteQuery({
-    queryKey: ["adminApprovals", shelterFilter, statusFilters, showOverdueOnly],
-    queryFn: ({ pageParam }) => 
-      adoptionService.getAdminApprovalQueue({
+    refetch,
+    applications: allItems,
+    decide,
+    isDeciding,
+  } = useAdminApplications({
         shelter: shelterFilter || undefined,
         status: statusFilters.join(",") || undefined,
+        type: applicationType || undefined,
+        olderThanDays,
         overdueOnly: showOverdueOnly,
-        cursor: pageParam
-      }),
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
+      });
 
-  const allItems = useMemo(() => 
-    data?.pages.flatMap(page => page.items) ?? [], 
-  [data]);
-
-  const handleRowClick = (id: string) => {
-    navigate(`/adoption/${id}`);
+  const handleDecision = async (decision: "approve" | "reject") => {
+    if (!selectedItem) return;
+    setDecisionError(null);
+    try {
+      await decide({ applicationId: selectedItem.id, decision });
+      setSelectedItem(null);
+    } catch (error) {
+      setDecisionError(
+        error instanceof Error ? error.message : "Unable to update this application.",
+      );
+    }
   };
 
   return (
@@ -66,7 +89,7 @@ export default function AdminApprovalQueuePage() {
             Approval Queue
           </h1>
           <p className="mt-2 text-gray-500 font-medium">
-            Manage and monitor multi-party adoption approvals
+            Review adoption and custody applications and their risk flags
           </p>
         </div>
 
@@ -101,8 +124,41 @@ export default function AdminApprovalQueuePage() {
               <StatusFilterChips
                 options={STATUS_OPTIONS}
                 value={statusFilters}
-                onChange={setStatusFilters}
+                onChange={updateStatusFilters}
               />
+            </div>
+
+            <div className="flex-1 space-y-2">
+              <label htmlFor="application-type" className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Application type
+              </label>
+              <select
+                id="application-type"
+                value={applicationType}
+                onChange={(event) => updateUrlFilter("type", event.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-[#0D162B]"
+              >
+                <option value="">All types</option>
+                <option value="ADOPTION">Adoption</option>
+                <option value="CUSTODY">Custody</option>
+              </select>
+            </div>
+
+            <div className="flex-1 space-y-2">
+              <label htmlFor="older-than-days" className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Age
+              </label>
+              <select
+                id="older-than-days"
+                value={olderThanDays?.toString() ?? ""}
+                onChange={(event) => updateUrlFilter("olderThanDays", event.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-[#0D162B]"
+              >
+                <option value="">Any age</option>
+                {[3, 7, 14, 30].map((days) => (
+                  <option key={days} value={days}>Older than {days} days</option>
+                ))}
+              </select>
             </div>
 
             {/* Overdue Toggle */}
@@ -140,7 +196,7 @@ export default function AdminApprovalQueuePage() {
                 description={
                   showOverdueOnly 
                     ? "Great job! All pending approvals are within their SLA."
-                    : "There are currently no adoption applications in the queue."
+                    : "There are currently no applications in the queue."
                 }
               />
             </div>
@@ -153,6 +209,8 @@ export default function AdminApprovalQueuePage() {
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Shelter</th>
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Pet</th>
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Adopter</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Risk</th>
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Submitted</th>
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Shelter Approval</th>
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Waiting</th>
@@ -163,7 +221,19 @@ export default function AdminApprovalQueuePage() {
                     {allItems.map((item) => (
                       <tr 
                         key={item.id}
-                        onClick={() => handleRowClick(item.id)}
+                        onClick={() => {
+                          setDecisionError(null);
+                          setSelectedItem(item);
+                        }}
+                        tabIndex={0}
+                        role="button"
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            setDecisionError(null);
+                            setSelectedItem(item);
+                          }
+                        }}
                         className="hover:bg-[#FFF2E5]/30 cursor-pointer transition-colors group"
                       >
                         <td className="px-6 py-5 font-semibold text-[#0D162B] text-sm">{item.shelter}</td>
@@ -175,6 +245,16 @@ export default function AdminApprovalQueuePage() {
                              </div>
                              <span className="font-semibold text-[#0D162B] text-sm">{item.adopter}</span>
                            </div>
+                        </td>
+                        <td className="px-6 py-5 text-sm text-gray-600">
+                          {item.type === "CUSTODY" ? "Custody" : "Adoption"}
+                        </td>
+                        <td className="px-6 py-5 text-sm">
+                          {item.flaggedRisk ? (
+                            <span className="font-semibold text-red-600">Flagged</span>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
                         </td>
                         <td className="px-6 py-5 text-gray-500 text-sm">
                           {new Date(item.submitted).toLocaleDateString()}
@@ -239,6 +319,100 @@ export default function AdminApprovalQueuePage() {
           )}
         </div>
       </div>
+
+      {selectedItem && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !isDeciding) {
+              setSelectedItem(null);
+            }
+          }}
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="application-review-title"
+            className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {selectedItem.type === "CUSTODY" ? "Custody" : "Adoption"} application
+                </p>
+                <h2 id="application-review-title" className="mt-1 text-xl font-bold text-gray-900">
+                  {selectedItem.pet}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                disabled={isDeciding}
+                aria-label="Close application details"
+                className="rounded-lg px-3 py-1 text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+              >
+                Close
+              </button>
+            </div>
+            <dl className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Applicant</dt>
+                <dd className="mt-1 text-sm text-gray-900">{selectedItem.adopter}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Shelter</dt>
+                <dd className="mt-1 text-sm text-gray-900">{selectedItem.shelter}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Submitted</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {new Date(selectedItem.submitted).toLocaleString()}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Current status</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {selectedItem.status ?? (selectedItem.shelterApproved ? "SHELTER_APPROVED" : "PENDING")}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Application ID</dt>
+                <dd className="mt-1 break-all text-sm text-gray-900">{selectedItem.id}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase text-gray-500">Risk review</dt>
+                <dd className={`mt-1 text-sm font-semibold ${selectedItem.flaggedRisk ? "text-red-700" : "text-green-700"}`}>
+                  {selectedItem.flaggedRisk ? "Flagged for review" : "No risk flag"}
+                </dd>
+              </div>
+            </dl>
+            {decisionError && (
+              <p role="alert" className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                {decisionError}
+              </p>
+            )}
+            <div className="mt-7 flex flex-wrap justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => void handleDecision("reject")}
+                disabled={isDeciding}
+                className="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+              >
+                Reject
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleDecision("approve")}
+                disabled={isDeciding}
+                className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+              >
+                {isDeciding ? "Saving…" : "Approve"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
