@@ -65,5 +65,29 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     exclude: ["e2e/**", "node_modules/**", "dist/**"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "json-summary"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "src/**/*.test.{ts,tsx}",
+        "src/**/__tests__/**",
+        "src/test/**",
+        "src/mocks/**",
+        "src/**/*.d.ts",
+      ],
+      thresholds: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+        "src/features/**": {
+          lines: 70,
+          functions: 70,
+          branches: 70,
+          statements: 70,
+        },
+      },
+    },
   },
 }));

@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -29,8 +33,60 @@ jobs:
       - name: Build check
         run: npm run build
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage
+
+      - name: Comment coverage diff
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = 'coverage/coverage-summary.json';
+            if (!fs.existsSync(summaryPath)) {
+              core.warning('coverage summary missing');
+              return;
+            }
+            const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+            const total = summary.total || {};
+            const line = (metric) => {
+              const item = total[metric] || { pct: 0 };
+              return `${metric}: ${item.pct}%`;
+            };
+            const listed = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            const rows = listed.data
+              .map((file) => file.filename)
+              .filter((file) => summary[file])
+              .map((file) => `| \`${file}\` | ${summary[file].lines.pct}% |`)
+              .join('\n');
+            const body = [
+              '### Coverage',
+              line('lines'),
+              line('statements'),
+              line('functions'),
+              line('branches'),
+              '',
+              'Thresholds: 75% global, 80% for `src/features/**`. A pull request that drops below those thresholds fails this job.',
+              rows ? `\n| File | Lines |\n| --- | --- |\n${rows}` : '',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
 
   e2e:
     runs-on: ubuntu-latest

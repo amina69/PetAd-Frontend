@@ -1,9 +1,10 @@
-import { Check, X, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { adoptionService } from "../../api/adoptionService";
 import { useApiQuery } from "../../hooks/useApiQuery";
 import { StellarTxLink } from "../ui/StellarTxLink";
 import { Skeleton } from "../ui/Skeleton";
 import { EmptyState } from "../ui/emptyState";
+import { StatusBadge } from "../common/StatusBadge";
 import type { ApprovalDecision } from "../../types/adoption";
 
 interface ApprovalHistoryTabProps {
@@ -78,7 +79,7 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
                 <p className="text-xs text-gray-500">{decision.approverRole}</p>
               </div>
             </div>
-            <StatusBadge status={decision.status} />
+            <StatusBadge domain="approval" status={decision.status} />
           </div>
 
           {decision.reason && (
@@ -105,30 +106,3 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
   );
 }
 
-function StatusBadge({ status }: { status: ApprovalDecision["status"] }) {
-  switch (status) {
-    case "APPROVED":
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full">
-          <Check size={12} strokeWidth={3} />
-          Approved
-        </span>
-      );
-    case "REJECTED":
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-full">
-          <X size={12} strokeWidth={3} />
-          Rejected
-        </span>
-      );
-    case "EXPIRED":
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 rounded-full">
-          <Clock size={12} strokeWidth={3} />
-          Expired
-        </span>
-      );
-    default:
-      return null;
-  }
-}
