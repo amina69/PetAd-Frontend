@@ -1,5 +1,6 @@
 import mockOwnerImg from "../../assets/mockownder.png";
 import { Heart } from 'lucide-react';
+import { prefetchPetDetail } from '../../lib/prefetchPet';
 
 export interface Pet {
     id: string;
@@ -23,7 +24,11 @@ interface PetCardProps {
 export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerClick }: PetCardProps) {
 
     return (
-        <div className="flex flex-col bg-white rounded-[20px] w-full overflow-hidden border border-gray-100 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
+        <div
+            onMouseEnter={() => void prefetchPetDetail(pet.id)}
+            onFocus={() => void prefetchPetDetail(pet.id)}
+            className="flex flex-col bg-white rounded-[20px] w-full overflow-hidden border border-gray-100 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md"
+        >
             {/* Image container with aspect ratio */}
             <div className="relative w-full pb-[85%] h-[260px] bg-gray-100 overflow-hidden group">
                 <img

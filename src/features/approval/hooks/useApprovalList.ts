@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { approvalService } from "../api/approvalService";
 import type { ApprovalListParams, ApprovalListResponse } from "../types/approval.types";
+import { STALE_TIME } from "../../../lib/staleTime";
 
 // ─── Query Key Factory ───────────────────────────────────────────────────────
 
@@ -42,7 +43,7 @@ export function useApprovalList(params: ApprovalListParams = {}) {
     queryKey: approvalKeys.list(params),
     queryFn: () => approvalService.getApprovals(params),
     // Lists are stable between operator actions, so avoid refetching on every render.
-    staleTime: 60_000,
+    staleTime: STALE_TIME.APPROVALS,
     refetchOnWindowFocus: false,
   });
 

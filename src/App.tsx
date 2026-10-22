@@ -43,6 +43,9 @@ const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
 const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
 const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
 const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
+const DocumentVerificationPage = lazy(() => import("./pages/admin/DocumentVerificationPage"));
+const UsersPage = lazy(() => import("./pages/admin/UsersPage"));
+const AuditLogPage = lazy(() => import("./pages/admin/AuditLogPage"));
 
 function RouteLoadingFallback() {
   return (
@@ -115,6 +118,9 @@ function App() {
             />
             <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
             <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
+            <Route path="/admin/documents" element={<DocumentVerificationPage />} />
+            <Route path="/admin/users" element={<UsersPage />} />
+            <Route path="/admin/audit-log" element={<AuditLogPage />} />
             <Route
               path="/shelter/approvals"
               element={<ShelterApprovalQueuePage />}

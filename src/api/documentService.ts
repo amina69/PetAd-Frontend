@@ -105,6 +105,11 @@ export const documentService = {
         return apiClient.get(endpoint);
     },
 
+    /** Documents awaiting an admin decision. GET /documents?status=pending */
+    getPendingDocuments: async (): Promise<Document[]> => {
+        return apiClient.get("/documents?status=pending");
+    },
+
     verifyDocument: async (documentId: string): Promise<{ verified: boolean, hash: string }> => {
         return apiClient.get(`/documents/${documentId}/verify`);
     },

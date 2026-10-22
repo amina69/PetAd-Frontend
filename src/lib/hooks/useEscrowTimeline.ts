@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
+import { STALE_TIME } from "../staleTime";
 
 export type EscrowTimelineEventType =
 	| "CREATED"
@@ -35,7 +36,7 @@ export function useEscrowTimeline(
 			),
 		enabled,
 			// Timeline events are append-only; refresh periodically without each navigation refetching.
-			staleTime: 30_000,
+			staleTime: STALE_TIME.TIMELINES,
 	});
 
 	return {

@@ -1,6 +1,7 @@
 import { useApiQuery } from "./useApiQuery";
 import { adoptionService } from "../api/adoptionService";
 import type { AdoptionDetails, AdoptionStatus } from "../types/adoption";
+import { STALE_TIME } from "../lib/staleTime";
 
 const SETTLED_STATUSES: AdoptionStatus[] = ["COMPLETED", "CANCELLED", "FUNDS_RELEASED"];
 const POLL_INTERVAL_MS = 3_000;
@@ -18,6 +19,8 @@ export function useEscrowStatus(adoptionId: string) {
     () => adoptionService.getDetails(adoptionId),
     {
       enabled: !!adoptionId,
+      // Escrow status drives the stepper and is polled until settled, so never serve it stale.
+      staleTime: STALE_TIME.NOTIFICATIONS,
       refetchInterval: (query) => {
         const status = query.state.data?.status;
         if (status && SETTLED_STATUSES.includes(status)) {

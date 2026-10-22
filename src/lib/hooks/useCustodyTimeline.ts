@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { custodyService, type CustodyTimelineEvent } from "../../api/custodyService";
+import { STALE_TIME } from "../staleTime";
 
 export type { CustodyTimelineEvent };
 
@@ -26,6 +27,8 @@ export function useCustodyTimeline(
     queryKey: ["custody-timeline", custodyId],
     queryFn: () => custodyService.getTimeline(custodyId!),
     enabled,
+    // Custody timelines are append-only, so a short cache avoids refetching on every navigation.
+    staleTime: STALE_TIME.TIMELINES,
   });
 
   return {
