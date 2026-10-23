@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ResponsiveImage } from '../shared/ResponsiveImage';
 import { ClockIcon, CheckCircleIcon, EditIcon, TrashIcon } from '../icons/StatusIcons';
 
 interface Listing {
@@ -22,10 +23,12 @@ export default function ListingCard({ listing }: ListingCardProps) {
       
       {/* Image - Full Height */}
       <div className="md:col-span-2 h-48 md:h-auto">
-        <img 
-          src={listing.imageUrl} 
-          alt={listing.name} 
-          loading="lazy"
+        <ResponsiveImage
+          src={listing.imageUrl}
+          alt={listing.name}
+          width={320}
+          height={192}
+          sizes="(min-width: 768px) 17vw, 100vw"
           className="w-full h-full object-cover"
         />
       </div>

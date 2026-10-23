@@ -1,4 +1,5 @@
 import { http, HttpResponse, delay } from "msw";
+import { logger } from "../../lib/logger";
 
 // In-memory store of registered users for the mock
 const registeredUsers: { email: string; fullName: string; nin: string; password: string; id: string }[] = [];
@@ -99,7 +100,7 @@ export const authHandlers = [
     const token = `reset-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     resetTokens.set(token, body.email);
 
-    console.log(`[MSW] Password reset token for ${body.email}: ${token}`);
+    logger.debug(`[MSW] Password reset token issued: ${token}`);
 
     return HttpResponse.json({
       message: "If an account with that email exists, a reset link has been sent.",

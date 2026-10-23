@@ -6,6 +6,7 @@ import { queryClient } from './lib/query-client'
 import { ToastProvider } from './components/toast/ToastProvider'
 import { ThemeProvider } from './components/theme-provider'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
+import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
 
@@ -51,6 +52,9 @@ async function cleanupServiceWorkers() {
 }
 
 async function bootstrap() {
+  // No-op unless VITE_ENABLE_ANALYTICS === 'true'.
+  initAnalytics()
+
   const reloadingAfterCleanup = await cleanupServiceWorkers()
 
   if (reloadingAfterCleanup) {

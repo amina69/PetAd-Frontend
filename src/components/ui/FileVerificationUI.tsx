@@ -5,6 +5,7 @@ import { DocumentRow } from './DocumentRow';
 import { EmptyState } from './emptyState';
 import { Skeleton } from './Skeleton';
 import type { UserRole } from '../../types/auth';
+import { logger } from "../../lib/logger";
 
 interface FileVerificationUIProps {
   adoptionId?: string;
@@ -86,7 +87,7 @@ export function FileVerificationUI({
             currentUserRole={currentUserRole}
             onDelete={(id) => {
               // Implementation for delete would go here
-              console.log('Delete document', id);
+              logger.debug('Delete document', id);
             }}
           />
         ))}

@@ -1,5 +1,6 @@
 import type { ApiClientConfig } from "../types/auth";
 import { ApiError, ValidationApiError } from "./api-errors";
+import { logger } from "./logger";
 class ApiClient {
 	private baseURL: string;
 	private defaultHeaders: Record<string, string>;
@@ -189,7 +190,7 @@ if (response.status === 422) {
 	}
 
 	setTokenStorage(storage: "localStorage" | "sessionStorage" | "cookie") {
-		console.log(`Token storage set to ${storage}`);
+		logger.debug(`Token storage set to ${storage}`);
 	}
 }
 
