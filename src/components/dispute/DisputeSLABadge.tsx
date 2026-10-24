@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { getStatusMeta, SLA_HEALTHY_META } from "../../lib/statusConfig";
 import { StatusBadge } from "../ui/StatusBadge";
 
 interface DisputeSLABadgeProps {
@@ -6,24 +6,9 @@ interface DisputeSLABadgeProps {
 }
 
 export function DisputeSLABadge({ isOverdue }: DisputeSLABadgeProps) {
-  if (isOverdue) {
-    return (
-      <StatusBadge
-        color="red"
-        label="SLA Breached"
-        pulse
-        icon={<AlertCircle className="w-3.5 h-3.5" />}
-        data-testid="dispute-sla-badge"
-      />
-    );
-  }
+  const meta = isOverdue
+    ? getStatusMeta("dispute", "SLA_BREACHED")
+    : SLA_HEALTHY_META;
 
-  return (
-    <StatusBadge
-      color="green"
-      label="Within SLA"
-      icon={<CheckCircle2 className="w-3.5 h-3.5" />}
-      data-testid="dispute-sla-badge"
-    />
-  );
+  return <StatusBadge meta={meta} data-testid="dispute-sla-badge" />;
 }

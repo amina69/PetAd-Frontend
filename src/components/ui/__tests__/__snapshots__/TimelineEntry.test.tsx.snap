@@ -48,6 +48,39 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
         <span
           class="status-badge status-badge--gray"
         >
+          <span
+            class="status-badge__icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-file-text h-3.5 w-3.5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
+              />
+              <path
+                d="M14 2v5a1 1 0 0 0 1 1h5"
+              />
+              <path
+                d="M10 9H8"
+              />
+              <path
+                d="M16 13H8"
+              />
+              <path
+                d="M16 17H8"
+              />
+            </svg>
+          </span>
           <span>
             Escrow Created
           </span>
@@ -88,6 +121,30 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
         <span
           class="status-badge status-badge--teal"
         >
+          <span
+            class="status-badge__icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-wallet h-3.5 w-3.5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"
+              />
+              <path
+                d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"
+              />
+            </svg>
+          </span>
           <span>
             Escrow Funded
           </span>
@@ -200,6 +257,30 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
         <span
           class="status-badge status-badge--teal"
         >
+          <span
+            class="status-badge__icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-wallet h-3.5 w-3.5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"
+              />
+              <path
+                d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"
+              />
+            </svg>
+          </span>
           <span>
             Escrow Funded
           </span>
@@ -240,6 +321,39 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
         <span
           class="status-badge status-badge--green"
         >
+          <span
+            class="status-badge__icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-banknote h-3.5 w-3.5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="12"
+                rx="2"
+                width="20"
+                x="2"
+                y="6"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="2"
+              />
+              <path
+                d="M6 12h.01M18 12h.01"
+              />
+            </svg>
+          </span>
           <span>
             Funds Released
           </span>
@@ -324,6 +438,39 @@ exports[`TimelineEntry > renders regular entry correctly 1`] = `
         <span
           class="status-badge status-badge--gray"
         >
+          <span
+            class="status-badge__icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-file-text h-3.5 w-3.5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
+              />
+              <path
+                d="M14 2v5a1 1 0 0 0 1 1h5"
+              />
+              <path
+                d="M10 9H8"
+              />
+              <path
+                d="M16 13H8"
+              />
+              <path
+                d="M16 17H8"
+              />
+            </svg>
+          </span>
           <span>
             Escrow Created
           </span>

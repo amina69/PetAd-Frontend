@@ -1,0 +1,9 @@
+UI/UX Design For PedAds
+
+- Interest Page
+- Listing Page
+- View More Page (Pet for Adoption)
+- Pet Owner's Info Section
+
+https://www.figma.com/design/0fDeq4qUYjt95MQTlaQbNC/PetAds-Designs?node-id=0-1&p=f&t=wGl63EyR67OjqAeC-0
+

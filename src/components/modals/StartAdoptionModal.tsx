@@ -112,10 +112,11 @@ export function StartAdoptionModal({
 
                     {/* Date Pet Was Received */}
                     <div className="mb-5">
-                        <label className="block text-[13px] text-gray-500 mb-1.5">
+                        <label htmlFor="date-received" className="block text-[13px] text-gray-500 mb-1.5">
                             Date Pet Was Received
                         </label>
                         <input
+                            id="date-received"
                             type="text"
                             placeholder="Enter"
                             value={formData.dateReceived}
@@ -137,10 +138,11 @@ export function StartAdoptionModal({
 
                     {/* Receipt Location / Address */}
                     <div className="mb-5">
-                        <label className="block text-[13px] text-gray-500 mb-1.5">
+                        <label htmlFor="receipt-location" className="block text-[13px] text-gray-500 mb-1.5">
                             Receipt Location / Address
                         </label>
                         <textarea
+                            id="receipt-location"
                             placeholder="Type something"
                             value={formData.receiptLocation}
                             onChange={(e) =>
@@ -162,11 +164,12 @@ export function StartAdoptionModal({
 
                     {/* Pet Condition */}
                     <div className="mb-8">
-                        <label className="block text-[13px] text-gray-500 mb-1.5">
+                        <label htmlFor="pet-condition" className="block text-[13px] text-gray-500 mb-1.5">
                             Pet Condition
                         </label>
                         <div className="relative">
                             <select
+                                id="pet-condition"
                                 value={formData.petCondition}
                                 onChange={(e) =>
                                     handleChange("petCondition", e.target.value)

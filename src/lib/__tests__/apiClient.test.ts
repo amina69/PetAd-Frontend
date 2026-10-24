@@ -104,6 +104,19 @@ describe("ApiClient", () => {
 			const [, init] = fetchMock.mock.calls[0];
 			expect(init.body).toBeUndefined();
 		});
+
+		it("passes FormData through untouched and lets the browser set the multipart Content-Type", async () => {
+			fetchMock.mockResolvedValueOnce(makeResponse({ ok: true }, 201));
+			const client = freshClient();
+			const form = new FormData();
+			form.append("body", "hi");
+
+			await client.post("/upload", form);
+
+			const [, init] = fetchMock.mock.calls[0];
+			expect(init.body).toBe(form);
+			expect(init.headers["Content-Type"]).toBeUndefined();
+		});
 	});
 
 	describe("PUT", () => {

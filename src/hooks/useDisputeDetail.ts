@@ -12,15 +12,28 @@ interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
     txHash?: string;
     splitDistribution?: DisputeResolution["splitDistribution"];
   } | null;
+  comments?: Array<{
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  }>;
 }
 
 export interface EnrichedDisputeDetail extends DisputeDetail {
-  escrowOnChainStatus: string;
-  stellarExplorerUrl: string;
+  escrowOnChainStatus?: string;
+  stellarExplorerUrl?: string;
   resolutionTxHash?: string;
+  comments?: Array<{
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  }>;
 }
 
-function buildStellarExplorerUrl(accountId: string): string {
+function buildStellarExplorerUrl(accountId?: string | null): string {
+  if (!accountId) return "";
   return `https://stellar.expert/explorer/public/account/${encodeURIComponent(accountId)}`;
 }
 
@@ -28,7 +41,11 @@ export function useDisputeDetail(disputeId: string) {
   const query = useApiQuery<DisputeDetailApiResponse>(
     ["dispute-detail", disputeId],
     () => apiClient.get<DisputeDetailApiResponse>(`/disputes/${disputeId}`),
-    { enabled: Boolean(disputeId) },
+    {
+      enabled: Boolean(disputeId),
+      // Dispute status can change during review, so keep detail views fresh.
+      staleTime: 15000,
+    },
   );
 
   const enrichedData = useMemo<EnrichedDisputeDetail | undefined>(() => {
@@ -38,7 +55,6 @@ export function useDisputeDetail(disputeId: string) {
 
     const raw = query.data;
 
-    // Map API resolution shape to our typed DisputeResolution
     let resolution: DisputeResolution | null = null;
     if (
       raw.resolution &&
@@ -60,9 +76,10 @@ export function useDisputeDetail(disputeId: string) {
     return {
       ...raw,
       resolution,
-      escrowOnChainStatus: raw.escrow.status,
-      stellarExplorerUrl: buildStellarExplorerUrl(raw.escrow.accountId),
+      escrowOnChainStatus: raw.escrow?.status,
+      stellarExplorerUrl: buildStellarExplorerUrl(raw.escrow?.accountId),
       resolutionTxHash: raw.resolution?.txHash,
+      comments: raw.comments ?? [],
     };
   }, [query.data]);
 

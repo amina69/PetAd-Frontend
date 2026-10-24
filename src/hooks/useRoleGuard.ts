@@ -1,27 +1,32 @@
+import type { UserRole } from "../types/auth";
+
 /**
  * useRoleGuard
  *
  * Reads the current user's role and exposes convenience booleans.
- * Role is stored under the "petad_user_role" key in localStorage so it can be
- * swapped for a React context / auth provider once one is wired up.
- *
- * Supported role values: "admin" | "user"
+ * We normalize the stored value so older lowercase role flags and the current
+ * uppercase auth roles can coexist safely during the transition.
  */
 export function useRoleGuard() {
-  const role =
+  const storedRole =
     typeof window !== "undefined"
-      ? localStorage.getItem("petad_user_role")
+      ? localStorage.getItem("petad_user_role") ?? localStorage.getItem("role")
       : null;
+
+  const normalizedRole = storedRole?.toUpperCase() ?? "";
+  const role = normalizedRole as UserRole | "";
 
   const hasAccess = (roles: string[]) => {
     if (!role) return false;
-    return roles.includes(role);
+    return roles.map((value) => value.toUpperCase()).includes(role);
   };
 
   return {
-    role: role || "",
-    isAdmin: role === "admin",
-    isUser: role === "user",
+    role,
+    isAdmin: role === "ADMIN",
+    isShelter: role === "SHELTER",
+    isUser: role === "USER",
+    canApprove: role === "ADMIN" || role === "SHELTER",
     hasAccess,
   };
 }

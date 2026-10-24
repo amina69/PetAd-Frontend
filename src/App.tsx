@@ -1,118 +1,163 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
-import FavouritePage from "./pages/FavouritePage";
-import HomePage from "./pages/HomePage";
-import ListingsPage from "./pages/ListingsPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
-import ForgetPasswordPage from "./pages/forgetPasswordPage";
-import InterestPage from "./pages/interestPage";
-import NotificationPage from "./pages/notificationPage";
-import NotificationPreferencesPage from "./pages/NotificationPreferencesPage";
-import NotificationsPage from "./pages/settings/NotificationsPage";
-import ResetPasswordPage from "./pages/resetPasswordPage";
-import { AdoptionCompletionDemo } from "./pages/AdoptionCompletionDemo";
-import PetListingDetailsPage from "./pages/PetlistingdetailsPage";
-import EditAdoptionListing from "./pages/EditAdoptionListing";
-import ListingDetailsPage from "./pages/ListingDetailsPage";
-import { SettlementSummaryPage } from "./pages/SettlementSummaryPage";
-import AdoptionTimelinePage from "./pages/AdoptionTimelinePage";
-import ModalPreview from "./pages/ModalPreview";
-import StatusPollingDemo from "./pages/StatusPollingDemo";
-import CustodyTimelinePage from "./pages/CustodyTimelinePage";
+import { GuestRoute } from "./components/auth/GuestRoute";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { PublicRoute } from "./components/auth/PublicRoute";
+import { AuthGateProvider } from "./context/AuthGateContext";
 
-import AdminApprovalQueuePage from "./pages/AdminApprovalQueuePage";
-import AdminDisputeListPage from "./pages/AdminDisputeListPage";
-import DisputeDetailPage from "./pages/DisputeDetailPage";
-import ShelterApprovalQueuePage from "./pages/ShelterApprovalQueuePage";
-import MyDisputesPage from "./pages/MyDisputesPage";
-import { AccountPage } from "./features/auth/AccountPage";
+const FavouritePage = lazy(() => import("./pages/FavouritePage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ListingsPage = lazy(() => import("./pages/ListingsPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const ForgetPasswordPage = lazy(() => import("./pages/forgetPasswordPage"));
+const InterestPage = lazy(() => import("./pages/interestPage"));
+const NotificationPage = lazy(() => import("./pages/notificationPage"));
+const MessagesPage = lazy(() => import("./pages/MessagesPage"));
+const NotificationPreferencesPage = lazy(() =>
+  import("./pages/NotificationPreferencesPage"),
+);
+const NotificationsPage = lazy(() => import("./pages/settings/NotificationsPage"));
+const ResetPasswordPage = lazy(() => import("./pages/resetPasswordPage"));
+const AdoptionCompletionDemo = lazy(() =>
+  import("./pages/AdoptionCompletionDemo").then(({ AdoptionCompletionDemo }) => ({
+    default: AdoptionCompletionDemo,
+  })),
+);
+const PetListingDetailsPage = lazy(() => import("./pages/PetlistingdetailsPage"));
+const EditAdoptionListing = lazy(() => import("./pages/EditAdoptionListing"));
+const ListingDetailsPage = lazy(() => import("./pages/ListingDetailsPage"));
+const SettlementSummaryPage = lazy(() =>
+  import("./pages/SettlementSummaryPage").then(({ SettlementSummaryPage }) => ({
+    default: SettlementSummaryPage,
+  })),
+);
+const AdoptionTimelinePage = lazy(() => import("./pages/AdoptionTimelinePage"));
+const AdoptionStatusPage = lazy(() => import("./pages/AdoptionStatusPage"));
+const ModalPreview = lazy(() => import("./pages/ModalPreview"));
+const StatusPollingDemo = lazy(() => import("./pages/StatusPollingDemo"));
+const CustodyTimelinePage = lazy(() => import("./pages/CustodyTimelinePage"));
+const AdminApprovalQueuePage = lazy(() => import("./pages/AdminApprovalQueuePage"));
+const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
+const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
+const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
+const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
+const CaretakerDashboardPage = lazy(() => import("./pages/CaretakerDashboardPage"));
+const AccountPage = lazy(() =>
+  import("./features/auth/AccountPage").then(({ AccountPage }) => ({
+    default: AccountPage,
+  })),
+);
+
+function RouteLoadingFallback() {
+  return (
+    <div role="status" aria-live="polite">
+      Loading pageâ€¦
+    </div>
+  );
+}
 
 function App() {
   useNotificationDeepLink();
 
   return (
-    <Routes>
-      {/* Auth Routes - No Navbar/Footer*/}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/reset" element={<ResetPasswordPage />} />
-      <Route path="/forgot-password" element={<ForgetPasswordPage />} />
-      <Route path="/account" element={<AccountPage />} />
+    /**
+     * AuthGateProvider must wrap Routes so that useLocation() inside the
+     * provider reads the correct current pathname when requireAuth() is called.
+     */
+    <AuthGateProvider>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Routes>
+        {/* â”€â”€ Root redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
-      {/* Main App Routes - With Navbar/Footer */}
-      <Route element={<MainLayout />}>
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/favourites" element={<FavouritePage />} />
-        <Route path="/interests" element={<InterestPage />} />
-        <Route path="/listings" element={<ListingsPage />} />
-        <Route path="/listings/:id" element={<PetListingDetailsPage />} />
-        <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
-        <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
-        <Route path="/notifications" element={<NotificationPage />} />
-        <Route
-          path="/notification-preferences"
-          element={<NotificationPreferencesPage />}
-        />
-        <Route
-          path="/settings/notifications"
-          element={<NotificationsPage />}
-        />
-        <Route
-          path="/adoption/:adoptionId/settlement"
-          element={<SettlementSummaryPage />}
-        />
-        <Route
-          path="/adoption/:adoptionId/timeline"
-          element={<AdoptionTimelinePage />}
-        />
+        {/* â”€â”€ Auth pages (redirect to /home when already logged in) â”€â”€â”€â”€â”€â”€â”€ */}
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/reset" element={<ResetPasswordPage />} />
+          <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+        </Route>
 
-        {/* Admin Approvals */}
-        <Route
-          path="/admin/approvals"
-          element={<AdminApprovalQueuePage />}
-        />
+        {/* â”€â”€ PUBLIC browsing routes â€” accessible to guests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/*
+         * PublicRoute renders the Outlet unconditionally (no auth check).
+         * Interactive actions inside these pages must use useAuthAction() or
+         * call requireAuth() directly to gate state-changing operations.
+         */}
+        <Route element={<PublicRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/listings" element={<ListingsPage />} />
+            <Route path="/listings/:id" element={<PetListingDetailsPage />} />
+          </Route>
+        </Route>
 
-        {/* Shelter Approvals */}
-        <Route
-          path="/shelter/approvals"
-          element={<ShelterApprovalQueuePage />}
-        />
+        {/* â”€â”€ PROTECTED routes â€” authenticated users only â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/favourites" element={<FavouritePage />} />
+            <Route path="/interests" element={<InterestPage />} />
+            <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/messages/:conversationId" element={<MessagesPage />} />
+            <Route
+              path="/notification-preferences"
+              element={<NotificationPreferencesPage />}
+            />
+            <Route
+              path="/settings/notifications"
+              element={<NotificationsPage />}
+            />
+            <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
+            <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
+            <Route
+              path="/adoption/:adoptionId/settlement"
+              element={<SettlementSummaryPage />}
+            />
+            <Route
+              path="/adoption/:adoptionId/timeline"
+              element={<AdoptionTimelinePage />}
+            />
+            <Route
+              path="/adoption/:adoptionId/status"
+              element={<AdoptionStatusPage />}
+            />
+            <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+            <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
+            <Route
+              path="/shelter/approvals"
+              element={<ShelterApprovalQueuePage />}
+            />
+            <Route path="/disputes" element={<MyDisputesPage />} />
+            <Route
+              path="/caretaker/dashboard"
+              element={<CaretakerDashboardPage />}
+            />
+            <Route path="/disputes/:id" element={<DisputeDetailPage />} />
+            <Route
+              path="/custody/:custodyId/timeline"
+              element={<CustodyTimelinePage />}
+            />
+            <Route path="/preview-modal" element={<ModalPreview />} />
+            <Route
+              path="/adoption-completion-demo"
+              element={<AdoptionCompletionDemo />}
+            />
+            <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
+          </Route>
+        </Route>
 
-        <Route
-          path="/admin/disputes"
-          element={<AdminDisputeListPage />}
-        />
-
-        <Route
-          path="/disputes"
-          element={<MyDisputesPage />}
-        />
-
-        <Route
-          path="/disputes/:id"
-          element={<DisputeDetailPage />}
-        />
-
-        {/* Custody Routes */}
-        <Route
-          path="/custody/:custodyId/timeline"
-          element={<CustodyTimelinePage />}
-        />
-
-        {/* Preview Routes */}
-        <Route path="/preview-modal" element={<ModalPreview />} />
-        <Route
-          path="/adoption-completion-demo"
-          element={<AdoptionCompletionDemo />}
-        />
-        <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
-      </Route>
-    </Routes>
+        {/* â”€â”€ Catch-all â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
+      </Suspense>
+    </AuthGateProvider>
   );
 }
 

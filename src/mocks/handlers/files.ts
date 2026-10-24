@@ -62,6 +62,47 @@ function getDelay(request: Request): number {
 // Response matches DocumentsService.uploadDocuments() return shape exactly.
 
 export const filesHandlers = [
+	// POST /api/documents — generic document/evidence upload used by
+	// DocumentUploader. Returns the flat record shape the client expects so
+	// dispute evidence can be attached while running fully offline.
+	http.post("/api/documents", async ({ request }) => {
+		await delay(getDelay(request));
+
+		let fileName = "uploaded-document";
+		let size = 0;
+		let mimeType = "application/pdf";
+		let type = "dispute-evidence";
+
+		try {
+			const formData = await request.formData();
+			const file = formData.get("file");
+			const requestedType = formData.get("type");
+
+			if (file instanceof File) {
+				fileName = file.name;
+				size = file.size;
+				mimeType = file.type || mimeType;
+			}
+			if (typeof requestedType === "string") {
+				type = requestedType;
+			}
+		} catch {
+			// Keep the defaults when the request is not multipart form data.
+		}
+
+		return HttpResponse.json(
+			{
+				id: `doc-${Date.now()}`,
+				fileName,
+				size,
+				mimeType,
+				type,
+				message: "Document uploaded successfully",
+			},
+			{ status: 201 },
+		);
+	}),
+
 	// POST /adoption/:id/documents — upload one or more documents
 	// The real endpoint accepts multipart/form-data with a "files" field.
 	// In tests and dev we accept the request and return a shaped mock response.

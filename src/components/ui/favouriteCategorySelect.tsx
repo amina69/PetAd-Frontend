@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 interface FormSelectProps {
+  label: string;
   id: string;
   error?: string;
   options: { value: string; label: string }[];
@@ -11,6 +12,7 @@ interface FormSelectProps {
 }
 
 export function FormSelect({
+  label,
   id,
   error,
   options,
@@ -64,6 +66,7 @@ export function FormSelect({
                     ${className}`}
           aria-invalid={!!error}
           aria-expanded={isOpen}
+          aria-label={label}
         >
           <span className="truncate">
             {hasValue ? selectedOption?.label : placeholder}

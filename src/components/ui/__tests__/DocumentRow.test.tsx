@@ -161,11 +161,11 @@ describe('DocumentRow — expiry badge', () => {
         onDelete={vi.fn()}
       />,
     );
-    expect(screen.getByText('Expired')).toBeInTheDocument();
+    expect(screen.getByText('Expired — re-upload required')).toBeInTheDocument();
   });
 
-  it('renders expiring soon badge when expiresAt is within 30 days', () => {
-    const soon = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
+  it('renders expiring soon badge when expiresAt is within 7 days', () => {
+    const soon = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
     render(
       <DocumentRow
         document={{ ...BASE_DOC, expiresAt: soon }}
@@ -174,11 +174,11 @@ describe('DocumentRow — expiry badge', () => {
         onDelete={vi.fn()}
       />,
     );
-    expect(screen.getByText('Expiring soon')).toBeInTheDocument();
+    expect(screen.getByText(/Expiring in \d+ days?/)).toBeInTheDocument();
   });
 
-  it('renders expiry date badge when expiresAt is beyond 30 days', () => {
-    const future = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString();
+  it('renders no expiry badge when expiresAt is beyond 7 days', () => {
+    const future = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     render(
       <DocumentRow
         document={{ ...BASE_DOC, expiresAt: future }}
@@ -187,7 +187,7 @@ describe('DocumentRow — expiry badge', () => {
         onDelete={vi.fn()}
       />,
     );
-    expect(screen.getByText(/Expires/)).toBeInTheDocument();
+    expect(screen.queryByText(/Expir/)).not.toBeInTheDocument();
   });
 });
 

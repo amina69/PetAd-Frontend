@@ -36,7 +36,7 @@ const mockDisputes = [
   }
 ];
 
-const disputesHandler = http.get("*/disputes", ({ request }) => {
+const disputesHandler = http.get(/\/disputes/, ({ request }) => {
     const url = new URL(request.url);
     const overdue = url.searchParams.get("overdue");
     const status = url.searchParams.get("status");

@@ -93,7 +93,7 @@ const RelatedCard = ({ listing, onClick }: { listing: typeof relatedListings[0];
   return (
     <div className="pld-related-card" onClick={onClick}>
       <div className="pld-related-card__img-wrap">
-        <img src={listing.image} alt={listing.name} className="pld-related-card__img" />
+        <img src={listing.image} alt={listing.name} loading="lazy" className="pld-related-card__img" />
         <div className="pld-related-card__actions">
           <button className="pld-related-card__action-btn" onClick={(e) => { e.stopPropagation(); setFav(f => !f); }}>
             <HeartIcon filled={fav} />
@@ -162,14 +162,18 @@ export default function PetListingDetailsPage() {
         /* ── Top Section ── */
         .pld-top {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
           gap: 40px;
           margin-bottom: 32px;
         }
-        @media (max-width: 768px) { .pld-top { grid-template-columns: 1fr; } }
+        .pld-gallery { min-width: 0; display: flex; gap: 12px; }
+        .pld-details { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        
+        @media (max-width: 992px) { 
+          .pld-top { grid-template-columns: 1fr; } 
+        }
 
         /* ── Gallery ── */
-        .pld-gallery { display: flex; gap: 12px; }
         .pld-gallery__thumbs { display: flex; flex-direction: column; gap: 10px; }
         .pld-gallery__thumb {
           width: 60px; height: 60px;
@@ -193,7 +197,6 @@ export default function PetListingDetailsPage() {
         .pld-gallery__main img { width: 100%; height: 100%; object-fit: cover; }
 
         /* ── Details Panel ── */
-        .pld-details { display: flex; flex-direction: column; gap: 16px; }
         .pld-details__name { font-size: 24px; font-weight: 800; color: #0D162B; letter-spacing: -0.01em; }
         .pld-details__badge {
           display: inline-block;
@@ -361,7 +364,7 @@ export default function PetListingDetailsPage() {
                     className={`pld-gallery__thumb ${i === activeImage ? "pld-gallery__thumb--active" : ""}`}
                     onClick={() => setActiveImage(i)}
                   >
-                    <img src={img} alt={`Pet image ${i + 1}`} />
+                    <img src={img} alt={`Pet image ${i + 1}`} loading="lazy" />
                   </div>
                 ))}
               </div>
@@ -436,7 +439,7 @@ export default function PetListingDetailsPage() {
           {/* ── Tab Content ── */}
           {activeTab === "owner" ? (
             <div className="pld-owner">
-              <img src={pet.owner.avatar} alt={pet.owner.name} className="pld-owner__avatar" />
+              <img src={pet.owner.avatar} alt={pet.owner.name} loading="lazy" className="pld-owner__avatar" />
               <div className="pld-owner__fields">
                 <div className="pld-owner__field">
                   <span className="pld-owner__field-label">Full Name</span>

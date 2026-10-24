@@ -1,5 +1,9 @@
 import { useState } from "react";
 import ownerImage from "../../assets/mockownder.png";
+import {
+  getStatusMeta,
+  STATUS_COLOR_CLASSES,
+} from "../../lib/statusConfig";
 
 interface InterestedUser {
   id: number;
@@ -7,6 +11,29 @@ interface InterestedUser {
   location: string;
   date: string;
   status: "pending" | "approved" | "rejected";
+}
+
+/**
+ * Decision pill for an interested user.
+ *
+ * Label, colour and icon come from the shared status config so the pill
+ * matches every other approval badge.
+ */
+function InterestedUserStatusPill({
+  status,
+}: {
+  status: InterestedUser["status"];
+}) {
+  const meta = getStatusMeta("approval", status);
+  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
+
+  return (
+    <span
+      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${tokenClasses.bg} ${tokenClasses.text}`}
+    >
+      {meta.label}
+    </span>
+  );
 }
 
 export default function InterestedUsersTab() {
@@ -68,6 +95,7 @@ export default function InterestedUsersTab() {
               <img
                 src={ownerImage}
                 alt={user.name}
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -142,15 +170,7 @@ export default function InterestedUsersTab() {
                 </button>
               </>
             ) : (
-              <span
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                  user.status === "approved"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600"
-                }`}
-              >
-                {user.status === "approved" ? "Approved" : "Rejected"}
-              </span>
+              <InterestedUserStatusPill status={user.status} />
             )}
           </div>
         </div>

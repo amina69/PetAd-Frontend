@@ -5,7 +5,7 @@ import {
   Search, 
   Filter, 
   ChevronDown, 
-  AlertCircle, 
+
   Clock, 
   CheckCircle2, 
   MoreHorizontal
@@ -14,12 +14,20 @@ import { adoptionService } from "../api/adoptionService";
 import { StatusFilterChips } from "../components/ui/StatusFilterChips";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
+import { StatusBadge } from "../components/ui/StatusBadge";
+import { getStatusMeta } from "../lib/statusConfig";
 
 const STATUS_OPTIONS = [
-  { value: "PENDING", label: "Pending" },
-  { value: "SHELTER_APPROVED", label: "Shelter Approved" },
-  { value: "ADMIN_APPROVED", label: "Admin Approved" },
-  { value: "REJECTED", label: "Rejected" },
+  { value: "PENDING", label: getStatusMeta("approval", "PENDING").label },
+  {
+    value: "SHELTER_APPROVED",
+    label: getStatusMeta("approval", "SHELTER_APPROVED").label,
+  },
+  {
+    value: "ADMIN_APPROVED",
+    label: getStatusMeta("approval", "ADMIN_APPROVED").label,
+  },
+  { value: "REJECTED", label: getStatusMeta("approval", "REJECTED").label },
 ];
 
 export default function AdminApprovalQueuePage() {
@@ -197,14 +205,9 @@ export default function AdminApprovalQueuePage() {
                         </td>
                         <td className="px-6 py-5">
                           {item.isOverdue ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white bg-[#E84D2A] rounded-full shadow-sm shadow-[#E84D2A]/20">
-                              <AlertCircle size={12} strokeWidth={3} />
-                              SLA Breached
-                            </span>
+                            <StatusBadge meta={getStatusMeta("dispute", "SLA_BREACHED")} />
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400 bg-gray-100 rounded-full">
-                               On Track
-                            </span>
+                            <StatusBadge meta={getStatusMeta("sla", "ON_TIME")} />
                           )}
                         </td>
                       </tr>

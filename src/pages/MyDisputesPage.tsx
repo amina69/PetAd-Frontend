@@ -31,7 +31,7 @@ export default function MyDisputesPage() {
   const [disputes, setDisputes] = useState<DisputeWithOpponent[]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
 
-  const { data, isLoading, isError } = useApiQuery<DisputeListResponse>(
+  const { data, isLoading, isError, refetch } = useApiQuery<DisputeListResponse>(
     ["my-disputes", cursor],
     () => {
       const params = new URLSearchParams();
@@ -80,10 +80,24 @@ export default function MyDisputesPage() {
         </div>
 
         {isError && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <div
+            role="alert"
+            data-testid="my-disputes-error"
+            className="flex items-center justify-between rounded-xl border border-red-200 bg-red-50 p-4"
+          >
             <p className="text-sm font-medium text-red-800">
               Failed to load disputes. Please try again.
             </p>
+            <button
+              type="button"
+              data-testid="my-disputes-retry"
+              onClick={() => {
+                void refetch();
+              }}
+              className="rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-50"
+            >
+              Retry
+            </button>
           </div>
         )}
 

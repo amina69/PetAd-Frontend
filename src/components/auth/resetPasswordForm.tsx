@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { SubmitButton } from "../ui/submitButton";
 import { AuthModal } from "../ui/authModal";
+import { authService } from "../../api/authService";
+import { ApiError } from "../../lib/api-errors";
 
 // ─── Reusable: PasswordInput ──────────────────────────────────────────────────
 
@@ -120,9 +122,14 @@ interface ResetPasswordFormData {
 interface ResetPasswordFormErrors {
   password?: string;
   confirmPassword?: string;
+  submit?: string;
+  token?: string;
 }
 
 export function ResetPasswordForm() {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+
   const [formData, setFormData] = useState<ResetPasswordFormData>({
     password: "",
     confirmPassword: "",
@@ -136,6 +143,10 @@ export function ResetPasswordForm() {
   const validate = (): boolean => {
     const newErrors: ResetPasswordFormErrors = {};
 
+    if (!token) {
+      newErrors.token = "Reset token is missing or invalid. Please request a new password reset link.";
+    }
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
@@ -143,7 +154,7 @@ export function ResetPasswordForm() {
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Confirm Password is required";
+      newErrors.confirmPassword = "Confirm password is required";
     } else if (formData.confirmPassword !== formData.password) {
       newErrors.confirmPassword = "Passwords do not match";
     }
@@ -163,30 +174,95 @@ export function ResetPasswordForm() {
     e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
-    // TODO: wire to API
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsLoading(false);
-
-    // Show success modal instead of direct navigation
-    setShowSuccessModal(true);
+    try {
+      await authService.resetPassword({
+        token: token!,
+        password: formData.password,
+      });
+      setShowSuccessModal(true);
+    } catch (err: unknown) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+          ? err.message
+          : "Failed to reset password. Please try again.";
+      setErrors((prev) => ({ ...prev, submit: message }));
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // ── Invalid / missing token state ──────────────────────────────────────────
+  if (!token) {
+    return (
+      <div className="w-full text-center">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+          <svg
+            className="h-8 w-8 text-red-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 15.75h.007v.008H12v-.008z"
+            />
+          </svg>
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">
+          Invalid Reset Link
+        </h2>
+        <p className="text-gray-600 text-sm mb-6 max-w-xs mx-auto">
+          This password reset link is invalid or has expired. Please request a
+          new one.
+        </p>
+
+        <Link
+          to="/forgot-password"
+          className="inline-block w-full rounded-xl bg-[#E84D2A] py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#d4431f] active:scale-[0.98] text-center"
+        >
+          Request New Reset Link
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-        Reset Password?
+        Reset Password
       </h2>
-      <div className="flex flex-col gap-5">
 
+      <p className="text-sm text-gray-500 text-center mb-6">
+        Enter your new password below. Make sure it&apos;s at least 8
+        characters long.
+      </p>
+
+      <div className="flex flex-col gap-5">
         <form
           onSubmit={handleSubmit}
           noValidate
           className="flex flex-col gap-4"
         >
+          {errors.submit && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+              {errors.submit}
+            </div>
+          )}
+
           <PasswordInput
             id="password"
-            label="Enter Password"
-            placeholder="Enter your password"
+            label="New Password"
+            placeholder="Enter your new password"
             value={formData.password}
             onChange={(value) => handleChange("password", value)}
             error={errors.password}
@@ -194,22 +270,26 @@ export function ResetPasswordForm() {
 
           <PasswordInput
             id="confirmPassword"
-            label="Confirm Password"
-            placeholder="Confirm your password"
+            label="Confirm New Password"
+            placeholder="Confirm your new password"
             value={formData.confirmPassword}
             onChange={(value) => handleChange("confirmPassword", value)}
             error={errors.confirmPassword}
           />
 
-          <SubmitButton label="Save New Password" isLoading={isLoading} loadingLabel="Saving New Password ..." />
+          <SubmitButton
+            label="Reset Password"
+            isLoading={isLoading}
+            loadingLabel="Resetting password..."
+          />
         </form>
       </div>
 
       <AuthModal
         isOpen={showSuccessModal}
         title="Password Updated!"
-        description="You have successfully updated your password"
-        buttonText="Proceed To Sign In"
+        description="Your password has been successfully reset. You can now sign in with your new password."
+        buttonText="Sign In"
         onAction={() => navigate("/login")}
       />
     </div>

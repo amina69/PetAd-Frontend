@@ -48,11 +48,18 @@ test.describe("Notification preferences flow", () => {
 
     
     await page.getByRole("button", { name: "Reset to defaults" }).click();
-    await page.getByRole("button", { name: "Reset" }).click();
 
-    const resetReq = await page.waitForRequest((r) =>
-      r.url().endsWith("/api/notifications/preferences") && r.method() === "PATCH",
+    // Register the listener before clicking: the reset mutation fires
+    // immediately (no debounce), so a later listener can miss the request.
+    const resetReqPromise = page.waitForRequest(
+      (r) =>
+        r.url().endsWith("/api/notifications/preferences") && r.method() === "PATCH",
     );
+
+    // `exact` avoids also matching the "Reset to defaults" button above.
+    await page.getByRole("button", { name: "Reset", exact: true }).click();
+
+    const resetReq = await resetReqPromise;
     const resetBody = JSON.parse(resetReq.postData() || "{}");
     for (const v of Object.values(resetBody)) {
       expect(v).toBe(true);

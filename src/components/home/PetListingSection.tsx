@@ -75,6 +75,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                 </svg>
               </div>
               <input
+                id="home-location-filter"
                 type="text"
                 placeholder="Filter by Location"
                 value={locationFilter}
@@ -87,7 +88,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
             <div className="w-[170px]">
               <FormSelect
                 id="home-category-filter"
-                label=""
+                label="Filter by category"
                 options={CATEGORY_OPTIONS}
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
@@ -120,7 +121,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
 
         {/* ── Pet Card Grid ── */}
         {filteredPets.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filteredPets.map((pet) => (
               <PetCard
                 key={pet.id}

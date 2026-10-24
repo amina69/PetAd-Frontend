@@ -116,6 +116,7 @@ export default function FavouritePage() {
                                 </svg>
                             </div>
                             <input
+                                id="favourites-location-filter"
                                 type="text"
                                 placeholder="filter by Location"
                                 value={locationFilter}
@@ -128,6 +129,7 @@ export default function FavouritePage() {
                         <div className="w-[160px] relative">
                             <FormSelect
                                 id="category-filter"
+                                label="Filter by category"
                                 options={CATEGORY_OPTIONS}
                                 value={categoryFilter}
                                 onChange={(e) => setCategoryFilter(e.target.value)}
@@ -150,9 +152,7 @@ export default function FavouritePage() {
 
                 {/* Pet Grid */}
                 {filteredPets.length > 0 ? (
-                    <div
-                    className="flex flex-wrap gap-[20px]"
-                    >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {filteredPets.map((pet) => (
                             <PetCard
                                 key={pet.id}

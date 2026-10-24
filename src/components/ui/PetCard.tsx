@@ -23,12 +23,13 @@ interface PetCardProps {
 export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerClick }: PetCardProps) {
 
     return (
-        <div className="flex flex-col bg-white rounded-[20px] w-[305px] overflow-hidden border border-gray-100 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
+        <div className="flex flex-col bg-white rounded-[20px] w-full overflow-hidden border border-gray-100 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
             {/* Image container with aspect ratio */}
             <div className="relative w-full pb-[85%] h-[260px] bg-gray-100 overflow-hidden group">
                 <img
                     src={pet.imageUrl}
                     alt={pet.name}
+                    loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
@@ -67,7 +68,7 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerCli
                         className="w-10 h-10 rounded-full bg-white p-[0.5px] shadow-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-[#0D1B2A]/50"
                         aria-label="View Pet Owner Information"
                     >
-                        <img src={mockOwnerImg} alt="Lister" className="w-full h-full rounded-full object-cover" />
+                        <img src={mockOwnerImg} alt="Lister" loading="lazy" className="w-full h-full rounded-full object-cover" />
                     </button>
                 </div>
 

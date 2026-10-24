@@ -199,6 +199,7 @@ describe("SettlementSummaryPage", () => {
       isForbidden: false,
       isNotFound: false,
       error: null,
+      refetch: vi.fn() as any,
     });
 
     renderWithQueryClient(<SettlementSummaryPage isAdmin />);
@@ -225,6 +226,7 @@ describe("SettlementSummaryPage", () => {
       isForbidden: false,
       isNotFound: false,
       error: null,
+      refetch: vi.fn() as any,
     });
 
     renderWithQueryClient(<SettlementSummaryPage isAdmin />);
@@ -260,6 +262,7 @@ describe("SettlementSummaryPage", () => {
       isForbidden: false,
       isNotFound: false,
       error: null,
+      refetch: vi.fn() as any,
     });
 
     mockUseEscrowStatus.mockReturnValue({
@@ -301,6 +304,7 @@ describe("SettlementSummaryPage", () => {
       isForbidden: false,
       isNotFound: false,
       error: null,
+      refetch: vi.fn() as any,
     });
 
     mockUseEscrowStatus.mockReturnValue({
