@@ -4,6 +4,7 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { authService } from "../../api/authService";
 import { ApiError } from "../../lib/api-errors";
 import { CURRENT_USER_STORAGE_KEY } from "../../hooks/useCurrentUser";
+import { AUTH_TOKEN_KEY, consumeReturnPath, establishSession } from "../../features/auth/session";
 
 interface SignInFormData {
     email: string;
@@ -81,9 +82,10 @@ export function SignInForm() {
                 CURRENT_USER_STORAGE_KEY,
                 JSON.stringify(response.user),
             );
+            establishSession("user");
+            localStorage.setItem(AUTH_TOKEN_KEY, response.token);
 
-            const returnTo = getReturnTo(searchParams);
-            sessionStorage.removeItem("petad_return_to");
+            const returnTo = consumeReturnPath(getReturnTo(searchParams));
             sessionStorage.removeItem("petad_pending_action_hint");
 
             navigate(returnTo, { replace: true });

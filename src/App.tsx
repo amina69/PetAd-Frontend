@@ -46,11 +46,16 @@ const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
 const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
 const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
 const CaretakerDashboardPage = lazy(() => import("./pages/CaretakerDashboardPage"));
+const AccountPage = lazy(() =>
+  import("./features/auth/AccountPage").then(({ AccountPage }) => ({
+    default: AccountPage,
+  })),
+);
 
 function RouteLoadingFallback() {
   return (
     <div role="status" aria-live="polite">
-      Loading page…
+      Loading pageâ€¦
     </div>
   );
 }
@@ -66,10 +71,10 @@ function App() {
     <AuthGateProvider>
       <Suspense fallback={<RouteLoadingFallback />}>
         <Routes>
-        {/* ── Root redirect ─────────────────────────────────────────────── */}
+        {/* â”€â”€ Root redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route path="/" element={<Navigate to="/home" replace />} />
 
-        {/* ── Auth pages (redirect to /home when already logged in) ─────── */}
+        {/* â”€â”€ Auth pages (redirect to /home when already logged in) â”€â”€â”€â”€â”€â”€â”€ */}
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -77,7 +82,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgetPasswordPage />} />
         </Route>
 
-        {/* ── PUBLIC browsing routes — accessible to guests ─────────────── */}
+        {/* â”€â”€ PUBLIC browsing routes â€” accessible to guests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         {/*
          * PublicRoute renders the Outlet unconditionally (no auth check).
          * Interactive actions inside these pages must use useAuthAction() or
@@ -91,9 +96,10 @@ function App() {
           </Route>
         </Route>
 
-        {/* ── PROTECTED routes — authenticated users only ───────────────── */}
+        {/* â”€â”€ PROTECTED routes â€” authenticated users only â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/favourites" element={<FavouritePage />} />
             <Route path="/interests" element={<InterestPage />} />
@@ -147,7 +153,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* ── Catch-all ─────────────────────────────────────────────────── */}
+        {/* â”€â”€ Catch-all â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </Suspense>

@@ -1,5 +1,6 @@
 import { apiClient } from "../lib/api-client";
 import { type Document } from "../types/documents";
+import { type Document as ManagedDocument } from "../features/documents/types/document";
 import { ApiError, ValidationApiError } from "../lib/api-errors";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
@@ -199,6 +200,68 @@ export const documentService = {
 
             xhr.send(formData);
         });
+    },
+
+    list: async (): Promise<ManagedDocument[]> => {
+        return apiClient.get("/documents");
+    },
+
+    upload: (file: File, kind: string, onProgress?: (progress: number) => void): Promise<ManagedDocument> => {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `${API_URL}/documents`, true);
+            xhr.setRequestHeader("Accept", "application/json");
+            const token = getToken();
+            if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+            const report = (value: number) => {
+                const clamped = Math.max(0, Math.min(100, value));
+                onProgress?.(clamped);
+            };
+            report(0);
+
+            if (xhr.upload) {
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable && event.total > 0) {
+                        report((event.loaded / event.total) * 100);
+                    }
+                };
+            }
+
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    report(100);
+                    try {
+                        resolve(JSON.parse(xhr.responseText) as ManagedDocument);
+                    } catch {
+                        reject(new ApiError("Upload response was not valid JSON", { status: xhr.status }));
+                    }
+                    return;
+                }
+                reject(new ApiError(`Request failed with status ${xhr.status}`, { status: xhr.status }));
+            };
+
+            xhr.onerror = () => {
+                reject(new ApiError("Network error - please check your connection", {
+                    code: "NETWORK_ERROR",
+                    isNetworkError: true,
+                }));
+            };
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("kind", kind);
+            xhr.send(formData);
+        });
+    },
+
+    delete: async (documentId: string): Promise<void> => {
+        await apiClient.delete(`/documents/${documentId}`);
+    },
+
+    getDownloadUrl: async (documentId: string): Promise<string> => {
+        const payload = await apiClient.get<{ url: string }>(`/documents/${documentId}/download-url`);
+        return payload.url;
     },
 
     getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {
