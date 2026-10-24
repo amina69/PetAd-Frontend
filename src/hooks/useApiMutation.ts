@@ -90,13 +90,18 @@ export function useApiMutation<TData, TVariables>(
     mutationFn,
 
     onMutate: async (variables) => {
-      // Cancel any outgoing refetches so they don't overwrite optimistic state
+      // Cancel any outgoing refetches so they don't overwrite optimistic state.
       if (options?.invalidates?.length) {
-        await Promise.all(
-          options.invalidates.map((key) =>
-            queryClient.cancelQueries({ queryKey: key }),
-          ),
-        );
+        // NOTE: cancelQueries can return a thenable that never settles in some
+        // test environments (e.g. when the query cache has no in-flight queries).
+        // Fire-and-forget here to avoid blocking the mutation lifecycle.
+        options.invalidates.forEach((key) => {
+          try {
+            queryClient.cancelQueries({ queryKey: key });
+          } catch {
+            // ignore
+          }
+        });
       }
 
       // Let the caller apply optimistic state and capture a rollback snapshot
