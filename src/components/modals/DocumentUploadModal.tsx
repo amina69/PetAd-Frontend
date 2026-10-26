@@ -58,12 +58,7 @@ export function DocumentUploadModal({
         }
     };
 
-    useDialogFocus({
-        isOpen,
-        containerRef: modalRef,
-        onClose: handleClose,
-        closeOnEscape: !isUploading,
-    });
+    useDialogFocus(isOpen, modalRef, handleClose, !isUploading);
 
     if (!isOpen) return null;
 

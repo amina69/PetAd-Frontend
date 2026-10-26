@@ -1,16 +1,27 @@
+[//]: # (E2E Test Coverage: A17. Add E2E test: approval rejection path)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5+-646CFF.svg)](https://vitejs.dev/)
 
-# PetAd Frontend 🐾
+#PetAd Frontend 🐾
+
+<!-- close #C15 -->
+<!-- Note: A13. Add sort-by-date and sort-by-status controls to Approval list documentation reference placeholder -->
+<!-- Updated toast/snackbar support for high-priority live notifications (close #C10) -->
+<!-- Note: ApprovalListPage integrated with useApprovalList and filters (close #8) -->
+<!-- Added useRejectRequest mutation hook implementation notes (close #A7) -->
+<!-- Added ApprovalCard component support (close #A9) -->
 
 A modern, responsive web application for pet adoption and temporary custody management, powered by blockchain-backed trust guarantees (Stellar trust layer integration).
 
 ***
-## Overview
+##Overview
 
 PetAd Frontend is the client-side application for the PetAd platform, enabling users to browse pets, initiate adoption processes, and manage temporary custody arrangements. The application communicates exclusively with the PetAd backend API and does not directly interact with blockchain infrastructure.
+
+<!-- close #B4 -->
+Note: Includes REST fallback and backfill paths for notifications via `notificationService.ts` to support offline usage and initial loading.
 
 ***
 
@@ -21,23 +32,45 @@ PetAd Frontend is the client-side application for the PetAd platform, enabling u
 - **⏰ Temporary Custody** - Request and manage short-term pet care arrangements
 - **👤 User Profiles** - Personalized dashboards for pet seekers and caretakers
 - **📄 Document Management** - Secure upload and verification of required documents
-- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests
+- **🔔 Real-time Updates** - Live status notifications for adoption and custody requests (close #C9)
+- **⚖️ Dispute Management** - Comprehensive tracking and resolution pathways for administrative and user disputes
+- **💬 In-app Messaging** - Conversations with optimistic send, attachments, infinite-scroll history and live delivery ([guide](docs/features/messaging.md))
 
 ***
 
 ## 🛠️ Tech Stack
 
-| Technology         | Purpose                   |
-| ------------------ | ------------------------- |
-| **React 18+**      | UI library                |
-| **TypeScript**     | Type-safe development     |
-| **Vite**           | Build tool and dev server |
-| **Tailwind CSS**   | Utility-first styling     |
-| **TanStack Query** | Server state management   |
-| **React Router**   | Client-side routing       |
-| **Zod**            | Schema validation         |
+| Technology | Purpose |
+|------------|---------|
+| **React 18+** | UI library |
+| **TypeScript** | Type-safe development |
+| **Vite** | Build tool and dev server |
+| **Tailwind CSS** | Utility-first styling |
+| **TanStack Query** | Server state management |
+| **React Router** | Client-side routing |
+| **Zod** | Schema validation |
 
-***
+---
+
+## 🧑‍💻 Development
+
+**New to the project? Start here → [`docs/local-dev.md`](docs/local-dev.md)**
+
+It covers how to choose between the offline MSW mocks (`VITE_MSW=true`) and a real staging backend
+(`VITE_MSW=false VITE_API_URL=…`), and what is and isn't testable in each mode.
+
+```bash
+pnpm install
+pnpm dev        # http://localhost:4321 — offline, MSW mocks
+```
+
+Other docs:
+
+- [`docs/local-dev.md`](docs/local-dev.md) — local dev vs. staging backend workflow
+- [`docs/guest-mode.md`](docs/guest-mode.md) — guest browsing mode and auth gating
+- [`docs/notifications.md`](docs/notifications.md) — real-time notification transport decisions
+
+---
 
 ## 📦 Prerequisites
 
@@ -53,7 +86,7 @@ node --version
 npm --version
 ```
 
-***
+---
 
 ## 🚀 Getting Started
 
@@ -66,7 +99,7 @@ git clone https://github.com/amina69/PetAd-Frontend.git
 cd petad-frontend
 ```
 
-1. **Install dependencies**
+2. **Install dependencies**
 
 ```bash
 npm install
@@ -78,7 +111,7 @@ Or using pnpm:
 pnpm install
 ```
 
-***
+---
 
 ### Environment Setup
 
@@ -86,19 +119,22 @@ Create a `.env` file in the project root:
 
 ```env
 VITE_API_URL=http://localhost:3000
+VITE_MSW=false
 ```
 
 > **Note:** `VITE_API_URL` should point to your PetAd backend API instance.
+> `VITE_MSW` must stay `false` for production builds — enabling the mock
+> service worker in a production bundle is blocked by CI (see
+> [Mock API (MSW)](#-mock-api-msw)).
 
 **Optional environment variables:**
 
 ```env
 VITE_APP_NAME=PetAd
 VITE_ENABLE_ANALYTICS=false
-VITE_MSW=true
 ```
 
-***
+---
 
 ### Running the App
 
@@ -114,7 +150,7 @@ The application will be available at:
 http://localhost:5173
 ```
 
-***
+---
 
 ## 📁 Project Structure
 
@@ -167,7 +203,7 @@ src/
 - **`hooks/`** - Custom React hooks for shared logic
 - **`pages/`** - Top-level route components
 
-***
+---
 
 ## 🧑‍💻 Development Guidelines
 
@@ -195,7 +231,7 @@ export function PetCard({ pet, onAdopt }: PetCardProps) {
     <div className="rounded-lg border p-4">
       <h3 className="font-semibold">{pet.name}</h3>
       <p className="text-sm text-gray-600">{pet.breed}</p>
-      <button 
+      <button
         onClick={() => onAdopt(pet.id)}
         className="mt-2 rounded bg-blue-500 px-4 py-2 text-white"
       >
@@ -221,27 +257,29 @@ const adoptionFormSchema = z.object({
 type AdoptionFormData = z.infer<typeof adoptionFormSchema>;
 ```
 
-***
+---
 
 ## 📜 Scripts
 
-| Command              | Description                                   |
-| -------------------- | --------------------------------------------- |
-| `npm run dev`        | Start development server (hot reload enabled) |
-| `npm run build`      | Build optimized production bundle             |
-| `npm run preview`    | Preview production build locally              |
-| `npm run type-check` | Run TypeScript compiler checks                |
-| `npm run format`     | Format code with Prettier                     |
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server (hot reload enabled) |
+| `npm run build` | Build optimized production bundle |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint checks |
+| `npm run test` | Run unit tests with Vitest |
+| `npm run e2e` | Run Playwright end-to-end tests |
+| `npm run check:msw` | Fail if a production build resolves `VITE_MSW=true` |
 
-***
+---
 
 **Important:** Ensure environment variables are configured in your deployment platform:
 
 - `VITE_API_URL` - Backend API endpoint
 
-***
+---
 
-## Mock API (MSW)
+## ⚖️ Mock API (MSW)
 
 This project uses [Mock Service Worker (MSW)](https://mswjs.io/) to intercept API requests during **development** and **Vitest tests**, so the frontend can be developed without the backend running.
 
@@ -255,14 +293,22 @@ Look for `[MSW] Mocking enabled.` in the browser console to confirm it is active
 
 ### Covered domains
 
-| Domain          | File                             | Status            |
-| --------------- | -------------------------------- | ----------------- |
-| Escrow          | `src/mocks/handlers/escrow.ts`   | ✅ Matches backend |
-| Adoption status | `src/mocks/handlers/status.ts`   | ✅ Matches backend |
-| Documents       | `src/mocks/handlers/files.ts`    | ✅ Matches backend |
-| Approval        | `src/mocks/handlers/approval.ts` | 🔶 Phase 2 stub   |
-| Dispute         | `src/mocks/handlers/dispute.ts`  | 🔶 Phase 2 stub   |
-| Notifications   | `src/mocks/handlers/notify.ts`   | 🔶 Phase 2 stub   |
+| Domain | File | Status |
+|--------|------|--------|
+| Escrow | `src/mocks/handlers/escrow.ts` | ✅ Matches backend |
+| Adoption status | `src/mocks/handlers/status.ts` | ✅ Matches backend |
+| Documents | `src/mocks/handlers/files.ts` | ✅ Matches backend |
+| Approval | `src/mocks/handlers/approval.ts` | ✅ Matches backend |
+| Dispute | `src/mocks/handlers/dispute.ts` | ✅ Matches backend |
+| Notifications | `src/mocks/handlers/notify.ts` | ✅ Matches backend |
+
+### Production guard
+
+`VITE_MSW=true` must never be resolved by a production build. The
+`scripts/check-msw-production.mjs` guard runs as part of `npm run build`
+(via `npm run check:msw`) and as a CI step. It fails the build when the
+resolved environment for a `production` target enables MSW, and it is
+self-tested in CI against a deliberately misconfigured environment.
 
 ### Simulate slow responses
 
@@ -288,7 +334,7 @@ it('shows disputed state', async () => {
 });
 ```
 
-***
+---
 
 ## 🔗 API Communication
 
@@ -321,16 +367,14 @@ export function usePets() {
 }
 ```
 
-***
-
+---
 ## 🎨 Design Reference
 
 This project follows a comprehensive design system documented in Figma. Please refer to the design files when implementing new features or components to ensure consistency.
 
-**📐 Figma Design File:** [PetAd Design System](https://www.figma.com/design/avLyxNlVzfPjCft7sVrlzs/PETAD?node-id=0-1\&t=zUA1sGPYsp60vYt4-1)
+**📐 Figma Design File:** [PetAd Design System](https://www.figma.com/design/avLyxNlVzfPjCft7sVrlzs/PETAD?node-id=0-1&t=zUA1sGPYsp60vYt4-1)
 
 The design includes:
-
 - 🎨 Complete UI component library
 - 📱 Responsive layouts for mobile, tablet, and desktop
 - 🌈 Color palette and typography specifications
@@ -339,8 +383,7 @@ The design includes:
 
 > **Note for Developers:** Always check the Figma design before building new components. Maintain pixel-perfect implementations where possible, and consult with the design team for any deviations.
 
-***
-
+---
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -354,28 +397,23 @@ Contributions are welcome! Please follow these steps:
 **Before submitting:**
 
 - fix any issues
-- npm test
-- npm run lint
-- npm run build
-- Ensure `npm run type-check` passes
+- Ensure `npm run lint`, `npm run build` and `npm test` pass
 - Add tests for new features
 - Update documentation if needed
 
-***
+---
 
 ## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-***
+---
 
 ## 🙏 Acknowledgments
 
 - Built with ❤️ for pet lovers everywhere
 - Powered by blockchain technology for transparent, trustworthy pet adoption
 
-***
+---
 
 **Made with 🐾 by the PetAd Team**
-
-Thank you

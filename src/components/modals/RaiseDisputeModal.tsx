@@ -13,6 +13,7 @@ interface Props {
 
 const MIN_LEN = 30;
 const MAX_FILES = 5;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Props) {
   const [reason, setReason] = useState("");
@@ -33,7 +34,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
     onProgress: handleFileProgress,
   });
 
-  useDialogFocus({ isOpen, containerRef: modalRef, onClose, closeOnEscape: !isPending });
+  useDialogFocus(isOpen, modalRef, onClose, !isPending);
 
   if (!isOpen) return null;
 
@@ -50,6 +51,15 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
 
     if (reason.trim().length < MIN_LEN) {
       setInlineError(`Reason must be at least ${MIN_LEN} characters.`);
+      return;
+    }
+
+    // Defense-in-depth: reject oversized files at submit time even if validation was bypassed
+    const oversized = files.find((f) => f.size > MAX_FILE_SIZE);
+    if (oversized) {
+      setInlineError(
+        `File too large — "${oversized.name}" exceeds the 10 MB limit.`,
+      );
       return;
     }
 
@@ -94,8 +104,9 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
         </p>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+          <label htmlFor="raise-dispute-reason" className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
           <textarea
+            id="raise-dispute-reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={5}
@@ -117,6 +128,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
             onChange={updateFiles}
             selectedFiles={files}
             maxFiles={MAX_FILES}
+            maxFileSize={MAX_FILE_SIZE}
           />
           {files.length > 0 && (
             <div className="mt-3 space-y-2">

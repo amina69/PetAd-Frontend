@@ -3,6 +3,9 @@ import { http, HttpResponse, delay } from "msw";
 // In-memory store of registered users for the mock
 const registeredUsers: { email: string; fullName: string; nin: string; password: string; id: string }[] = [];
 
+// Store for password reset tokens (maps token -> email)
+const resetTokens: Map<string, string> = new Map();
+
 export const authHandlers = [
   // POST /api/auth/register
   http.post("/api/auth/register", async ({ request }) => {
@@ -76,6 +79,69 @@ export const authHandlers = [
         fullName: user.fullName,
         role: "USER",
       },
+    });
+  }),
+
+  // POST /api/auth/request-password-reset
+  http.post("/api/auth/request-password-reset", async ({ request }) => {
+    await delay(600);
+
+    const body = (await request.json()) as { email?: string };
+
+    if (!body.email) {
+      return HttpResponse.json(
+        { message: "Email is required" },
+        { status: 400 },
+      );
+    }
+
+    // Always return 200 to avoid leaking whether an email exists
+    const token = `reset-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    resetTokens.set(token, body.email);
+
+    console.log(`[MSW] Password reset token for ${body.email}: ${token}`);
+
+    return HttpResponse.json({
+      message: "If an account with that email exists, a reset link has been sent.",
+    });
+  }),
+
+  // POST /api/auth/reset-password
+  http.post("/api/auth/reset-password", async ({ request }) => {
+    await delay(600);
+
+    const body = (await request.json()) as {
+      token?: string;
+      password?: string;
+    };
+
+    if (!body.token || !body.password) {
+      return HttpResponse.json(
+        { message: "Token and password are required" },
+        { status: 400 },
+      );
+    }
+
+    if (!resetTokens.has(body.token)) {
+      return HttpResponse.json(
+        { message: "Invalid or expired reset token" },
+        { status: 400 },
+      );
+    }
+
+    const email = resetTokens.get(body.token)!;
+
+    // Update the user's password in the in-memory store
+    const user = registeredUsers.find((u) => u.email === email);
+    if (user) {
+      user.password = body.password;
+    }
+
+    // Invalidate the token after use
+    resetTokens.delete(body.token);
+
+    return HttpResponse.json({
+      message: "Password has been reset successfully.",
     });
   }),
 ];

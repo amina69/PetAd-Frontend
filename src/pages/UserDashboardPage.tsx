@@ -43,7 +43,7 @@ export default function UserDashboardPage() {
             <div className="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
                     <h1 className="text-[28px] font-bold text-[#0D162B] mb-2">User Dashboard</h1>
-                    <p className="text-[16px] text-[#7A8495]">Welcome back, {MOCK_USER.fullName}! Manage your account here.</p>
+                        <p className="text-[16px] text-[#475467]">Welcome back, {MOCK_USER.fullName}! Manage your account here.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -52,15 +52,15 @@ export default function UserDashboardPage() {
                         <h2 className="text-[18px] font-semibold text-[#0D162B] mb-4">Profile Overview</h2>
                         <div className="space-y-4">
                             <div>
-                                <p className="text-[14px] text-[#98A1AF]">Name</p>
+                                <p className="text-[14px] text-[#667085]">Name</p>
                                 <p className="font-medium text-[#0D162B]">{MOCK_USER.fullName}</p>
                             </div>
                             <div>
-                                <p className="text-[14px] text-[#98A1AF]">Email</p>
+                                <p className="text-[14px] text-[#667085]">Email</p>
                                 <p className="font-medium text-[#0D162B]">{MOCK_USER.email}</p>
                             </div>
                             <div>
-                                <p className="text-[14px] text-[#98A1AF]">Member Since</p>
+                                <p className="text-[14px] text-[#667085]">Member Since</p>
                                 <p className="font-medium text-[#0D162B]">{MOCK_USER.joinDate}</p>
                             </div>
                             <button
@@ -81,14 +81,14 @@ export default function UserDashboardPage() {
                                 className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-left group"
                             >
                                 <h3 className="font-semibold text-[#0D162B] group-hover:text-[#E84D2A]">View Pet Listings</h3>
-                                <p className="text-[13px] text-[#7A8495] mt-1">Browse available pets for adoption</p>
+                                <p className="text-[13px] text-[#475467] mt-1">Browse available pets for adoption</p>
                             </button>
                             <button
                                 onClick={() => navigate("/home")}
                                 className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-left group"
                             >
                                 <h3 className="font-semibold text-[#0D162B] group-hover:text-[#E84D2A]">List a Pet</h3>
-                                <p className="text-[13px] text-[#7A8495] mt-1">Create a new adoption listing</p>
+                                <p className="text-[13px] text-[#475467] mt-1">Create a new adoption listing</p>
                             </button>
                         </div>
 

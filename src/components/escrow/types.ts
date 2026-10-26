@@ -1,14 +1,8 @@
 
-export const ESCROW_STATUSES = [
-  "AWAITING_FUNDS",
-  "FUNDED",
-  "IN_REVIEW",
-  "DISPUTED",
-  "SETTLED",
-  "SETTLEMENT_FAILED",
-] as const;
+import type { EscrowStatus } from "../../types/escrow";
 
-export type EscrowStatus = (typeof ESCROW_STATUSES)[number];
+export { ESCROW_STATUSES } from "../../types/escrow";
+export type { EscrowStatus } from "../../types/escrow";
 
 export interface EscrowStatusData {
   escrowId: string;

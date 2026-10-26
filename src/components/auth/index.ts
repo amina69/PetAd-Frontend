@@ -1,6 +1,8 @@
 export { AuthLayout } from './AuthLayout';
 export { RegisterForm, FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from './RegisterForm';
 export { SignInForm } from './SignInForm';
+export { ForgetPasswordForm } from './forgetPasswordForm';
+export { ResetPasswordForm } from './resetPasswordForm';
 export { ProtectedRoute } from './ProtectedRoute';
 export { GuestRoute } from './GuestRoute';
 export { PublicRoute } from './PublicRoute';

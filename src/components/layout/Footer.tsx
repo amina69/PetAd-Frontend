@@ -8,7 +8,7 @@ interface PawIconProps {
 
 function PawIcon({ className = "" }: PawIconProps) {
   return (
-    <img src={pawsImg} alt="Paw background pattern" className={className} />
+    <img src={pawsImg} alt="Paw background pattern" loading="lazy" className={className} />
   );
 }
 
@@ -44,7 +44,7 @@ export function Footer() {
         {/* Logo and Copyright */}
         <div className="flex flex-col items-center md:items-start gap-6">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Logo" className="w-8 h-8" />
+            <img src={logo} alt="Logo" loading="lazy" className="w-8 h-8" />
             <div>
               <p className="font-black text-[18px] leading-none tracking-widest uppercase text-[#001323]">
                 PETAD

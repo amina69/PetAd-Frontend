@@ -1,6 +1,7 @@
 import { useApiQuery } from "./useApiQuery";
 import { useRoleGuard } from "./useRoleGuard";
 import { apiClient } from "../lib/api-client";
+import type { ApprovalListParams } from "../features/approval";
 
 const POLL_INTERVAL_MS = 300_000;
 const MAX_DISPLAY = 9;
@@ -12,17 +13,19 @@ interface PendingApprovalsResponse {
 
 export function usePendingApprovalsCount() {
   const { canApprove } = useRoleGuard();
+  const filters: ApprovalListParams = { status: "pending", pageSize: 0 };
 
   const query = useApiQuery<PendingApprovalsResponse>(
     ["pending-approvals-count"],
     () =>
       apiClient.get<PendingApprovalsResponse>(
-        "/shelter/approvals?status=PENDING&limit=0",
+        `/shelter/approvals?status=${filters.status?.toUpperCase()}&limit=${filters.pageSize}`,
       ),
     {
       enabled: canApprove,
       refetchInterval: POLL_INTERVAL_MS,
       refetchIntervalInBackground: true,
+      // Approval counts are a live queue indicator; every poll must revalidate.
       staleTime: 0,
     },
   );

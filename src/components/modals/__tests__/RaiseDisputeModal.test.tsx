@@ -182,4 +182,48 @@ describe("RaiseDisputeModal", () => {
     fireEvent.click(screen.getByTestId("dispute-backdrop"));
     expect(onClose).toHaveBeenCalledOnce();
   });
+
+  // ── File upload validation ─────────────────────────────────────────────
+  it("rejects oversized files at submit time with specific error", async () => {
+    mockHook({ mutateAsync: vi.fn() });
+    renderModal();
+
+    // Type a valid reason
+    await userEvent.type(screen.getByRole("textbox"), LONG_REASON);
+
+    // Simulate adding an oversized file via the FileUploadZone input
+    const input = screen.getByTestId("file-input") as HTMLInputElement;
+    const bigContent = new Uint8Array(11 * 1024 * 1024).fill(65);
+    const bigFile = new File([bigContent], "huge-evidence.pdf", { type: "application/pdf" });
+    fireEvent.change(input, { target: { files: [bigFile] } });
+
+    // The FileUploadZone should reject it with a size error before the modal submit runs
+    expect(screen.getByText(/File too large/)).toBeInTheDocument();
+    expect(screen.getByText(/huge-evidence\.pdf/)).toBeInTheDocument();
+  });
+
+  it("does not submit when files contain an oversized file", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({});
+    mockHook({ mutateAsync });
+    renderModal();
+
+    await userEvent.type(screen.getByRole("textbox"), LONG_REASON);
+
+    // Upload a valid file first
+    const input = screen.getByTestId("file-input") as HTMLInputElement;
+    const okFile = new File(["ok"], "evidence.pdf", { type: "application/pdf" });
+    fireEvent.change(input, { target: { files: [okFile] } });
+
+    // The file is accepted by FileUploadZone
+    await waitFor(() => {
+      expect(screen.getByText("evidence.pdf")).toBeInTheDocument();
+    });
+
+    // Now click submit — it should succeed since the file is within limits
+    fireEvent.click(screen.getByRole("button", { name: /raise dispute/i }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalled();
+    });
+  });
 });

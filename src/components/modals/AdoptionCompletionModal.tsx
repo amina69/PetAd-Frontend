@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useDialogFocus } from "../../hooks/useDialogFocus";
 
 interface AdoptionCompletionModalProps {
   isOpen: boolean;
@@ -26,6 +27,16 @@ export function AdoptionCompletionModal({
     transferLocation: "",
   });
   const [errors, setErrors] = useState<Partial<AdoptionCompletionData>>({});
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleCancel = useCallback(() => {
+    setModalState("form");
+    setFormData({ dateTransferred: "", transferLocation: "" });
+    setErrors({});
+    onClose();
+  }, [onClose]);
+
+  useDialogFocus(isOpen, dialogRef, handleCancel);
 
   if (!isOpen) return null;
 
@@ -51,13 +62,6 @@ export function AdoptionCompletionModal({
     setModalState("success");
   };
 
-  const handleCancel = () => {
-    setModalState("form");
-    setFormData({ dateTransferred: "", transferLocation: "" });
-    setErrors({});
-    onClose();
-  };
-
   const handleChange = (
     field: keyof AdoptionCompletionData,
     value: string
@@ -81,10 +85,13 @@ export function AdoptionCompletionModal({
       onClick={handleCancel}
     >
       <div
+        ref={dialogRef}
         className="w-full max-w-[420px] bg-white rounded-2xl shadow-2xl relative"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="adoption-completion-title"
+        tabIndex={-1}
       >
         {/* Close button */}
         <button
@@ -112,7 +119,7 @@ export function AdoptionCompletionModal({
             <div className="space-y-6">
               {/* Header */}
               <div>
-                <h2 className="text-[24px] font-bold text-[#0D162B] mb-2">
+                <h2 id="adoption-completion-title" className="text-[24px] font-bold text-[#0D162B] mb-2">
                   Confirm Adoption Completion
                 </h2>
                 <p className="text-[14px] text-gray-500 leading-relaxed">

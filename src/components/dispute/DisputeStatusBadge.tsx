@@ -1,39 +1,15 @@
+import { getStatusMeta } from "../../lib/statusConfig";
 import type { DisputeStatus } from "../../types/dispute";
-import { StatusBadge, type StatusBadgeColor } from "../ui/StatusBadge";
-
-const STATUS_META: Record<
-  DisputeStatus,
-  { label: string; color: StatusBadgeColor }
-> = {
-  open: {
-    label: "Open",
-    color: "amber",
-  },
-  under_review: {
-    label: "Under Review",
-    color: "blue",
-  },
-  resolved: {
-    label: "Resolved",
-    color: "green",
-  },
-  closed: {
-    label: "Closed",
-    color: "gray",
-  },
-};
+import { StatusBadge } from "../ui/StatusBadge";
 
 interface DisputeStatusBadgeProps {
   status: DisputeStatus;
 }
 
 export function DisputeStatusBadge({ status }: DisputeStatusBadgeProps) {
-  const meta = STATUS_META[status];
-
   return (
     <StatusBadge
-      color={meta.color}
-      label={meta.label}
+      meta={getStatusMeta("dispute", status)}
       data-testid="dispute-status-badge"
     />
   );

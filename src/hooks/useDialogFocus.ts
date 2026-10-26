@@ -1,34 +1,30 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
-interface UseDialogFocusOptions {
-  isOpen: boolean;
-  containerRef: RefObject<HTMLElement | null>;
-  onClose: () => void;
-  closeOnEscape?: boolean;
-}
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Focuses, traps, and restores focus for an open modal dialog. */
-export function useDialogFocus({
-  isOpen,
-  containerRef,
-  onClose,
+/** Keeps keyboard focus inside an open dialog and restores it to the trigger. */
+export function useDialogFocus(
+  isOpen: boolean,
+  dialogRef: RefObject<HTMLElement | null>,
+  onClose: () => void,
   closeOnEscape = true,
-}: UseDialogFocusOptions) {
+): void {
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
 
-    const previous = document.activeElement as HTMLElement | null;
-    const container = containerRef.current;
-    if (!container) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
 
     const focusable = () =>
-      Array.from(
-        container.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ),
-      ).filter((element) => !element.hasAttribute("aria-hidden"));
-
-    requestAnimationFrame(() => (focusable()[0] ?? container).focus());
+      Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (element) => element.getClientRects().length > 0,
+      );
+    const first = focusable()[0];
+    (first ?? dialog).focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && closeOnEscape) {
@@ -36,28 +32,31 @@ export function useDialogFocus({
         onClose();
         return;
       }
+
       if (event.key !== "Tab") return;
       const elements = focusable();
       if (elements.length === 0) {
         event.preventDefault();
-        container.focus();
+        dialog.focus();
         return;
       }
-      const first = elements[0];
-      const last = elements[elements.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+
+      const firstElement = elements[0];
+      const lastElement = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
         event.preventDefault();
-        first.focus();
+        firstElement.focus();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      previous?.focus();
+      previouslyFocused.current?.focus();
+      previouslyFocused.current = null;
     };
-  }, [closeOnEscape, containerRef, isOpen, onClose]);
+  }, [closeOnEscape, dialogRef, isOpen, onClose]);
 }

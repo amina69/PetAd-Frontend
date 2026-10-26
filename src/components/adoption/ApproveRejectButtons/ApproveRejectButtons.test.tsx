@@ -116,7 +116,10 @@ describe('ApproveRejectButtons', () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(mockMutateApprovalDecision).toHaveBeenCalledWith();
+        expect(mockMutateApprovalDecision).toHaveBeenCalledWith({
+          decision: 'REJECTED',
+          reason: 'This is a valid long reason for rejection',
+        });
         expect(toast.success).toHaveBeenCalledWith('Your approval has been recorded');
       });
     });

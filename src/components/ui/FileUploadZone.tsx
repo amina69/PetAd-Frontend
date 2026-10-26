@@ -4,11 +4,20 @@ const DEFAULT_ACCEPT = ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/pn
 const ALLOWED_EXTENSIONS = /\.(pdf|jpe?g|png)$/i;
 const ALLOWED_MIME_TYPES = new Set(["application/pdf", "image/jpeg", "image/png"]);
 
+const DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 interface FileUploadZoneProps {
     id: string;
     label?: string;
     accept?: string;
     maxFiles?: number;
+    maxFileSize?: number;
     onChange: (files: File[]) => void;
     selectedFiles: File[];
     error?: string;
@@ -29,6 +38,7 @@ export function FileUploadZone({
     label,
     accept = DEFAULT_ACCEPT,
     maxFiles = 1,
+    maxFileSize = DEFAULT_MAX_FILE_SIZE,
     onChange,
     selectedFiles,
     error,
@@ -56,6 +66,9 @@ export function FileUploadZone({
         for (const file of incomingFiles) {
             if (!isAllowedFile(file)) {
                 return "Unsupported file type. PDF, JPG or PNG only.";
+            }
+            if (maxFileSize && file.size > maxFileSize) {
+                return `File too large — "${file.name}" is ${formatFileSize(file.size)}, maximum is ${formatFileSize(maxFileSize)}.`;
             }
         }
 

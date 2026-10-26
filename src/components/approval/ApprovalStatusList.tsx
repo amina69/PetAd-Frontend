@@ -1,5 +1,8 @@
-import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import type { ApprovalDecision } from "../../types/adoption";
+import {
+  getStatusMeta,
+  STATUS_COLOR_CLASSES,
+} from "../../lib/statusConfig";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -17,6 +20,13 @@ export interface ApprovalStatusListProps {
 }
 
 type RowState = "approved" | "rejected" | "pending";
+
+/** Approval status code backing each row state. */
+const ROW_STATE_STATUS: Record<RowState, string> = {
+  approved: "APPROVED",
+  rejected: "REJECTED",
+  pending: "PENDING",
+};
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -47,12 +57,10 @@ interface InitialsCircleProps {
 }
 
 function InitialsCircle({ initials, state }: InitialsCircleProps) {
-  const colorClass =
-    state === "approved"
-      ? "bg-green-100 text-green-700"
-      : state === "rejected"
-        ? "bg-red-100 text-red-700"
-        : "bg-slate-100 text-slate-500";
+  const tokenClasses = STATUS_COLOR_CLASSES[
+    getStatusMeta("approval", ROW_STATE_STATUS[state]).color
+  ];
+  const colorClass = `${tokenClasses.bg} ${tokenClasses.text}`;
 
   return (
     <span
@@ -71,37 +79,17 @@ interface StateIconProps {
 }
 
 function StateIcon({ state }: StateIconProps) {
-  if (state === "approved") {
-    return (
-      <span
-        className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20"
-        data-testid="state-icon-approved"
-      >
-        <CheckCircle2 size={14} aria-hidden="true" />
-        <span>Approved</span>
-      </span>
-    );
-  }
-
-  if (state === "rejected") {
-    return (
-      <span
-        className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 ring-1 ring-inset ring-red-600/20"
-        data-testid="state-icon-rejected"
-      >
-        <XCircle size={14} aria-hidden="true" />
-        <span>Rejected</span>
-      </span>
-    );
-  }
+  const meta = getStatusMeta("approval", ROW_STATE_STATUS[state]);
+  const Icon = meta.icon;
+  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
 
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20"
-      data-testid="state-icon-pending"
+      className={`inline-flex items-center gap-1 rounded-full ${tokenClasses.softBg} px-2.5 py-1 text-xs font-semibold ${tokenClasses.text} ring-1 ring-inset ${tokenClasses.ring}`}
+      data-testid={`state-icon-${state}`}
     >
-      <Clock size={14} aria-hidden="true" />
-      <span>Pending</span>
+      <Icon size={14} aria-hidden="true" />
+      <span>{meta.label}</span>
     </span>
   );
 }

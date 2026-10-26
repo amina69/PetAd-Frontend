@@ -1,9 +1,10 @@
 import { http, HttpResponse, delay } from "msw";
+import type { EscrowRecordStatus } from "../../types/escrow";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 // Matches Prisma `Escrow` model exactly — camelCase as returned by Prisma/NestJS.
 
-type EscrowStatus = "CREATED" | "FUNDED" | "RELEASED" | "REFUNDED" | "DISPUTED";
+type EscrowStatus = EscrowRecordStatus;
 
 interface Escrow {
 	id: string;

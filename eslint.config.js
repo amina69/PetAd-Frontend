@@ -25,6 +25,13 @@ export default defineConfig([
       'react-hooks/purity': 'off',
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/immutability': 'off',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "JSXAttribute[name.name='dangerouslySetInnerHTML']",
+          message: 'Render user content as text. Sanitize rich text with a strict allow-list before rendering it.',
+        },
+      ],
     },
   },
 ])

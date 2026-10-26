@@ -5,12 +5,46 @@ import { useMutateReviewDocument } from '../../hooks/useMutateReviewDocument';
 import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { Skeleton } from './Skeleton';
 import type { Document } from '../../types/documents';
+import {
+  getStatusMeta,
+  STATUS_COLOR_CLASSES,
+} from '../../lib/statusConfig';
 
 interface AdminDocumentReviewPanelProps {
   adoptionId: string;
   documents: Document[];
   isLoading?: boolean;
   onDocumentReviewed?: (document: Document) => void;
+}
+
+/**
+ * Review outcome pill.
+ *
+ * Label, colour and icon come from the shared status config so document
+ * review badges match every other approval badge in the app.
+ */
+function DocumentReviewStatusPill({
+  status,
+  rejectionReason,
+}: {
+  status: 'APPROVED' | 'REJECTED';
+  rejectionReason?: string | null;
+}) {
+  const meta = getStatusMeta('approval', status);
+  const Icon = meta.icon;
+  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full ${tokenClasses.bg} px-2 py-1 text-xs font-medium ${tokenClasses.text}`}
+    >
+      <Icon className="h-3 w-3" aria-hidden="true" />
+      {meta.label}
+      {status === 'REJECTED' && rejectionReason && (
+        <span className="ml-1 opacity-80">- {rejectionReason}</span>
+      )}
+    </span>
+  );
 }
 
 function formatBytes(bytes: number): string {
@@ -91,27 +125,19 @@ function DocumentReviewItem({
           {/* Review Status Badge */}
           {isReviewed && (
             <div className="mt-2">
-              {document.adminReviewStatus === 'APPROVED' ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-                  <Check className="h-3 w-3" />
-                  Approved
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
-                  <X className="h-3 w-3" />
-                  Rejected
-                  {document.rejectionReason && (
-                    <span className="ml-1 text-red-600">- {document.rejectionReason}</span>
-                  )}
-                </span>
-              )}
+              <DocumentReviewStatusPill
+                status={document.adminReviewStatus as 'APPROVED' | 'REJECTED'}
+                rejectionReason={document.rejectionReason}
+              />
             </div>
           )}
 
           {/* Inline Reject Input */}
           {showRejectInput && (
             <div className="mt-3 flex flex-col gap-2">
+              <label htmlFor="reject-reason" className="sr-only">Reason for rejection</label>
               <textarea
+                id="reject-reason"
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Enter reason for rejection..."

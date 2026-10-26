@@ -1,11 +1,42 @@
 import React, { useMemo } from 'react';
-import { CheckCircle2, Users, Clock, XCircle } from 'lucide-react';
+import { CheckCircle2, Users } from 'lucide-react';
 import { StellarTxLink } from '../ui/StellarTxLink';
+import {
+  getStatusMeta,
+  STATUS_COLOR_CLASSES,
+} from '../../lib/statusConfig';
 
 export interface ApprovalRowData {
   id: string;
   approverName: string;
   status: 'pending' | 'approved' | 'rejected';
+}
+
+/**
+ * Single approval row pill.
+ *
+ * The label, colour and icon come from the shared status config so approval
+ * pills look the same everywhere in the app.
+ */
+function ApprovalStatusPill({
+  status,
+  approvalId,
+}: {
+  status: ApprovalRowData['status'];
+  approvalId: string;
+}) {
+  const meta = getStatusMeta('approval', status);
+  const Icon = meta.icon;
+  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
+
+  return (
+    <span
+      data-testid={`status-badge-${status}-${approvalId}`}
+      className={`inline-flex items-center gap-1 text-xs font-medium ${tokenClasses.text} ${tokenClasses.bg} px-2 py-1 rounded-full`}
+    >
+      <Icon className="w-3 h-3" aria-hidden="true" /> {meta.label}
+    </span>
+  );
 }
 
 export interface ApprovalStatusWidgetProps {
@@ -87,21 +118,7 @@ export const ApprovalStatusWidget: React.FC<ApprovalStatusWidgetProps> = ({
               <div key={approval.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
                 <span className="text-sm font-medium text-slate-700">{approval.approverName}</span>
                 <div className="flex items-center">
-                  {approval.status === 'approved' && (
-                    <span data-testid={`status-badge-approved-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                      <CheckCircle2 className="w-3 h-3" /> Approved
-                    </span>
-                  )}
-                  {approval.status === 'rejected' && (
-                    <span data-testid={`status-badge-rejected-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
-                      <XCircle className="w-3 h-3" /> Rejected
-                    </span>
-                  )}
-                  {approval.status === 'pending' && (
-                    <span data-testid={`status-badge-pending-${approval.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
-                      <Clock className="w-3 h-3" /> Pending
-                    </span>
-                  )}
+                  <ApprovalStatusPill status={approval.status} approvalId={approval.id} />
                 </div>
               </div>
             ))}

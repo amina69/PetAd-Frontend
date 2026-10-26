@@ -75,6 +75,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                 </svg>
               </div>
               <input
+                id="home-location-filter"
                 type="text"
                 placeholder="Filter by Location"
                 value={locationFilter}
@@ -87,7 +88,7 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
             <div className="w-[170px]">
               <FormSelect
                 id="home-category-filter"
-                label=""
+                label="Filter by category"
                 options={CATEGORY_OPTIONS}
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}

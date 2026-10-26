@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationCentreDropdown } from "../NotificationCentreDropdown";
+import { NotificationSocketProvider } from "../../../context/NotificationSocketContext";
 import type { Notification } from "../../../types/notifications";
 
 
@@ -78,17 +79,22 @@ const defaultQueryResult = {
 };
 
 
-function createWrapper() {
+function createWrapper(initialState: "connected" | "disconnected" | "reconnecting" = "connected") {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter>{children}</MemoryRouter>
+      <NotificationSocketProvider initialState={initialState} enabled={false}>
+        <MemoryRouter>{children}</MemoryRouter>
+      </NotificationSocketProvider>
     </QueryClientProvider>
   );
 }
 
-function renderDropdown(props: Partial<React.ComponentProps<typeof NotificationCentreDropdown>> = {}) {
-  return render(<NotificationCentreDropdown {...props} />, { wrapper: createWrapper() });
+function renderDropdown(
+  props: Partial<React.ComponentProps<typeof NotificationCentreDropdown>> = {},
+  initialState: "connected" | "disconnected" | "reconnecting" = "connected",
+) {
+  return render(<NotificationCentreDropdown {...props} />, { wrapper: createWrapper(initialState) });
 }
 
 
@@ -310,5 +316,42 @@ describe("NotificationCentreDropdown", () => {
 
     expect(mockMarkRead).toHaveBeenCalledWith("n1");
     expect(screen.queryByTestId("notification-dropdown")).toBeNull();
+  });
+
+
+  // ── Connection state banner ──────────────────────────────────────────────
+  it("does not show connection banner when connected", () => {
+    renderDropdown({}, "connected");
+    fireEvent.click(screen.getByTestId("bell-button"));
+    expect(screen.queryByTestId("connection-banner")).not.toBeInTheDocument();
+  });
+
+  it("shows reconnecting banner when reconnecting", () => {
+    renderDropdown({}, "reconnecting");
+    fireEvent.click(screen.getByTestId("bell-button"));
+    const banner = screen.getByTestId("connection-banner");
+    expect(banner).toBeInTheDocument();
+    expect(banner.textContent).toContain("Reconnecting");
+    expect(banner.textContent).toContain("may be delayed");
+  });
+
+  it("shows disconnected banner when disconnected", () => {
+    renderDropdown({}, "disconnected");
+    fireEvent.click(screen.getByTestId("bell-button"));
+    const banner = screen.getByTestId("connection-banner");
+    expect(banner).toBeInTheDocument();
+    expect(banner.textContent).toContain("Disconnected");
+  });
+
+  it("shows reconnect button only when disconnected", () => {
+    renderDropdown({}, "disconnected");
+    fireEvent.click(screen.getByTestId("bell-button"));
+    expect(screen.getByTestId("reconnect-button")).toBeInTheDocument();
+  });
+
+  it("does not show reconnect button when reconnecting", () => {
+    renderDropdown({}, "reconnecting");
+    fireEvent.click(screen.getByTestId("bell-button"));
+    expect(screen.queryByTestId("reconnect-button")).not.toBeInTheDocument();
   });
 });

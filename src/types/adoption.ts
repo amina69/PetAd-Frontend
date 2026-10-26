@@ -1,24 +1,41 @@
-export type AdoptionStatus =
-  | "ESCROW_CREATED"
-  | "ESCROW_FUNDED"
-  | "SETTLEMENT_TRIGGERED"
-  | "DISPUTED"
-  | "FUNDS_RELEASED"
-  | "CUSTODY_ACTIVE"
-  | "EXPIRING_SOON"
-  | "COMPLETED"
-  | "CANCELLED";
+import type { ApprovalStatusCode } from "./approval";
 
-export type CustodyStatus =
-  | "PENDING"
-  | "DEPOSIT_PENDING"
-  | "DEPOSIT_CONFIRMED"
-  | "ACTIVE"
-  | "EXPIRING_SOON"
-  | "COMPLETING"
-  | "COMPLETED"
-  | "DISPUTED"
-  | "CANCELLED";
+/**
+ * Adoption lifecycle status codes.
+ *
+ * The runtime array keeps the union and the value list in sync so the status
+ * config can be verified exhaustively at test time.
+ */
+export const ADOPTION_STATUSES = [
+  "ESCROW_CREATED",
+  "ESCROW_FUNDED",
+  "SETTLEMENT_TRIGGERED",
+  "DISPUTED",
+  "FUNDS_RELEASED",
+  "CUSTODY_ACTIVE",
+  "EXPIRING_SOON",
+  "COMPLETED",
+  "CANCELLED",
+] as const;
+
+export type AdoptionStatus = (typeof ADOPTION_STATUSES)[number];
+
+/**
+ * Temporary custody lifecycle status codes.
+ */
+export const CUSTODY_STATUSES = [
+  "PENDING",
+  "DEPOSIT_PENDING",
+  "DEPOSIT_CONFIRMED",
+  "ACTIVE",
+  "EXPIRING_SOON",
+  "COMPLETING",
+  "COMPLETED",
+  "DISPUTED",
+  "CANCELLED",
+] as const;
+
+export type CustodyStatus = (typeof CUSTODY_STATUSES)[number];
 
 export interface AdoptionTimelineEntry {
   id: string;
@@ -67,7 +84,10 @@ export interface TimelineEntry {
   timestamp: string;
 }
 
-export type DecisionStatus = "APPROVED" | "REJECTED" | "EXPIRED";
+export type DecisionStatus = Extract<
+  ApprovalStatusCode,
+  "APPROVED" | "REJECTED" | "EXPIRED"
+>;
 
 export interface ApprovalDecision {
   id: string;

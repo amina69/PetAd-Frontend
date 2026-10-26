@@ -46,6 +46,18 @@ const MOCK_ADOPTION_DETAILS: AdoptionDetails = {
   updatedAt: "2026-03-25T10:10:00Z",
 };
 
+// A rejected adoption carrying the reviewer's decision reason — used to
+// verify the AdoptionStatusPage rejection-reason acceptance criterion.
+const REJECTED_ADOPTION_DETAILS = {
+  id: "adoption-rejected",
+  status: "REJECTED",
+  decisionReason: "The adopter could not provide a verified veterinary reference.",
+  petId: "pet-1",
+  adopterId: "user-1",
+  createdAt: "2026-03-25T10:00:00Z",
+  updatedAt: "2026-03-26T09:00:00Z",
+};
+
 export const adoptionHandlers = [
   http.get("*/api/adoption/:id/timeline", async () => {
     await delay(100);
@@ -57,6 +69,10 @@ export const adoptionHandlers = [
 
     if (id === "adoption-1") {
       return HttpResponse.json(MOCK_ADOPTION_DETAILS);
+    }
+
+    if (id === "adoption-rejected") {
+      return HttpResponse.json(REJECTED_ADOPTION_DETAILS);
     }
 
     return HttpResponse.json({ error: "Adoption not found" }, { status: 404 });
