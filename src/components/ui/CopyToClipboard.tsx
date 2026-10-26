@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Copy, Check } from 'lucide-react';
+import { logger } from "../../lib/logger";
 
 interface CopyToClipboardProps {
   value: string;
@@ -32,7 +33,7 @@ export function CopyToClipboard({ value, children }: CopyToClipboardProps) {
         setIsCopied(false);
       }, 2000);
     } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
+      logger.error('Failed to copy to clipboard:', error);
     }
   };
 

@@ -3,6 +3,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { approvalService } from "../api/approvalService";
 import type { ApprovalItem, ApprovalListResponse } from "../types/approval.types";
 import { approvalKeys } from "./useApprovalList";
+import { STALE_TIME } from "../../../lib/staleTime";
 
 // ─── Cache seeding ───────────────────────────────────────────────────────────
 
@@ -84,5 +85,7 @@ export function useApprovalDetail(id?: string) {
     },
     initialData: () => findCachedApprovalItem(queryClient, id),
     initialDataUpdatedAt: 0,
+    // Approvals are operator-driven, so a one-minute cache matches the list hook.
+    staleTime: STALE_TIME.APPROVALS,
   });
 }

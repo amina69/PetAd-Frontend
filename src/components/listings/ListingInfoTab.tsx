@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ResponsiveImage } from "../shared/ResponsiveImage";
 import InfoRow from "./InfoRow";
 import StatusInfo from "./StatusInfo";
 import dogImage from "../../assets/dog.png";
@@ -32,10 +33,11 @@ export default function ListingInfoTab() {
                 : "border-transparent hover:border-gray-300"
             }`}
           >
-            <img
+            <ResponsiveImage
               src={img}
               alt={`Pet image ${i + 1}`}
-              loading="lazy"
+              width={96}
+              height={96}
               className="w-full h-full object-cover"
             />
           </button>
@@ -44,10 +46,12 @@ export default function ListingInfoTab() {
 
       {/* Main image */}
       <div className="overflow-hidden bg-gray-100 h-[520px]">
-        <img
+        <ResponsiveImage
           src={mockListing.images[activeImage]}
           alt={mockListing.name}
-          loading="lazy"
+          width={800}
+          height={520}
+          priority={activeImage === 0}
           className="w-full h-full object-cover"
         />
         {/* Mobile thumbnails */}
@@ -60,7 +64,7 @@ export default function ListingInfoTab() {
                 activeImage === i ? "border-[#E84D2A]" : "border-transparent"
               }`}
             >
-              <img src={img} alt="" loading="lazy" className="w-full h-full object-cover" />
+              <ResponsiveImage src={img} alt="" width={56} height={56} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

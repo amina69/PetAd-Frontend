@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import type { Notification, NotificationFilter, NotificationsPage } from "../types/notifications";
+import { STALE_TIME } from "../lib/staleTime";
 
 const PAGE_SIZE = 10;
 
@@ -80,6 +81,8 @@ export function useNotifications(filter: NotificationFilter): UseNotificationsRe
 
   const query = useInfiniteQuery({
     queryKey: ["notifications", filter],
+    // Notifications are live: always stale so mount/focus refetches pick up new items.
+    staleTime: STALE_TIME.NOTIFICATIONS,
     queryFn: ({ pageParam }) =>
       fetchNotificationsPage(pageParam as string | undefined, filter),
     initialPageParam: undefined as string | undefined,

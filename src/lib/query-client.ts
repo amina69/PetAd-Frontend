@@ -1,4 +1,5 @@
 import { QueryClient, QueryCache } from "@tanstack/react-query";
+import { logger } from "./logger";
 
 function exponentialDelay(retryAttempt: number): number {
 	return Math.pow(2, retryAttempt) * 1000;
@@ -7,7 +8,7 @@ function exponentialDelay(retryAttempt: number): number {
 function logApiError(error: unknown): void {
 	const errorMessage =
 		error instanceof Error ? error.message : "An unknown error occurred";
-	console.error("[API Error]", errorMessage);
+	logger.error("[API Error]", errorMessage);
 }
 
 function showToastForServerErrors(error: unknown): void {
@@ -17,7 +18,7 @@ function showToastForServerErrors(error: unknown): void {
 		"status" in error &&
 		error.status === 500
 	) {
-		console.warn("[Toast] Server error occurred. Please try again later.");
+		logger.warn("[Toast] Server error occurred. Please try again later.");
 	}
 }
 

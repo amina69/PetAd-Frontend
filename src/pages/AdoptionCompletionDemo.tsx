@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { AdoptionCompletionModal } from "../components/modals";
-import type { AdoptionCompletionData } from "../components/modals";
+import { logger } from "../lib/logger";
 
 export function AdoptionCompletionDemo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleConfirm = (data: AdoptionCompletionData) => {
-    console.log("Adoption completion confirmed:", data);
-    // Here you would typically send this data to your backend
+  const handleConfirm = () => {
+    logger.debug("Adoption completion confirmed");
+    // Here you would typically send the confirmation data to your backend
   };
 
   return (

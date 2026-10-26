@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { NotificationsPage } from "../../../types/notifications";
+import { STALE_TIME } from "../../../lib/staleTime";
 
 /**
  * Kept outside the `["notifications"]` prefix: the mark-read hooks rewrite
@@ -24,7 +25,8 @@ export function useUnreadNotificationCount(): number {
   const { data } = useQuery({
     queryKey: UNREAD_NOTIFICATION_COUNT_QUERY_KEY,
     queryFn: fetchUnreadCount,
-    staleTime: 30_000,
+    // Unread badge is live: always stale so focus/mount refetches keep it accurate.
+    staleTime: STALE_TIME.NOTIFICATIONS,
   });
   return data ?? 0;
 }

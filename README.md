@@ -36,6 +36,19 @@ Note: Includes REST fallback and backfill paths for notifications via `notificat
 - **⚖️ Dispute Management** - Comprehensive tracking and resolution pathways for administrative and user disputes
 - **💬 In-app Messaging** - Conversations with optimistic send, attachments, infinite-scroll history and live delivery ([guide](docs/features/messaging.md))
 
+### Feature guides
+
+Each domain has a guide with its file map, routes and hook usage snippets:
+
+| Feature | What it covers | Guide |
+|---------|----------------|-------|
+| ✅ **Approval** | Multi-party approve/reject decisions on adoptions, approval queues, quorum, expiry | [`docs/features/approval.md`](docs/features/approval.md) |
+| ⚖️ **Dispute** | Raising disputes with evidence, SLA badges, admin resolution (escrow split) | [`docs/features/dispute.md`](docs/features/dispute.md) |
+| 🏠 **Custody** | Temporary custody requests, lifecycle, timeline with on-chain links | [`docs/features/custody.md`](docs/features/custody.md) |
+| 🔔 **Notifications** | Bell/dropdown, unread badge, preferences, deep links, WebSocket push | [`docs/features/notifications.md`](docs/features/notifications.md) |
+
+How data flows between these layers is in [`docs/architecture.md`](docs/architecture.md).
+
 ***
 
 ## 🛠️ Tech Stack
@@ -69,6 +82,8 @@ Other docs:
 - [`docs/local-dev.md`](docs/local-dev.md) — local dev vs. staging backend workflow
 - [`docs/guest-mode.md`](docs/guest-mode.md) — guest browsing mode and auth gating
 - [`docs/notifications.md`](docs/notifications.md) — real-time notification transport decisions
+- [`docs/architecture.md`](docs/architecture.md) — request flow, realtime, auth/session, cache invalidation, frontend/blockchain boundary
+- [`docs/features/`](docs/features/) — per-feature guides (approval, dispute, custody, notifications)
 
 ---
 
@@ -132,7 +147,18 @@ VITE_MSW=false
 ```env
 VITE_APP_NAME=PetAd
 VITE_ENABLE_ANALYTICS=false
+VITE_ANALYTICS_ENDPOINT=
 ```
+
+See [`.env.example`](.env.example) for the full list (WebSocket URL, Stellar network, …).
+
+> **Privacy:** analytics and error reporting are **off** unless
+> `VITE_ENABLE_ANALYTICS` is exactly `true`; when off, the app makes no
+> analytics network calls. When on, only allow-listed events with
+> non-free-text values are sent (`src/lib/analytics.ts`) and error reports are
+> scrubbed of PII. Use `logger` from `src/lib/logger.ts` instead of `console.*`:
+> `debug`/`info` are silent in production and `warn`/`error` are redacted.
+> Never log request bodies, headers or cookies.
 
 ---
 
@@ -156,49 +182,58 @@ http://localhost:5173
 
 ```
 src/
-├── api/              # API client and service layer
-│   ├── petService.ts
-│   ├── adoptionService.ts
-│   └── custodyService.ts
-├── components/       # Reusable UI components
-│   ├── common/
-│   ├── layout/
-│   └── forms/
-├── features/         # Domain-specific features
-│   ├── pets/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   └── types/
-│   ├── adoption/
-│   └── custody/
-├── hooks/            # Shared custom hooks
-│   └── __tests__/
-├── lib/              # Core infrastructure (ApiClient, errors)
-│   └── __tests__/
-├── mocks/            # MSW mock API (dev + test)
-│   ├── browser.ts    # Browser ServiceWorker setup
-│   ├── server.ts     # Node server for Vitest
-│   └── handlers/     # One file per domain
-│       ├── escrow.ts
-│       ├── status.ts
-│       ├── approval.ts
-│       ├── dispute.ts
-│       ├── notify.ts
-│       └── files.ts
-├── pages/            # Route-level components
-├── test/             # Global test setup
-│   └── setup.ts
-├── types/            # Global TypeScript types
-├── main.tsx          # Application entry point
-└── App.tsx           # Root component
+├── api/                  # Service layer: one object per domain
+│   ├── adoptionService.ts, approvalService.ts, authService.ts
+│   ├── custodyService.ts, disputes.ts, documentService.ts, escrowService.ts
+│   └── notificationService.ts, petService.ts
+├── assets/               # Images and static media
+├── components/           # UI, grouped by domain
+│   ├── adoption/  approval/  auth/  badges/  blockchain/  custody/
+│   ├── dispute/  disputes/  escrow/  filters/  home/  icons/  layout/
+│   ├── listings/  loaders/  modals/  notifications/  toast/  wallet/
+│   ├── shared/           # Cross-domain primitives (ResponsiveImage, Pagination)
+│   └── ui/               # Generic widgets (PetCard, Skeleton, badges, upload zones)
+├── context/              # AuthGateContext, NotificationSocketContext
+├── features/             # Domain modules (api · hooks · schemas · types)
+│   ├── approval/         # approval queue + decisions
+│   ├── custody/          # custody types + zod schemas
+│   ├── dispute/          # legacy dispute module (superseded by disputes/)
+│   ├── disputes/         # dispute creation, schemas, status config
+│   └── notifications/    # preferences, unread count, mark-read, socket hook
+├── hooks/                # Shared and cross-feature hooks (useAuth, useDisputes, …)
+├── lib/                  # Core infrastructure
+│   ├── api-client.ts     # ApiClient (Bearer token, ApiError, 401 handling)
+│   ├── api-errors.ts, query-client.ts
+│   ├── logger.ts, analytics.ts, scrub.ts   # privacy-safe logging & analytics
+│   ├── stellar.ts        # explorer URL helpers (read-only)
+│   ├── hooks/            # Polling, custody, escrow and count hooks
+│   └── realtime/         # Framework-agnostic notification WebSocket manager
+├── mocks/                # MSW mock API (dev + test)
+│   ├── browser.ts        # Browser ServiceWorker setup
+│   ├── server.ts         # Node server for Vitest
+│   └── handlers/         # One file per domain
+│       ├── adoption.ts, approval.ts, auth.ts, custody.ts, dispute.ts
+│       └── escrow.ts, files.ts, listings.ts, notify.ts, status.ts
+├── pages/                # Route-level components (+ adoption/, disputes/, settings/)
+├── test/                 # Global test setup (+ msw/)
+├── types/                # Global TypeScript types
+├── utils/                # Pure helpers (csv, query params, …)
+├── main.tsx              # Entry point (providers, MSW bootstrap, analytics init)
+└── App.tsx               # Routes and guards
 ```
+
+> Documents, profile and auth are not separate `features/` folders: documents
+> live in `api/documentService.ts`, `components/ui/Document*` and
+> `components/modals/`; profile in `pages/ProfilePage.tsx`; auth in
+> `components/auth/`, `hooks/useAuth.ts`, `context/AuthGateContext.tsx` and
+> `api/authService.ts`.
 
 **Key Directories:**
 
 - **`api/`** - Centralized API communication layer
-- **`features/`** - Feature-based architecture (pets, adoption, custody)
-- **`components/`** - Reusable, presentational components
-- **`lib/`** - ApiClient, error classes, shared hooks
+- **`features/`** - Feature modules (approval, custody, disputes, notifications)
+- **`components/`** - Reusable, presentational components grouped by domain
+- **`lib/`** - ApiClient, error classes, logger/analytics, realtime socket manager, shared hooks
 - **`mocks/`** - MSW handlers for offline development and tests
 - **`hooks/`** - Custom React hooks for shared logic
 - **`pages/`** - Top-level route components
@@ -350,7 +385,7 @@ The frontend communicates with the PetAd backend API for all operations, includi
 
 - The frontend **never holds private keys**
 - All blockchain transactions are processed server-side
-- Authentication tokens are stored securely (HttpOnly cookies)
+- The auth token is a Bearer token kept in browser storage (`auth_token`) and sent in the `Authorization` header; see [Auth and session flow](docs/architecture.md#3-auth-and-session-flow)
 
 **Example API Call:**
 

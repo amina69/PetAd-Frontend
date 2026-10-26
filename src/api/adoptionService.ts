@@ -13,6 +13,7 @@ import {
   type AdminApprovalQueueResponse,
   type ApprovalResponse,
 } from "../features/approval/schemas/approvalSchemas";
+import { logger } from "../lib/logger";
 
 export interface AdoptionRating {
   rating: number;
@@ -39,7 +40,7 @@ export const adoptionService = {
   },
 
   async submitRating(ratingData: AdoptionRating): Promise<void> {
-    console.log("Submitting rating:", ratingData);
+    logger.debug("Submitting rating for adoption", ratingData.adoptionId);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return;
   },

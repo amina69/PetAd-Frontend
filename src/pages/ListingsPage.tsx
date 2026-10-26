@@ -1,6 +1,6 @@
-import dogImage from '../assets/dog.png';
-import dog1Image from '../assets/dog_1.png';
-import goldenretrival from "../assets/golden_retriever.png";
+import dogImage from '../assets/dog.webp';
+import dog1Image from '../assets/dog_1.webp';
+import goldenretrival from "../assets/golden_retriever.webp";
 import ListingCard from '../components/listings/ListingCard';
 import ListingHeader from '../components/listings/ListingHeader';
 
@@ -46,8 +46,8 @@ export default function ListingsPage() {
                 <ListingHeader />
 
                 <div className="space-y-4">
-                    {mockListings.map((listing) => (
-                        <ListingCard key={listing.id} listing={listing} />
+                    {mockListings.map((listing, index) => (
+                        <ListingCard key={listing.id} listing={listing} priority={index === 0} />
                     ))}
                 </div>
             </div>

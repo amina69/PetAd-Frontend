@@ -31,3 +31,6 @@ playwright-report/
 test-results/
 .playwright/
 e2e/.auth/
+
+# Lighthouse CI reports
+.lighthouseci/

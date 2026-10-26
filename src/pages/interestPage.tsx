@@ -6,6 +6,7 @@ import { RatingModal } from "../components/ui/RatingModal";
 import catImg from "../assets/cat.png";
 import dogImg from "../assets/dog.png";
 import parrotImg from "../assets/parrot.png";
+import { logger } from "../lib/logger";
 
 const MOCK_PETS: Pet[] = [
   {
@@ -117,7 +118,7 @@ export default function InterestPage() {
       setRatingModalOpen(false);
       setSelectedPet(null);
     } catch (error) {
-      console.error("Failed to submit rating:", error);
+      logger.error("Failed to submit rating:", error);
     }
   };
 

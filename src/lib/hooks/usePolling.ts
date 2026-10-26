@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, type QueryKey } from "@tanstack/react-query";
+import { STALE_TIME } from "../staleTime";
 
 export interface UsePollingOptions<TData> {
 	intervalMs: number;
@@ -39,6 +40,8 @@ export function usePolling<TData>(
 		queryKey,
 		queryFn: fetchFn,
 		enabled: enabled,
+		// Polling hook: data is refreshed by refetchInterval, so cached reads are always treated as stale.
+		staleTime: STALE_TIME.NOTIFICATIONS,
 		refetchInterval: (query) => {
 			const data = query.state.data;
 

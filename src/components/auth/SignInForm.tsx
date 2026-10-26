@@ -4,6 +4,7 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { authService } from "../../api/authService";
 import { ApiError } from "../../lib/api-errors";
 import { LiveRegion } from "../common/LiveRegion";
+import { logger } from "../../lib/logger";
 import { CURRENT_USER_STORAGE_KEY } from "../../hooks/useCurrentUser";
 
 interface SignInFormData {
@@ -107,7 +108,7 @@ export function SignInForm() {
     };
 
     const handleGoogleSignIn = () => {
-        console.log("Google sign in");
+        logger.debug("Google sign in");
     };
 
     return (
