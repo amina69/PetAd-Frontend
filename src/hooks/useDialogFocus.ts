@@ -8,6 +8,7 @@ export function useDialogFocus(
   isOpen: boolean,
   dialogRef: RefObject<HTMLElement | null>,
   onClose: () => void,
+  closeOnEscape = true,
 ): void {
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -26,7 +27,7 @@ export function useDialogFocus(
     (first ?? dialog).focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && closeOnEscape) {
         event.preventDefault();
         onClose();
         return;
@@ -57,5 +58,5 @@ export function useDialogFocus(
       previouslyFocused.current?.focus();
       previouslyFocused.current = null;
     };
-  }, [dialogRef, isOpen, onClose]);
+  }, [closeOnEscape, dialogRef, isOpen, onClose]);
 }

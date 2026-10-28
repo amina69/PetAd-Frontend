@@ -9,9 +9,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run check:msw && tsc -b && vite build",
+    "build": "npm run check:msw && tsc -b && vite build && npm run check:bundle",
     "build:analyze": "tsc -b && vite build --mode analyze",
     "check:msw": "node scripts/check-msw-production.mjs --mode production",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
+    "bundle:report": "node scripts/check-bundle-size.mjs --report-only",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",

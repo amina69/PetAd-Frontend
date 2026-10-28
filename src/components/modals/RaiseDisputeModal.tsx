@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import { FileUploadZone } from "../ui/FileUploadZone";
 import { useMutateRaiseDispute } from "../../hooks/useMutateRaiseDispute";
 import toast from "react-hot-toast";
+import { useDialogFocus } from "../../hooks/useDialogFocus";
 
 interface Props {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
   const [files, setFiles] = useState<File[]>([]);
   const [fileProgress, setFileProgress] = useState<number[]>([]);
   const [inlineError, setInlineError] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleFileProgress = (index: number, pct: number) => {
     setFileProgress((prev) => {
@@ -32,18 +34,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
     onProgress: handleFileProgress,
   });
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !isPending) onClose();
-    },
-    [isPending, onClose],
-  );
-
-  useEffect(() => {
-    if (!isOpen) return;
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, handleKeyDown]);
+  useDialogFocus(isOpen, modalRef, onClose, !isPending);
 
   if (!isOpen) return null;
 
@@ -89,7 +80,12 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
       data-testid="dispute-backdrop"
     >
       <div
+        ref={modalRef}
         className="relative w-full max-w-lg bg-white rounded-2xl p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="raise-dispute-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
       >
         {!isPending && (
@@ -102,7 +98,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
           </button>
         )}
 
-        <h2 className="text-lg font-bold mb-2">Raise a dispute</h2>
+        <h2 id="raise-dispute-title" className="text-lg font-bold mb-2">Raise a dispute</h2>
         <p className="text-sm text-gray-500 mb-4">
           Tell us why you're raising this dispute.
         </p>
@@ -159,11 +155,11 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
         </div>
 
         {inlineError && (
-          <div className="mb-3 text-sm text-red-600">{inlineError}</div>
+          <div role="alert" className="mb-3 text-sm text-red-600">{inlineError}</div>
         )}
 
         {error && (
-          <div className="mb-3 text-sm text-red-600">{error.message}</div>
+          <div role="alert" className="mb-3 text-sm text-red-600">{error.message}</div>
         )}
 
         <div className="flex gap-3 justify-end">

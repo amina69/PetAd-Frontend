@@ -22,6 +22,13 @@ export function MainLayout({ children }: PropsWithChildren) {
 
       <Navbar />
 
+      <a
+        href="#main-content"
+        className="sr-only z-[100] rounded-md bg-[#001323] px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A]"
+      >
+        Skip to main content
+      </a>
+
       <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
         {children ?? <Outlet />}
       </main>
