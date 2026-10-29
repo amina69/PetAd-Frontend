@@ -208,6 +208,36 @@ export const documentService = {
         await apiClient.delete(`/documents/${documentId}`);
     },
 
+    // Compatibility helpers used by the document preview and upload flows.
+    // They delegate to the canonical API above so documents still have one
+    // request shape and one error-handling path.
+    upload: async (
+        file: File,
+        kind: string,
+        onProgress?: (progress: number) => void,
+    ): Promise<UploadedDocument> => {
+        onProgress?.(0);
+        const uploaded = await documentService.uploadDocument({
+            file,
+            type: kind,
+            onProgress,
+        });
+        onProgress?.(100);
+        return uploaded;
+    },
+
+    list: async (): Promise<Document[]> => documentService.getDocuments(),
+
+    delete: async (documentId: string): Promise<void> =>
+        documentService.deleteDocument(documentId),
+
+    getDownloadUrl: async (documentId: string): Promise<string> => {
+        const payload = await apiClient.get<{ url: string }>(
+            `/documents/${documentId}/download-url`,
+        );
+        return payload.url;
+    },
+
     getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {
         const params = new URLSearchParams();
         if (adoptionId) params.append("adoptionId", adoptionId);

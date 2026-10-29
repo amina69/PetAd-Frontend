@@ -2,10 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { documentService } from "../api/documentService";
 import { DocumentList } from "../features/documents/components/DocumentList";
 import { DocumentUploadPanel } from "../features/documents/components/DocumentUploadPanel";
+import { queryKeys } from "../lib/queryKeys";
 
 export default function DocumentsPage() {
   const documentsQuery = useQuery({
-    queryKey: ["documents"],
+    queryKey: queryKeys.documents.list(),
     queryFn: () => documentService.getDocuments(),
   });
 

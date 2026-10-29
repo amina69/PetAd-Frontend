@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import { validateUploadFiles } from "../../../lib/documentUploadRules";
+import { queryKeys } from "../../../lib/queryKeys";
 
 interface ReplaceDocumentButtonProps {
   documentId: string;
@@ -33,7 +34,7 @@ export function ReplaceDocumentButton({
     setError(null);
     try {
       await documentService.replaceDocument(documentId, { file, type: documentType });
-      await queryClient.invalidateQueries({ queryKey: ["documents"] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
     } catch (caught) {
       setError(
         caught instanceof ApiError

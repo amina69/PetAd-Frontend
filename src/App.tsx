@@ -7,6 +7,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
 import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
+import { AccountPage } from "./features/auth/AccountPage";
 import ListingsPage from "./pages/ListingsPage";
 
 const FavouritePage = lazy(() => import("./pages/FavouritePage"));
@@ -105,6 +106,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/favourites" element={<FavouritePage />} />
             <Route path="/interests" element={<InterestPage />} />

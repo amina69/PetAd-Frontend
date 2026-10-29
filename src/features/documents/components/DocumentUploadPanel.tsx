@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import { validateUploadFiles } from "../../../lib/documentUploadRules";
+import { queryKeys } from "../../../lib/queryKeys";
 
 export function DocumentUploadPanel() {
   const queryClient = useQueryClient();
@@ -47,7 +48,7 @@ export function DocumentUploadPanel() {
       });
       setFile(null);
       setProgress(100);
-      await queryClient.invalidateQueries({ queryKey: ["documents"] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
     } catch (caught) {
       if (caught instanceof ApiError && caught.code === "ABORTED") {
         setCancelled(true);

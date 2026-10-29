@@ -1,7 +1,6 @@
-import { act, render } from "@testing-library/react";
-import { fireEvent, screen } from "@testing-library/dom";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ToastProvider } from "../ToastProvider";
+import { ToastProvider, toast } from "../ToastProvider";
 import { useToast } from "../useToast";
 
 function ToastTrigger() {
@@ -122,5 +121,44 @@ describe("ToastProvider", () => {
 
     expect(statusToast).toBeInTheDocument();
     expect(alertToast).toBeInTheDocument();
+    expect(statusToast).toHaveAttribute("aria-live", "polite");
+    expect(alertToast).toHaveAttribute("aria-live", "assertive");
+  });
+
+  it("pauses while hovered and resumes after the pointer leaves", () => {
+    renderToastProvider();
+    fireEvent.click(screen.getByRole("button", { name: "Add success" }));
+    const item = screen.getByTestId("toast-item");
+
+    fireEvent.mouseEnter(item);
+    act(() => {
+      vi.advanceTimersByTime(5_000);
+    });
+    expect(screen.getByText("Success toast")).toBeInTheDocument();
+
+    fireEvent.mouseLeave(item);
+    act(() => {
+      vi.advanceTimersByTime(5_000);
+    });
+    expect(screen.queryByText("Success toast")).not.toBeInTheDocument();
+  });
+
+  it("dismisses the focused toast with Escape", () => {
+    renderToastProvider();
+    fireEvent.click(screen.getByRole("button", { name: "Add success" }));
+    fireEvent.keyDown(screen.getByTestId("toast-item"), { key: "Escape" });
+    expect(screen.queryByText("Success toast")).not.toBeInTheDocument();
+  });
+
+  it("exposes toast.success, toast.error, and toast.info", () => {
+    renderToastProvider();
+    act(() => {
+      toast.success({ title: "Saved", description: "All set", durationMs: 1000 });
+      toast.error({ title: "Failed", description: "Try again" });
+      toast.info({ title: "Note", description: "Heads up" });
+    });
+    expect(screen.getByText("Saved")).toBeInTheDocument();
+    expect(screen.getByText("Failed").closest("[role='alert']")).toHaveAttribute("aria-live", "assertive");
+    expect(screen.getByText("Note").closest("[role='status']")).toHaveAttribute("aria-live", "polite");
   });
 });
