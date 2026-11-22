@@ -1,46 +1,47 @@
 import { http, HttpResponse, delay } from "msw";
 import type { CustodyDetails } from "../../types/adoption";
 
-const MOCK_CUSTODY_DETAILS: CustodyDetails = {
-  id: "custody-1",
-  status: "ACTIVE",
-  petId: "pet-1",
-  custodianId: "user-1",
-  ownerId: "user-2",
-  startDate: "2026-03-25T10:00:00Z",
-  endDate: "2026-04-25T10:00:00Z",
-  escrowId: "escrow-001",
-  createdAt: "2026-03-25T10:00:00Z",
-  updatedAt: "2026-03-25T10:10:00Z",
-};
-
-/** Fixtures backing GET /api/custody — one per commonly filtered status. */
-const MOCK_CUSTODY_LIST: CustodyDetails[] = [
-  MOCK_CUSTODY_DETAILS,
-  {
-    id: "custody-2",
-    status: "PENDING",
-    petId: "pet-2",
-    custodianId: "user-3",
-    ownerId: "user-4",
-    startDate: "2026-04-01T10:00:00Z",
-    escrowId: null,
-    createdAt: "2026-04-01T10:00:00Z",
-    updatedAt: "2026-02-10T10:00:00Z",
+const MOCK_CUSTODY_DETAILS: Record<string, CustodyDetails> = {
+  "custody-1": {
+    id: "custody-1",
+    status: "ACTIVE",
+    petId: "pet-1",
+    custodianId: "user-1",
+    ownerId: "user-2",
+    startDate: "2026-03-25T10:00:00Z",
+    endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: "2026-03-25T10:00:00Z",
+    updatedAt: "2026-03-25T10:10:00Z",
   },
-  {
+  // Referenced by the Caretaker dashboard's arrangement widgets so their
+  // "Timeline" drill-down links resolve offline.
+  "custody-2": {
+    id: "custody-2",
+    status: "ACTIVE",
+    petId: "pet-2",
+    custodianId: "user-1",
+    ownerId: "user-4",
+    startDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: "2026-06-01T09:00:00Z",
+    updatedAt: "2026-06-01T09:05:00Z",
+  },
+  "custody-3": {
     id: "custody-3",
-    status: "COMPLETED",
+    status: "EXPIRING_SOON",
     petId: "pet-3",
     custodianId: "user-1",
     ownerId: "user-5",
-    startDate: "2026-01-10T10:00:00Z",
-    endDate: "2026-02-10T10:00:00Z",
-    escrowId: "escrow-003",
-    createdAt: "2026-01-10T10:00:00Z",
-    updatedAt: "2026-02-10T10:00:00Z",
+    startDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+    endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: "2026-05-20T09:00:00Z",
+    updatedAt: "2026-05-20T09:05:00Z",
   },
-];
+};
+
+/** Fixtures backing GET /api/custody — built from the detail record so there
+ * is a single source of truth for each arrangement's shape. */
+const MOCK_CUSTODY_LIST: CustodyDetails[] = Object.values(MOCK_CUSTODY_DETAILS);
 
 /** Returns true when the request carries a valid Bearer token (same guard as listings.ts). */
 function isAuthorized(request: Request): boolean {
@@ -63,10 +64,11 @@ export const custodyHandlers = [
   // ── PUBLIC: arrangement detail (escrow is fetched from its own endpoint) ─
   http.get("*/api/custody/:id", async ({ params }) => {
     await delay(100);
-    const { id } = params;
+    const id = String(params.id);
+    const record = MOCK_CUSTODY_DETAILS[id];
 
-    if (id === "custody-1") {
-      return HttpResponse.json(MOCK_CUSTODY_DETAILS);
+    if (record) {
+      return HttpResponse.json(record);
     }
 
     return HttpResponse.json(
@@ -94,6 +96,19 @@ export const custodyHandlers = [
       page,
       limit,
     });
+  }),
+
+  // ── PUBLIC: timeline ──────────────────────────────────────────────────────
+  http.get("*/api/custody/:id/timeline", async () => {
+    await delay(100);
+    return HttpResponse.json([
+      {
+        type: "STATUS_CHANGE",
+        label: "Custody Started",
+        timestamp: new Date().toISOString(),
+        toStatus: "CUSTODY_ACTIVE",
+      },
+    ]);
   }),
 
   // ── PROTECTED: request a new custody arrangement (auth required) ─────────
@@ -132,8 +147,7 @@ export const custodyHandlers = [
 
     const { endDate } = (await request.json()) as { endDate: string };
     const id = String(params.id);
-    const existing =
-      MOCK_CUSTODY_LIST.find((c) => c.id === id) ?? MOCK_CUSTODY_DETAILS;
+    const existing = MOCK_CUSTODY_DETAILS[id] ?? MOCK_CUSTODY_DETAILS["custody-1"]!;
 
     const updated: CustodyDetails = {
       ...existing,
@@ -151,8 +165,7 @@ export const custodyHandlers = [
     }
 
     const id = String(params.id);
-    const existing =
-      MOCK_CUSTODY_LIST.find((c) => c.id === id) ?? MOCK_CUSTODY_DETAILS;
+    const existing = MOCK_CUSTODY_DETAILS[id] ?? MOCK_CUSTODY_DETAILS["custody-1"]!;
 
     const updated: CustodyDetails = {
       ...existing,

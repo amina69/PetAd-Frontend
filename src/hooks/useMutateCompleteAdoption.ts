@@ -2,6 +2,7 @@ import { useApiMutation } from "./useApiMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { adoptionService } from "../api/adoptionService";
 import type { AdoptionDetails } from "../types/adoption";
+import { queryKeys } from "../lib/queryKeys";
 
 /**
  * useMutateCompleteAdoption
@@ -19,17 +20,16 @@ export function useMutateCompleteAdoption(adoptionId: string) {
     const { mutate, isPending, isError, error } = useApiMutation<void, string>(
         (id: string) => adoptionService.completeAdoption(id),
         {
-            invalidates: [["adoption", adoptionId]],
+            invalidates: [queryKeys.adoptions.detail(adoptionId)],
             onOptimisticUpdate: () => {
                 // Snapshot current cache for potential rollback
-                const previousData = queryClient.getQueryData<AdoptionDetails>([
-                    "adoption",
-                    adoptionId,
-                ]);
+                const previousData = queryClient.getQueryData<AdoptionDetails>(
+                    queryKeys.adoptions.detail(adoptionId),
+                );
 
                 // Apply optimistic update: SETTLEMENT_TRIGGERED status
                 queryClient.setQueryData<AdoptionDetails>(
-                    ["adoption", adoptionId],
+                    queryKeys.adoptions.detail(adoptionId),
                     (old) =>
                         old
                             ? { ...old, status: "SETTLEMENT_TRIGGERED" as const }
@@ -42,13 +42,13 @@ export function useMutateCompleteAdoption(adoptionId: string) {
                 // Restore previous cache state on error
                 if (snapshot !== undefined) {
                     queryClient.setQueryData<AdoptionDetails>(
-                        ["adoption", adoptionId],
+                        queryKeys.adoptions.detail(adoptionId),
                         snapshot as AdoptionDetails | undefined,
                     );
                 }
             },
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["adoption", adoptionId] });
+                queryClient.invalidateQueries({ queryKey: queryKeys.adoptions.detail(adoptionId) });
             },
         },
     );

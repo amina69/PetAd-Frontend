@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../api/documentService";
 import { FileUploadZone } from "../ui/FileUploadZone";
 import { ApiError, ValidationApiError } from "../../lib/api-errors";
+import { queryKeys } from "../../lib/queryKeys";
 
 interface DocumentUploadModalProps {
     isOpen: boolean;
@@ -81,7 +82,7 @@ export function DocumentUploadModal({
                 });
 
                 // On success
-                await queryClient.invalidateQueries({ queryKey: ["documents"] });
+                await queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
             }
             resetState();
             onClose();

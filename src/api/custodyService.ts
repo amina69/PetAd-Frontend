@@ -1,9 +1,14 @@
 import { apiClient } from "../lib/api-client";
-import type {
-  CustodyDetails,
-  CustodyStatus,
-  AdoptionStatus,
-} from "../types/adoption";
+import { ApiError, ForbiddenError } from "../lib/api-errors";
+import type { CustodyDetails, AdoptionStatus } from "../types/adoption";
+import type { CustodyArrangement, CustodyStatus } from "../features/custody/types";
+import {
+  custodyArrangementSchema,
+  custodyListResponseSchema,
+  custodyRequestSchema,
+  type CustodyListResponse,
+  type CustodyRequest,
+} from "../features/custody/schemas/custodySchemas";
 
 export interface CustodyTimelineEvent {
   type: string;
@@ -14,68 +19,75 @@ export interface CustodyTimelineEvent {
   toStatus?: AdoptionStatus;
 }
 
-/**
- * Filters and pagination accepted by `custodyService.getList`.
- * Mirrors the approval-list params shape used across the app.
- */
 export interface CustodyListParams {
   status?: CustodyStatus;
+  petId?: string;
   page?: number;
   limit?: number;
 }
 
 /**
- * Envelope returned by the custody list endpoint — same pagination
- * shape as the approvals list (`items` + `total`/`page`/`limit`).
+ * Thrown when the requested custody dates overlap an existing arrangement
+ * (HTTP 409), so the UI can prompt for different dates instead of showing a
+ * generic error.
  */
-export interface CustodyListResponse {
-  items: CustodyDetails[];
-  total?: number;
-  page?: number;
-  limit?: number;
+export class CustodyConflictError extends ApiError {
+  constructor(
+    message: string,
+    options?: { status?: number; code?: string; data?: unknown },
+  ) {
+    super(message, options);
+    this.name = "CustodyConflictError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
 }
 
 /**
- * Payload for creating a new custody arrangement (`POST /custody`).
- * `endDate` is optional — the backend applies its default custody window
- * when it is omitted.
+ * Maps 409 → `CustodyConflictError` and 403 → `ForbiddenError` so callers can
+ * branch with `instanceof` rather than inspecting status codes.
  */
-export interface RequestCustodyPayload {
-  petId: string;
-  startDate: string;
-  endDate?: string;
+async function withCustodyErrors<T>(request: () => Promise<T>): Promise<T> {
+  try {
+    return await request();
+  } catch (error) {
+    if (!(error instanceof ApiError)) throw error;
+
+    const options = { status: error.status, code: error.code, data: error.data };
+    if (error.status === 409) {
+      throw new CustodyConflictError(error.message, {
+        ...options,
+        code: error.code ?? "CUSTODY_DATE_CONFLICT",
+      });
+    }
+    if (error.status === 403) {
+      throw new ForbiddenError(error.message, {
+        ...options,
+        code: error.code ?? "CUSTODY_FORBIDDEN",
+      });
+    }
+    throw error;
+  }
 }
 
-/** Payload for extending an arrangement (`PATCH /custody/:id/extend`). */
-export interface ExtendCustodyPayload {
-  /** New end date for the arrangement (ISO 8601). */
-  endDate: string;
+function buildListQuery(params: CustodyListParams): string {
+  const searchParams = new URLSearchParams();
+  if (params.status) searchParams.append("status", params.status);
+  if (params.petId) searchParams.append("petId", params.petId);
+  if (params.page !== undefined) searchParams.append("page", String(params.page));
+  if (params.limit !== undefined) searchParams.append("limit", String(params.limit));
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
 }
 
+/**
+ * `custodyService` — API layer for the Temporary Custody domain.
+ *
+ * Every custody-arrangement response is parsed through the Zod schemas in
+ * `features/custody/schemas`, so contract drift surfaces at the boundary.
+ *
+ * @see https://github.com/amina69/PetAd-Frontend/issues/627
+ */
 export const custodyService = {
-  /**
-   * Fetch a paginated list of custody arrangements.
-   * @param params - Optional status filter and pagination options.
-   */
-async getList(params: CustodyListParams = {}): Promise<CustodyListResponse> {
-    const searchParams = new URLSearchParams();
-
-    if (params.status) {
-      searchParams.append("status", params.status);
-    }
-    if (params.page !== undefined) {
-      searchParams.append("page", String(params.page));
-    }
-    if (params.limit !== undefined) {
-      searchParams.append("limit", String(params.limit));
-    }
-
-    const queryString = searchParams.toString();
-    return apiClient.get<CustodyListResponse>(
-      `/custody${queryString ? `?${queryString}` : ""}`,
-    );
-  },
-
   async getDetails(custodyId: string): Promise<CustodyDetails> {
     return apiClient.get<CustodyDetails>(`/custody/${custodyId}`);
   },
@@ -84,31 +96,52 @@ async getList(params: CustodyListParams = {}): Promise<CustodyListResponse> {
     return apiClient.get<CustodyTimelineEvent[]>(`/custody/${custodyId}/timeline`);
   },
 
-  /**
-   * Request a new custody arrangement.
-   * @returns the created arrangement (including its new `id`).
-   */
-async request(payload: RequestCustodyPayload): Promise<CustodyDetails> {
-    return apiClient.post<CustodyDetails>(`/custody`, payload);
-  },
-
-  /**
-   * Extend an existing custody arrangement's end date.
-   */
-async extend(
-    custodyId: string,
-    payload: ExtendCustodyPayload,
-  ): Promise<CustodyDetails> {
-    return apiClient.patch<CustodyDetails>(
-      `/custody/${custodyId}/extend`,
-      payload,
+  /** GET /custody — paginated list of custody arrangements. */
+  async getCustodyList(params: CustodyListParams = {}): Promise<CustodyListResponse> {
+    const response = await withCustodyErrors(() =>
+      apiClient.get<unknown>(`/custody${buildListQuery(params)}`),
     );
+    return custodyListResponseSchema.parse(response);
+  },
+
+  /** GET /custody/:id — a single custody arrangement. */
+  async getCustodyById(id: string): Promise<CustodyArrangement> {
+    const response = await withCustodyErrors(() =>
+      apiClient.get<unknown>(`/custody/${encodeURIComponent(id)}`),
+    );
+    return custodyArrangementSchema.parse(response);
   },
 
   /**
-   * End a custody arrangement early.
+   * POST /custody — request a new custody arrangement. The payload is
+   * validated client-side first; a date overlap rejects with
+   * `CustodyConflictError`.
    */
-async end(custodyId: string): Promise<CustodyDetails> {
-    return apiClient.patch<CustodyDetails>(`/custody/${custodyId}/end`);
+  async requestCustody(payload: CustodyRequest): Promise<CustodyArrangement> {
+    const body = custodyRequestSchema.parse(payload);
+    const response = await withCustodyErrors(() =>
+      apiClient.post<unknown>("/custody", body),
+    );
+    return custodyArrangementSchema.parse(response);
+  },
+
+  /** PATCH /custody/:id/extend — move the end date of an arrangement. */
+  async extendCustody(id: string, newEndDate: string): Promise<CustodyArrangement> {
+    const response = await withCustodyErrors(() =>
+      apiClient.patch<unknown>(`/custody/${encodeURIComponent(id)}/extend`, {
+        endDate: newEndDate,
+      }),
+    );
+    return custodyArrangementSchema.parse(response);
+  },
+
+  /** POST /custody/:id/end — end an arrangement early. */
+  async endCustody(id: string): Promise<CustodyArrangement> {
+    const response = await withCustodyErrors(() =>
+      apiClient.post<unknown>(`/custody/${encodeURIComponent(id)}/end`),
+    );
+    return custodyArrangementSchema.parse(response);
   },
 };
+
+export type { CustodyRequest, CustodyListResponse };

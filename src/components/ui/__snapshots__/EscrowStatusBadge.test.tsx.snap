@@ -6,15 +6,41 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'CONFIRM
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-teal-100 text-teal-700"
+      class="status-badge status-badge--teal"
     >
-      Confirmed
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-badge-check h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"
+          />
+          <path
+            d="m9 12 2 2 4-4"
+          />
+        </svg>
+      </span>
+      <span>
+        Confirmed
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Transaction has been confirmed by the parties.
       </div>
@@ -29,15 +55,50 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'CREATED
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-gray-100 text-gray-700"
+      class="status-badge status-badge--gray"
     >
-      Created
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-file-text h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
+          />
+          <path
+            d="M14 2v5a1 1 0 0 0 1 1h5"
+          />
+          <path
+            d="M10 9H8"
+          />
+          <path
+            d="M16 13H8"
+          />
+          <path
+            d="M16 17H8"
+          />
+        </svg>
+      </span>
+      <span>
+        Created
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Escrow has been created but not yet funded.
       </div>
@@ -52,15 +113,50 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'DISPUTE
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-red-100 text-red-700"
+      class="status-badge status-badge--red"
     >
-      Disputed
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-scale h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 3v18"
+          />
+          <path
+            d="m19 8 3 8a5 5 0 0 1-6 0zV7"
+          />
+          <path
+            d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"
+          />
+          <path
+            d="m5 8 3 8a5 5 0 0 1-6 0zV7"
+          />
+          <path
+            d="M7 21h10"
+          />
+        </svg>
+      </span>
+      <span>
+        Disputed
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         A dispute has been raised for this escrow.
       </div>
@@ -75,15 +171,50 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'FUNDED'
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-blue-100 text-blue-700"
+      class="status-badge status-badge--blue"
     >
-      Funded
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-banknote h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            height="12"
+            rx="2"
+            width="20"
+            x="2"
+            y="6"
+          />
+          <circle
+            cx="12"
+            cy="12"
+            r="2"
+          />
+          <path
+            d="M6 12h.01M18 12h.01"
+          />
+        </svg>
+      </span>
+      <span>
+        Funded
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Funds have been deposited into escrow.
       </div>
@@ -98,15 +229,59 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'NOT_FOU
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-gray-100 text-gray-700"
+      class="status-badge status-badge--gray"
     >
-      Not Found
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-circle-dashed h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.1 2.182a10 10 0 0 1 3.8 0"
+          />
+          <path
+            d="M13.9 21.818a10 10 0 0 1-3.8 0"
+          />
+          <path
+            d="M17.609 3.721a10 10 0 0 1 2.69 2.7"
+          />
+          <path
+            d="M2.182 13.9a10 10 0 0 1 0-3.8"
+          />
+          <path
+            d="M20.279 17.609a10 10 0 0 1-2.7 2.69"
+          />
+          <path
+            d="M21.818 10.1a10 10 0 0 1 0 3.8"
+          />
+          <path
+            d="M3.721 6.391a10 10 0 0 1 2.7-2.69"
+          />
+          <path
+            d="M6.391 20.279a10 10 0 0 1-2.69-2.7"
+          />
+        </svg>
+      </span>
+      <span>
+        Not Found
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Escrow record could not be found.
       </div>
@@ -121,15 +296,43 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLED
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-green-100 text-green-700"
+      class="status-badge status-badge--green"
     >
-      Settled
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-circle-check h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <path
+            d="m9 12 2 2 4-4"
+          />
+        </svg>
+      </span>
+      <span>
+        Settled
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Escrow has been successfully settled.
       </div>
@@ -144,15 +347,46 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLEM
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-red-100 text-red-700"
+      class="status-badge status-badge--red"
     >
-      Settlement Failed
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-circle-x h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <path
+            d="m15 9-6 6"
+          />
+          <path
+            d="m9 9 6 6"
+          />
+        </svg>
+      </span>
+      <span>
+        Settlement Failed
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Settlement failed. Funds were not successfully transferred.
       </div>
@@ -167,15 +401,38 @@ exports[`EscrowStatusBadge — snapshot test for every status > renders 'SETTLIN
     class="group relative inline-flex"
   >
     <span
-      class="px-3 py-1 rounded-full text-[12px] font-medium bg-amber-100 text-amber-700"
+      class="status-badge status-badge--amber"
     >
-      Settling
+      <span
+        class="status-badge__icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-loader-circle h-3.5 w-3.5"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M21 12a9 9 0 1 1-6.219-8.56"
+          />
+        </svg>
+      </span>
+      <span>
+        Settling
+      </span>
     </span>
     <div
-      class="absolute left-1/2 top-full z-10 mt-2 w-max max-w-[220px] -translate-x-1/2 scale-95 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"
+      class="status-badge__tooltip-wrapper"
     >
       <div
-        class="rounded-md bg-[#0F2236] px-3 py-2 text-[12px] text-white shadow-lg"
+        class="status-badge__tooltip"
       >
         Funds are currently being processed for settlement.
       </div>

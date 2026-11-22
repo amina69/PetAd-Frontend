@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { disputeFormSchema } from '../disputeSchemas';
+import { commentSchema, disputeFormSchema } from '../disputeSchemas';
 
 const validDispute = {
   reason: 'pet_condition',
@@ -73,6 +73,50 @@ describe('disputeFormSchema', () => {
 
   it('rejects a missing reason', () => {
     const result = disputeFormSchema.safeParse({ description: validDispute.description });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('commentSchema', () => {
+  it('accepts a valid comment', () => {
+    const result = commentSchema.safeParse({
+      body: 'The shelter never shared the medical records for the first week.',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('trims surrounding whitespace from a valid body', () => {
+    const result = commentSchema.safeParse({ body: '  Thanks for the update.  ' });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.body).toBe('Thanks for the update.');
+    }
+  });
+
+  it('rejects a whitespace-only body', () => {
+    const result = commentSchema.safeParse({ body: '   \n\t   ' });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an empty body', () => {
+    const result = commentSchema.safeParse({ body: '' });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a missing body', () => {
+    const result = commentSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts a body of exactly 2000 characters', () => {
+    const result = commentSchema.safeParse({ body: 'a'.repeat(2000) });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a body over 2000 characters', () => {
+    const result = commentSchema.safeParse({ body: 'a'.repeat(2001) });
     expect(result.success).toBe(false);
   });
 });

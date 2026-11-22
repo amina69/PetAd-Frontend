@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ResponsiveImage } from "../components/shared/ResponsiveImage";
 import dogImage from "../assets/dog.png";
 import dog1Image from "../assets/dog_1.png";
 import goldenRetriever from "../assets/golden_retriever.png";
@@ -364,12 +365,18 @@ export default function PetListingDetailsPage() {
                     className={`pld-gallery__thumb ${i === activeImage ? "pld-gallery__thumb--active" : ""}`}
                     onClick={() => setActiveImage(i)}
                   >
-                    <img src={img} alt={`Pet image ${i + 1}`} loading="lazy" />
+                    <ResponsiveImage src={img} alt={`Pet image ${i + 1}`} width={96} height={96} />
                   </div>
                 ))}
               </div>
               <div className="pld-gallery__main">
-                <img src={pet.images[activeImage]} alt={pet.name} />
+                <ResponsiveImage
+                  src={pet.images[activeImage]}
+                  alt={pet.name}
+                  width={800}
+                  height={600}
+                  priority={activeImage === 0}
+                />
               </div>
             </div>
 

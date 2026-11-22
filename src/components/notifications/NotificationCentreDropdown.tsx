@@ -15,7 +15,9 @@ import { useMutateMarkAllRead } from "../../hooks/useMutateMarkAllRead";
 import { notificationRouter } from "../../lib/notificationRouter";
 import { useNotificationSocket } from "../../context/NotificationSocketContext";
 import type { Notification, NotificationsPage } from "../../types/notifications";
+import { queryKeys } from "../../lib/queryKeys";
 import { useDialogFocus } from "../../hooks/useDialogFocus";
+import { STALE_TIME } from "../../lib/staleTime";
 
 
 const DROPDOWN_LIMIT = 20;
@@ -74,11 +76,11 @@ export function NotificationCentreDropdown({
 
 
   const { data, isLoading, isError } = useQuery<NotificationsPage>({
-    queryKey: ["notifications", "dropdown"],
+    queryKey: queryKeys.notifications.dropdown(),
     queryFn: fetchDropdownNotifications,
     enabled: isOpen,
     // Notifications may arrive while the menu is open, so use a short freshness window.
-    staleTime: 30_000,
+    staleTime: STALE_TIME.NOTIFICATIONS,
   });
 
   const notifications: Notification[] = useMemo(() => data?.data ?? [], [data?.data]); 

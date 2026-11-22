@@ -38,7 +38,7 @@ export const custodyKeys = {
 export function useCustodyList(params: CustodyListParams = {}) {
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: custodyKeys.list(params),
-    queryFn: () => custodyService.getList(params),
+    queryFn: () => custodyService.getCustodyList(params),
     staleTime: 60_000,
     refetchOnWindowFocus: false,
   });

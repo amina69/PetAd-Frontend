@@ -1,17 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { approvalService } from "../api/approvalService";
 import type { ApprovalListParams, ApprovalListResponse } from "../types/approval.types";
+import { STALE_TIME } from "../../../lib/staleTime";
 
 // ─── Query Key Factory ───────────────────────────────────────────────────────
 
 /**
- * Stable query-key factory for the approvals list.
- * Use `approvalKeys.list(params)` in mutations or manual invalidation to
- * keep cache keys consistent across the app.
+ * Stable query-key factory for the approvals domain.
+ *
+ * - `approvalKeys.all` — the `["approvals"]` root; matches lists *and* details.
+ * - `approvalKeys.list(params)` — one cached page per filter/pagination set.
+ * - `approvalKeys.detail(id)` — one cached record per approval id.
+ *
+ * Use these in mutations or manual invalidation so cache keys stay consistent
+ * across the app.
  */
 export const approvalKeys = {
   all: ["approvals"] as const,
   list: (params: ApprovalListParams) => ["approvals", params] as const,
+  detail: (id: string | undefined) => ["approvals", id] as const,
 };
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
@@ -36,7 +43,7 @@ export function useApprovalList(params: ApprovalListParams = {}) {
     queryKey: approvalKeys.list(params),
     queryFn: () => approvalService.getApprovals(params),
     // Lists are stable between operator actions, so avoid refetching on every render.
-    staleTime: 60_000,
+    staleTime: STALE_TIME.APPROVALS,
     refetchOnWindowFocus: false,
   });
 

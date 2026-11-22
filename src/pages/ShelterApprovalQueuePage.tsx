@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { adoptionService } from "../api/adoptionService";
+import { queryKeys } from "../lib/queryKeys";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
 
@@ -16,7 +17,7 @@ export default function ShelterApprovalQueuePage() {
     isError,
     refetch
   } = useInfiniteQuery({
-    queryKey: ["shelterApprovals"],
+    queryKey: queryKeys.approvals.shelter(),
     queryFn: ({ pageParam }) =>
       adoptionService.getAdminApprovalQueue({
         status: "PENDING",

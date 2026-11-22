@@ -1,4 +1,6 @@
-export type ApprovalStatus = "pending" | "approved" | "rejected";
+import type { ApprovalStatus } from "../../../types/approval";
+
+export type { ApprovalStatus };
 
 export interface ApprovalRequest {
   id: string;

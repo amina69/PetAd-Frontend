@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "../../../hooks/useApiMutation";
-import {
-  custodyService,
-  type RequestCustodyPayload,
-} from "../../../api/custodyService";
-import type { CustodyDetails } from "../../../types/adoption";
+import { custodyService } from "../../../api/custodyService";
+import type { CustodyArrangement } from "../types";
+import type { CustodyRequest } from "../schemas/custodySchemas";
 import { custodyKeys } from "./useCustodyList";
 
 /** useRequestCustody — create a custody arrangement and jump to it.
@@ -24,8 +22,8 @@ export function useRequestCustody() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const mutation = useApiMutation<CustodyDetails, RequestCustodyPayload>(
-    (payload) => custodyService.request(payload),
+  const mutation = useApiMutation<CustodyArrangement, CustodyRequest>(
+    (payload) => custodyService.requestCustody(payload),
     {
       invalidates: [custodyKeys.listRoot],
       onSuccess: (created) => {
@@ -38,7 +36,7 @@ export function useRequestCustody() {
   );
 
   return {
-    requestCustody: (payload: RequestCustodyPayload) =>
+    requestCustody: (payload: CustodyRequest) =>
       mutation.mutate(payload),
     isPending: mutation.isPending,
     isError: mutation.isError,

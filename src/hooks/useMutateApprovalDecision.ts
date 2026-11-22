@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { queryKeys } from "../lib/queryKeys";
 import type { ApprovalStatus } from "../features/approval";
 
 type DecisionPayload = {
@@ -20,14 +21,13 @@ export const useMutateApprovalDecision = (adoptionId: string) => {
     },
 
     onMutate: async (newDecision) => {
-      await queryClient.cancelQueries({ queryKey: ["approvals", adoptionId] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.approvals.detail(adoptionId) });
 
-      const previousApprovals = queryClient.getQueryData([
-        "approvals",
-        adoptionId,
-      ]);
+      const previousApprovals = queryClient.getQueryData(
+        queryKeys.approvals.detail(adoptionId),
+      );
 
-      queryClient.setQueryData(["approvals", adoptionId], (old: any) => {
+      queryClient.setQueryData(queryKeys.approvals.detail(adoptionId), (old: any) => {
         if (!old) return old;
 
         return old.map((approver: any) => {
@@ -48,16 +48,16 @@ export const useMutateApprovalDecision = (adoptionId: string) => {
     onError: (_err, _vars, context) => {
       if (context?.previousApprovals) {
         queryClient.setQueryData(
-          ["approvals", adoptionId],
+          queryKeys.approvals.detail(adoptionId),
           context.previousApprovals
         );
       }
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adoption", adoptionId] });
-      queryClient.invalidateQueries({ queryKey: ["approvals", adoptionId] });
-      queryClient.invalidateQueries({ queryKey: ["timeline", adoptionId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.adoptions.detail(adoptionId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.detail(adoptionId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline.detail(adoptionId) });
     },
   });
 

@@ -1,6 +1,6 @@
 import { useApiMutation } from "../../../hooks/useApiMutation";
 import { custodyService } from "../../../api/custodyService";
-import type { CustodyDetails } from "../../../types/adoption";
+import type { CustodyArrangement } from "../types";
 import { custodyKeys } from "./useCustodyList";
 
 /** useEndCustody — end an arrangement before its scheduled end date.
@@ -12,8 +12,8 @@ import { custodyKeys } from "./useCustodyList";
  * Other arrangements' details and unrelated caches stay untouched.
  */
 export function useEndCustody(custodyId: string) {
-  const mutation = useApiMutation<CustodyDetails, void>(
-    () => custodyService.end(custodyId),
+  const mutation = useApiMutation<CustodyArrangement, void>(
+    () => custodyService.endCustody(custodyId),
     {
       invalidates: [custodyKeys.listRoot, custodyKeys.detail(custodyId)],
     }

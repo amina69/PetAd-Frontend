@@ -1,3 +1,4 @@
+import { ResponsiveImage } from '../shared/ResponsiveImage';
 export interface Pet {
   id: string;
   name: string;
@@ -62,10 +63,11 @@ export function InterestPetCard({
     <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.2fr_1.2fr_1.5fr] items-center gap-4 lg:gap-6 bg-white rounded-2xl border border-[#EAEAEA] p-4 lg:p-0 lg:pr-5 hover:shadow-md transition-shadow">
       <div className="flex items-center gap-4 lg:gap-0">
         <div className="w-14 h-14 rounded-xl lg:w-38 lg:h-25 lg:rounded-t-xl lg:rounded-bl-xl lg:rounded-tr-none lg:rounded-br-none overflow-hidden bg-white shrink-0">
-          <img
+          <ResponsiveImage
             src={pet.imageUrl}
             alt={pet.name}
-            loading="lazy"
+            width={128}
+            height={100}
             className=" w-full h-full lg:w-32 lg:h-25 object-center"
           />
         </div>

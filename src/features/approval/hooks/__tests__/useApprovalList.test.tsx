@@ -160,6 +160,49 @@ describe("useApprovalList", () => {
     expect(result.current.data?.page).toBe(3);
   });
 
+  it("issues exactly one new request per params change and none for unchanged re-renders (MSW call-count assertion)", async () => {
+    let callCount = 0;
+
+    server.use(
+      http.get("http://localhost:3000/api/approvals", ({ request }) => {
+        callCount++;
+        const status = new URL(request.url).searchParams.get("status") ?? "ALL";
+
+        return HttpResponse.json({
+          items: [
+            { id: `app-${callCount}`, status, petName: "Buddy", applicantName: "John Doe" },
+          ],
+          total: 1,
+          page: 1,
+          limit: 10,
+        });
+      })
+    );
+
+    const { wrapper } = createWrapper();
+
+    const { result, rerender } = renderHook(
+      (params: ApprovalListParams) => useApprovalList(params),
+      {
+        wrapper,
+        initialProps: { status: "PENDING" },
+      }
+    );
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(callCount).toBe(1);
+
+    // One params change → exactly one additional request.
+    rerender({ status: "APPROVED" });
+    await waitFor(() => expect(result.current.data?.items[0].status).toBe("APPROVED"));
+    expect(callCount).toBe(2);
+
+    // Re-rendering with unchanged params must not issue another request.
+    rerender({ status: "APPROVED" });
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(callCount).toBe(2);
+  });
+
   it("handles network and API error states correctly", async () => {
     server.use(
       http.get("http://localhost:3000/api/approvals", () => {

@@ -70,14 +70,60 @@ exports[`EscrowSettlementCard > matches snapshot in funded state 1`] = `
         >
           Escrow State
         </span>
-        <span
-          class="status-badge status-badge--blue"
-          data-testid="escrow-status-badge"
+        <div
+          class="group relative inline-flex"
         >
-          <span>
-            Funded
+          <span
+            class="status-badge status-badge--blue"
+            data-testid="escrow-status-badge"
+          >
+            <span
+              class="status-badge__icon"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-banknote h-3.5 w-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="12"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="6"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="2"
+                />
+                <path
+                  d="M6 12h.01M18 12h.01"
+                />
+              </svg>
+            </span>
+            <span>
+              Funded
+            </span>
           </span>
-        </span>
+          <div
+            class="status-badge__tooltip-wrapper"
+          >
+            <div
+              class="status-badge__tooltip"
+            >
+              Funds have been deposited into escrow.
+            </div>
+          </div>
+        </div>
       </div>
       <div
         class="mt-8"
@@ -219,14 +265,53 @@ exports[`EscrowSettlementCard > matches snapshot in settled state 1`] = `
         >
           Escrow State
         </span>
-        <span
-          class="status-badge status-badge--green"
-          data-testid="escrow-status-badge"
+        <div
+          class="group relative inline-flex"
         >
-          <span>
-            Settled
+          <span
+            class="status-badge status-badge--green"
+            data-testid="escrow-status-badge"
+          >
+            <span
+              class="status-badge__icon"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-circle-check h-3.5 w-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <path
+                  d="m9 12 2 2 4-4"
+                />
+              </svg>
+            </span>
+            <span>
+              Settled
+            </span>
           </span>
-        </span>
+          <div
+            class="status-badge__tooltip-wrapper"
+          >
+            <div
+              class="status-badge__tooltip"
+            >
+              Escrow has been successfully settled.
+            </div>
+          </div>
+        </div>
       </div>
       <div
         class="mt-8"

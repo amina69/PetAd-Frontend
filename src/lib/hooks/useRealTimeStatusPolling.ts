@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePolling } from "./usePolling";
 import { adoptionService } from "../../api/adoptionService";
+import { queryKeys } from "../queryKeys";
 import { custodyService } from "../../api/custodyService";
 import type { AdoptionDetails, CustodyDetails } from "../../types/adoption";
 
@@ -40,7 +41,7 @@ export function useRealTimeStatusPolling(
     return data.status === "COMPLETED" || data.status === "CANCELLED";
   };
 
-  const query = usePolling([entityType, entityId], fetchFn, {
+  const query = usePolling(queryKeys.realtime.status(entityType, entityId), fetchFn, {
     intervalMs,
     stopWhen,
   });

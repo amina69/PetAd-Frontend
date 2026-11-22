@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import { useApiMutation } from "../useApiMutation";
 import { ApiError } from "../../lib/api-errors";
+import { queryKeys } from "../../lib/queryKeys";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -120,15 +121,15 @@ describe("useApiMutation", () => {
     const { queryClient, wrapper } = createWrapper();
 
     // Pre-seed a couple of queries so we can spy on invalidation
-    queryClient.setQueryData(["pets"], [{ id: "1" }]);
-    queryClient.setQueryData(["adoptions"], [{ id: "a1" }]);
+    queryClient.setQueryData(queryKeys.pets.list(), [{ id: "1" }]);
+    queryClient.setQueryData(queryKeys.adoptions.list(), [{ id: "a1" }]);
 
     const invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const { result } = renderHook(
       () =>
         useApiMutation<{ ok: boolean }, void>(mutationFn, {
-          invalidates: [["pets"], ["adoptions"]],
+          invalidates: [queryKeys.pets.list(), queryKeys.adoptions.list()],
         }),
       { wrapper },
     );
@@ -141,10 +142,10 @@ describe("useApiMutation", () => {
 
     // invalidateQueries should have been called once for each key
     expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-      queryKey: ["pets"],
+      queryKey: queryKeys.pets.list(),
     });
     expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-      queryKey: ["adoptions"],
+      queryKey: queryKeys.adoptions.list(),
     });
   });
 

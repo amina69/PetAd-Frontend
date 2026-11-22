@@ -1,10 +1,13 @@
 import { useApiMutation } from "../../../hooks/useApiMutation";
-import {
-  custodyService,
-  type ExtendCustodyPayload,
-} from "../../../api/custodyService";
-import type { CustodyDetails } from "../../../types/adoption";
+import { custodyService } from "../../../api/custodyService";
+import type { CustodyArrangement } from "../types";
 import { custodyKeys } from "./useCustodyList";
+
+/** Payload for extending an existing custody arrangement's end date. */
+export interface ExtendCustodyPayload {
+  /** New end date for the arrangement (ISO 8601). */
+  endDate: string;
+}
 
 /** useExtendCustody — extend an arrangement's end date.
 
@@ -15,8 +18,8 @@ import { custodyKeys } from "./useCustodyList";
  * Other arrangements' details and unrelated caches stay untouched.
  */
 export function useExtendCustody(custodyId: string) {
-  const mutation = useApiMutation<CustodyDetails, ExtendCustodyPayload>(
-    (payload) => custodyService.extend(custodyId, payload),
+  const mutation = useApiMutation<CustodyArrangement, ExtendCustodyPayload>(
+    (payload) => custodyService.extendCustody(custodyId, payload.endDate),
     {
       invalidates: [custodyKeys.listRoot, custodyKeys.detail(custodyId)],
     }

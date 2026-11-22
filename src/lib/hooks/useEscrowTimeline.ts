@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
+import { queryKeys } from "../queryKeys";
+import { STALE_TIME } from "../staleTime";
 
 export type EscrowTimelineEventType =
 	| "CREATED"
@@ -28,14 +30,14 @@ export function useEscrowTimeline(
 	const enabled = Boolean(adoptionId) && (options?.enabled ?? true);
 
 	const query = useQuery({
-		queryKey: ["escrow-timeline", adoptionId],
+		queryKey: queryKeys.escrow.timeline(adoptionId ?? ""),
 		queryFn: () =>
 			apiClient.get<EscrowTimelineEvent[]>(
 				`/adoption/${adoptionId}/escrow/timeline`,
 			),
 		enabled,
 			// Timeline events are append-only; refresh periodically without each navigation refetching.
-			staleTime: 30_000,
+			staleTime: STALE_TIME.TIMELINES,
 	});
 
 	return {

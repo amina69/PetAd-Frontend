@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { registerQueryErrorToast } from "../../lib/query-client";
 
 export type ToastType = "success" | "error" | "warning" | "info";
 
@@ -123,6 +124,16 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    return registerQueryErrorToast((message) => {
+      showToast({
+        type: "error",
+        title: "Something went wrong",
+        message,
+      });
+    });
+  }, [showToast]);
 
   const contextValue = useMemo(
     () => ({

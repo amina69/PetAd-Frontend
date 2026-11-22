@@ -51,6 +51,9 @@ export const adminApprovalQueueItemSchema = z.object({
   shelterApproved: z.boolean(),
   daysWaiting: z.number(),
   isOverdue: z.boolean(),
+  type: z.enum(["ADOPTION", "CUSTODY"]).optional(),
+  status: z.string().optional(),
+  flaggedRisk: z.boolean().optional(),
 });
 
 /**

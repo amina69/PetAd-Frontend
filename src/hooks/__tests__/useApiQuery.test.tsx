@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useApiQuery } from "../useApiQuery";
 import type { ApiError } from "../../types/auth";
+import { resetLoginRedirectForTests } from "../../lib/session";
 
 const createWrapper = () => {
     const queryClient = new QueryClient({
@@ -22,6 +23,7 @@ describe('useApiQuery', () => {
     const originalLocation = window.location;
 
     beforeEach(() => {
+        resetLoginRedirectForTests();
         vi.clearAllMocks();
         // Reset window.location mock
         Object.defineProperty(window, 'location', {
@@ -55,7 +57,7 @@ describe('useApiQuery', () => {
 
         await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-        expect(window.location.assign).toHaveBeenCalledWith('/login');
+        expect(window.location.assign).toHaveBeenCalledWith(expect.stringMatching(/^\/login(\?redirect=.*)?$/));
     });
 
     it('should return isForbidden true for 403', async () => {

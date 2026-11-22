@@ -1,6 +1,7 @@
 import { adoptionService, type StatusOverride } from "../api/adoptionService";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "./useApiMutation";
+import { queryKeys } from "../lib/queryKeys";
 
 
 
@@ -14,9 +15,9 @@ export function useMutateAdminStatusOverride(adoptionId: string) {
     const { isPending, error, mutateAsync } = useApiMutation(
         editStatus,
         {
-            invalidates: [["adoption", adoptionId]],
+            invalidates: [queryKeys.adoptions.detail(adoptionId)],
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["adoption", adoptionId] });
+                queryClient.invalidateQueries({ queryKey: queryKeys.adoptions.detail(adoptionId) });
             },
         },
     );

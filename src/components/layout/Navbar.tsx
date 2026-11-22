@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { House, Eye, List, Heart, ChevronDown, ClipboardList } from "lucide-react";
+import { House, Eye, List, Heart, ChevronDown, ClipboardList, MessageCircle } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import owner from "../../assets/owner.png";
 import { PendingApprovalBadge } from "../badges/PendingApprovalBadge";
@@ -12,6 +12,7 @@ const baseNavLinks = [
   { label: "Home", path: "/home", icon: House },
   { label: "Interests", path: "/interests", icon: Eye },
   { label: "Listings", path: "/listings", icon: List },
+  { label: "Messages", path: "/messages", icon: MessageCircle },
 ];
 
 type NavLink = {
@@ -27,6 +28,15 @@ export function Navbar() {
 
   const navLinks: NavLink[] = [
     ...baseNavLinks,
+    ...(isAdmin
+      ? [
+          {
+            label: "Applications",
+            path: "/admin/applications",
+            icon: ClipboardList,
+          },
+        ]
+      : []),
     ...(canApprove
       ? [
           {
@@ -56,7 +66,9 @@ export function Navbar() {
       <div className="hidden md:flex items-center gap-8">
         {navLinks.map((link) => {
           const Icon = link.icon;
-          const isActive = location.pathname === link.path;
+          const isActive =
+            location.pathname === link.path ||
+            (link.path === "/messages" && location.pathname.startsWith("/messages/"));
           return (
             <Link
               key={link.path}
@@ -94,7 +106,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-3 ml-2 cursor-pointer group">
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100">
-            <img src={owner} alt="User Avatar" className="w-full h-full object-cover" />
+            <img src={owner} alt="User Avatar" loading="lazy" className="w-full h-full object-cover" />
           </div>
           <div className="hidden sm:block">
             <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">Good Morning!</p>

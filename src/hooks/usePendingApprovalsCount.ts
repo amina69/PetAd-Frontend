@@ -2,6 +2,7 @@ import { useApiQuery } from "./useApiQuery";
 import { useRoleGuard } from "./useRoleGuard";
 import { apiClient } from "../lib/api-client";
 import type { ApprovalListParams } from "../features/approval";
+import { STALE_TIME } from "../lib/staleTime";
 
 const POLL_INTERVAL_MS = 300_000;
 const MAX_DISPLAY = 9;
@@ -26,7 +27,8 @@ export function usePendingApprovalsCount() {
       refetchInterval: POLL_INTERVAL_MS,
       refetchIntervalInBackground: true,
       // Approval counts are a live queue indicator; every poll must revalidate.
-      staleTime: 0,
+      // Badge count polls on an interval, so every read should hit the network.
+      staleTime: STALE_TIME.NOTIFICATIONS,
     },
   );
 

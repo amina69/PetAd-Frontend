@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRoleGuard } from "../../hooks/useRoleGuard";
 import { useApiMutation } from "../../hooks/useApiMutation";
 import { escrowService } from "../../api/escrowService";
+import { queryKeys } from "../../lib/queryKeys";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -224,7 +225,7 @@ export function SettlementFailureState({
     void,
     string
   >((id: string) => escrowService.retrySettlement(id), {
-    invalidates: [["escrow", escrowId]],
+    invalidates: [queryKeys.escrow.detail(escrowId)],
     onSuccess: () => {
       setShowModal(false);
       dispatchToast("Settlement retry succeeded.", "success");

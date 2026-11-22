@@ -5,6 +5,7 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { notificationService } from "../../../../api/notificationService";
 import { useMarkNotificationRead } from "../useMarkNotificationRead";
 import type { Notification, NotificationsPage } from "../../../../types/notifications";
+import { queryKeys } from "../../../../lib/queryKeys";
 
 vi.mock("../../../../api/notificationService", () => ({
   notificationService: {
@@ -51,7 +52,7 @@ function seedPaginatedCache(
   queryClient: QueryClient,
   notifications: Notification[],
 ) {
-  queryClient.setQueryData(["notifications", "all"], {
+  queryClient.setQueryData(queryKeys.notifications.list("all"), {
     pages: [{ data: notifications, nextCursor: null, total: notifications.length }],
     pageParams: [undefined],
   });
@@ -61,7 +62,7 @@ function seedDropdownCache(
   queryClient: QueryClient,
   notifications: Notification[],
 ) {
-  queryClient.setQueryData<NotificationsPage>(["notifications", "dropdown"], {
+  queryClient.setQueryData<NotificationsPage>(queryKeys.notifications.dropdown(), {
     data: notifications,
     nextCursor: null,
     total: notifications.length,
