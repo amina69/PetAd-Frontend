@@ -52,3 +52,8 @@ export function scrubValue(value: unknown, depth = 0): unknown {
 export function scrubArgs(args: unknown[]): unknown[] {
   return args.map((arg) => scrubValue(arg));
 }
+
+/** Redaction helper for objects, nested objects, and arrays (emails, tokens, phone numbers). */
+export function redact<T>(value: T): T {
+  return scrubValue(value) as T;
+}

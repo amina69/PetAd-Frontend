@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Pet } from "../ui/InterestPetCard";
+import { PERF_MEASURES, startPerfMeasure } from "../../lib/perf";
 
 interface StartAdoptionModalProps {
     pet: Pet | null;
@@ -40,14 +41,17 @@ export function StartAdoptionModal({
     };
 
     const handleConfirm = () => {
+        const endPerf = startPerfMeasure(PERF_MEASURES.ADOPTION_SUBMIT);
         const newErrors = validate();
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            endPerf({ success: false });
             return;
         }
         setErrors({});
         setSubmitted(true);
         onConfirm(pet.id, formData);
+        endPerf({ success: true });
     };
 
     const handleChange = (

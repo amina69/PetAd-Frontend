@@ -3,6 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import { validateUploadFiles } from "../../../lib/documentUploadRules";
+import { queryKeys } from "../../../lib/queryKeys";
+import { PERF_MEASURES, startPerfMeasure } from "../../../lib/perf";
 
 export function DocumentUploadPanel() {
   const queryClient = useQueryClient();
@@ -31,6 +33,7 @@ export function DocumentUploadPanel() {
   }
 
   async function startUpload(target: File) {
+    const endPerf = startPerfMeasure(PERF_MEASURES.DOCUMENT_UPLOAD);
     const controller = new AbortController();
     abortRef.current = controller;
     setIsUploading(true);
@@ -47,7 +50,7 @@ export function DocumentUploadPanel() {
       });
       setFile(null);
       setProgress(100);
-      await queryClient.invalidateQueries({ queryKey: ["documents"] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
     } catch (caught) {
       if (caught instanceof ApiError && caught.code === "ABORTED") {
         setCancelled(true);
@@ -60,6 +63,7 @@ export function DocumentUploadPanel() {
     } finally {
       setIsUploading(false);
       abortRef.current = null;
+      endPerf();
     }
   }
 

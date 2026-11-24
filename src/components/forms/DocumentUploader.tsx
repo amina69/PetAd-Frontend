@@ -19,6 +19,7 @@ import {
   validateUpload,
   type UploadRule,
 } from "../../lib/uploadRules";
+import { PERF_MEASURES, startPerfMeasure } from "../../lib/perf";
 
 export type UploadedAttachment = UploadedDocument;
 /** Backwards/alternate name used by some upload surfaces. */
@@ -180,6 +181,7 @@ export const DocumentUploader = forwardRef<
 
   const upload = useCallback(
     (key: string, file: File) => {
+      const endPerf = startPerfMeasure(PERF_MEASURES.DOCUMENT_UPLOAD);
       const controller = new AbortController();
       controllersRef.current.set(key, controller);
 
@@ -264,6 +266,7 @@ export const DocumentUploader = forwardRef<
         })
         .finally(() => {
           controllersRef.current.delete(key);
+          endPerf();
         });
     },
     [commit, kind, onUploaded, onBusyChange],

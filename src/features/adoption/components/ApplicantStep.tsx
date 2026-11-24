@@ -23,6 +23,7 @@ import {
   type AdoptionFormData,
   type AdoptionFormField,
 } from "../schemas/adoptionSchemas";
+import { PERF_MEASURES, startPerfMeasure } from "../../../lib/perf";
 
 const FORM_FIELDS: AdoptionFormField[] = ["fullName", "email", "phone", "reason"];
 
@@ -113,6 +114,7 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const endPerf = startPerfMeasure(PERF_MEASURES.ADOPTION_SUBMIT);
     setIsSubmitted(true);
     setSuccessMessage(null);
     // A submit attempt validates every field, so all of them surface their
@@ -127,11 +129,13 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
     const result = adoptionFormSchema.safeParse(values);
 
     if (!result.success) {
+      endPerf({ success: false });
       return;
     }
 
     setSuccessMessage("Application submitted successfully!");
     onSubmit?.(result.data);
+    endPerf({ success: true });
   };
 
   return (

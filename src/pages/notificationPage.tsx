@@ -4,6 +4,7 @@ import { NotificationItem } from "../components/notifications";
 import { EmptyState } from "../components/ui/emptyState";
 import { useNotificationSocket } from "../context/NotificationSocketContext";
 import type { Notification, NotificationFilter } from "../types/notifications";
+import { recordNotificationFirstRender } from "../lib/perf";
 
 
 export type DateGroupLabel = "Today" | "Yesterday" | "Earlier";
@@ -126,6 +127,12 @@ export default function NotificationsListPage() {
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [handleIntersect]);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      recordNotificationFirstRender();
+    }
+  }, [notifications.length]);
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10">

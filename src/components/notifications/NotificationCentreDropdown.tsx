@@ -18,6 +18,7 @@ import type { Notification, NotificationsPage } from "../../types/notifications"
 import { queryKeys } from "../../lib/queryKeys";
 import { useDialogFocus } from "../../hooks/useDialogFocus";
 import { STALE_TIME } from "../../lib/staleTime";
+import { recordNotificationFirstRender } from "../../lib/perf";
 
 
 const DROPDOWN_LIMIT = 20;
@@ -86,6 +87,12 @@ export function NotificationCentreDropdown({
   const notifications: Notification[] = useMemo(() => data?.data ?? [], [data?.data]); 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const showUnreadDot = hasUnread || unreadCount > 0;
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      recordNotificationFirstRender();
+    }
+  }, [notifications.length]);
 
 
   const open = useCallback(() => {

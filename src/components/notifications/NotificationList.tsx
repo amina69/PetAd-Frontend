@@ -1,8 +1,9 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import type { UIEvent } from "react";
 import { NotificationItem } from "./NotificationItem";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import type { Notification } from "../../types/notifications";
+import { recordNotificationFirstRender } from "../../lib/perf";
 
 export interface NotificationListProps {
   notifications: Notification[];
@@ -23,6 +24,12 @@ export function NotificationList({
   isLoadingMore = false,
   hasMore = true,
 }: NotificationListProps) {
+  useEffect(() => {
+    if (notifications.length > 0) {
+      recordNotificationFirstRender();
+    }
+  }, [notifications.length]);
+
   const handleScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
       if (!onLoadMore || !hasMore || isLoadingMore) {
