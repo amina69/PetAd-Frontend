@@ -2,6 +2,7 @@ import { useMutation, useQueryClient, type QueryKey } from "@tanstack/react-quer
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import type { Document } from "../../../types/documents";
+import { queryKeys } from "../../../lib/queryKeys";
 
 const IN_REVIEW_MESSAGE =
   "This document is attached to an application that is in review and cannot be deleted.";
@@ -30,9 +31,9 @@ export function useDeleteDocument() {
   return useMutation({
     mutationFn: (documentId: string) => documentService.deleteDocument(documentId),
     onMutate: async (documentId) => {
-      await queryClient.cancelQueries({ queryKey: ["documents"] });
-      const previous = queryClient.getQueriesData<Document[]>({ queryKey: ["documents"] });
-      queryClient.setQueriesData<Document[]>({ queryKey: ["documents"] }, (current) =>
+      await queryClient.cancelQueries({ queryKey: queryKeys.documents.list() });
+      const previous = queryClient.getQueriesData<Document[]>({ queryKey: queryKeys.documents.list() });
+      queryClient.setQueriesData<Document[]>({ queryKey: queryKeys.documents.list() }, (current) =>
         Array.isArray(current) ? current.filter((doc) => doc.id !== documentId) : current,
       );
       return { previous };
@@ -43,7 +44,7 @@ export function useDeleteDocument() {
       });
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: ["documents"] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
     },
   });
 }
