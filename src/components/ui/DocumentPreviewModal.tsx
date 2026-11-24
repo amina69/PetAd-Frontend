@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import type { Document } from "../../types/documents";
+import { useLocale } from "../../i18n";
+import { formatDate } from "../../lib/date";
 
 interface DocumentPreviewModalProps {
   document: Document;
@@ -12,6 +14,7 @@ interface DocumentPreviewModalProps {
  * anything else falls back to a download link. File names are rendered as text.
  */
 export function DocumentPreviewModal({ document, actions }: DocumentPreviewModalProps) {
+  const { locale } = useLocale();
   const isImage = document.mimeType.startsWith("image/");
   const isPdf = document.mimeType === "application/pdf";
 
@@ -23,7 +26,7 @@ export function DocumentPreviewModal({ document, actions }: DocumentPreviewModal
       <header className="mb-3">
         <h2 className="text-lg font-semibold text-gray-900">{document.fileName}</h2>
         <p className="text-xs text-gray-500">
-          {document.type} · uploaded {new Date(document.createdAt).toLocaleDateString()}
+          {document.type} · uploaded {formatDate(document.createdAt, locale)}
         </p>
       </header>
 

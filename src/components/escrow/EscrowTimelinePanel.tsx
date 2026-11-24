@@ -2,26 +2,8 @@ import { Check, Pause, Plus, Wallet } from "lucide-react";
 import { Skeleton } from "../ui/Skeleton";
 import { StellarTxLink } from "../ui/StellarTxLink";
 import { useEscrowTimeline, type EscrowTimelineEventType } from "../../lib/hooks/useEscrowTimeline";
-
-function formatRelativeTime(timestamp: string, now = new Date()): string {
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return "";
-
-  const diffSeconds = Math.round((date.getTime() - now.getTime()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-
-  const absSeconds = Math.abs(diffSeconds);
-  if (absSeconds < 60) return rtf.format(diffSeconds, "second");
-
-  const diffMinutes = Math.round(diffSeconds / 60);
-  if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, "minute");
-
-  const diffHours = Math.round(diffMinutes / 60);
-  if (Math.abs(diffHours) < 24) return rtf.format(diffHours, "hour");
-
-  const diffDays = Math.round(diffHours / 24);
-  return rtf.format(diffDays, "day");
-}
+import { useLocale } from "../../i18n";
+import { formatRelative } from "../../lib/date";
 
 function getEventIcon(type: EscrowTimelineEventType) {
   const normalized = String(type).toUpperCase();
@@ -53,6 +35,7 @@ interface EscrowTimelinePanelProps {
 }
 
 export function EscrowTimelinePanel({ adoptionId }: EscrowTimelinePanelProps) {
+  const { locale } = useLocale();
   const { data, isLoading, isError } = useEscrowTimeline(adoptionId);
 
   return (
@@ -94,7 +77,7 @@ export function EscrowTimelinePanel({ adoptionId }: EscrowTimelinePanelProps) {
             .map((event, index) => {
               const isLatest = index === 0;
               const Icon = getEventIcon(event.type);
-              const relative = formatRelativeTime(event.timestamp);
+              const relative = formatRelative(event.timestamp, locale);
               const txHash = event.stellarExplorerUrl
                 ? extractTxHash(event.stellarExplorerUrl)
                 : null;

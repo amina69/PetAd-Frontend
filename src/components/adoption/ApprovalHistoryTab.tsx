@@ -8,12 +8,15 @@ import { StatusBadge } from "../common/StatusBadge";
 import type { ApprovalDecision } from "../../types/adoption";
 import { queryKeys } from "../../lib/queryKeys";
 import { STALE_TIME } from "../../lib/staleTime";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../../lib/date";
 
 interface ApprovalHistoryTabProps {
   adoptionId: string;
 }
 
 export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabProps) {
+  const { locale } = useLocale();
   const { data: approvals, isLoading, isError } = useApiQuery<ApprovalDecision[]>(
     queryKeys.approvals.detail(adoptionId),
     () => adoptionService.getApprovals(adoptionId),
@@ -95,7 +98,7 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-50 text-xs text-gray-400">
             <div className="flex items-center gap-1">
               <Clock size={12} />
-              <span>{new Date(decision.timestamp).toLocaleString()}</span>
+              <span>{formatDateTime(decision.timestamp, locale)}</span>
             </div>
             {decision.txHash && (
               <div className="flex items-center gap-2">

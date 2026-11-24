@@ -27,6 +27,8 @@ import type {
 } from "../features/approval/types/approval.types";
 import { useDialogFocus } from "../hooks/useDialogFocus";
 import { useDisputes } from "../hooks/useDisputes";
+import { useLocale } from "../i18n";
+import { formatDate, formatDateTime } from "../lib/date";
 import type { Dispute } from "../types/dispute";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -131,23 +133,6 @@ function titleCase(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function formatDateTime(value: string): string {
-  return new Date(value).toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 function errorMessageOf(error: unknown): string {
   if (error instanceof Error && error.message) {
     return error.message;
@@ -237,6 +222,7 @@ function ApprovalModal({
   onSubmit,
   onClose,
 }: ApprovalModalProps) {
+  const { locale } = useLocale();
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -318,7 +304,7 @@ function ApprovalModal({
             <div>
               <dt className="text-[#667085]">Submitted</dt>
               <dd className="font-semibold text-[#0D162B]">
-                {request.submittedAt ? formatDate(request.submittedAt) : "—"}
+                {request.submittedAt ? formatDate(request.submittedAt, locale) : "—"}
                 {waiting !== null ? ` · waiting ${waiting}d` : ""}
               </dd>
             </div>
@@ -440,6 +426,7 @@ function ApprovalModal({
  * optimistically, so the widget reflects the decision without leaving the page.
  */
 export default function CaretakerDashboardPage() {
+  const { locale } = useLocale();
   const queryClient = useQueryClient();
   const [activeRequest, setActiveRequest] = useState<ApprovalItem | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -728,7 +715,7 @@ export default function CaretakerDashboardPage() {
                           {dispute.pet.name}
                         </p>
                         <p className="truncate text-xs text-[#667085]">
-                          {titleCase(dispute.reason)} · {formatDate(dispute.createdAt)}
+                          {titleCase(dispute.reason)} · {formatDate(dispute.createdAt, locale)}
                         </p>
                       </div>
                       <span className="flex shrink-0 items-center gap-2">
@@ -780,7 +767,7 @@ export default function CaretakerDashboardPage() {
                         </p>
                         <p className="truncate text-xs text-[#667085]">
                           with {arrangement.ownerName} · ends{" "}
-                          {formatDate(arrangement.endDate)}
+                          {formatDate(arrangement.endDate, locale)}
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
@@ -841,7 +828,12 @@ export default function CaretakerDashboardPage() {
                       </p>
                     </div>
                     <span className="shrink-0 text-right text-xs font-semibold text-[#0D162B]">
-                      {formatDateTime(arrangement.endDate)}
+                      {formatDateTime(arrangement.endDate, locale, undefined, {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </li>
                 ))}

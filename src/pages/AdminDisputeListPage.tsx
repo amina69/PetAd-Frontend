@@ -6,9 +6,12 @@ import { DisputeSLABadge } from "../components/dispute/DisputeSLABadge";
 import { EmptyState } from "../components/ui/emptyState";
 import { Skeleton } from "../components/ui/Skeleton";
 import type { DisputeStatus } from "../types/dispute";
+import { useLocale } from "../i18n";
+import { formatDate } from "../lib/date";
 
 export default function AdminDisputeListPage() {
   const navigate = useNavigate();
+  const { locale } = useLocale();
 
   // Filters State
   const [statusFilter, setStatusFilter] = useState<DisputeStatus | "all">("all");
@@ -182,11 +185,7 @@ export default function AdminDisputeListPage() {
                         {dispute.shelter.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(dispute.createdAt).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+                        {formatDate(dispute.createdAt, locale)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <DisputeStatusBadge status={dispute.status} />

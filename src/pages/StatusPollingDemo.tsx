@@ -4,6 +4,8 @@ import {
   STATUS_COLOR_CLASSES,
   type StatusDomain,
 } from "../lib/statusConfig";
+import { useLocale } from "../i18n";
+import { formatTime } from "../lib/date";
 
 /**
  * Renders a status pill using the shared status config, so the demo page can
@@ -29,6 +31,8 @@ function StatusPill({
 }
 
 export default function StatusPollingDemo() {
+  const { locale } = useLocale();
+
   // Test adoption polling
   const { data: adoptionData, statusChanged: adoptionStatusChanged, isLoading: adoptionLoading } =
     useRealTimeStatusPolling("adoption", "adoption-1", { intervalMs: 5000 });
@@ -84,7 +88,7 @@ export default function StatusPollingDemo() {
                 <div className="flex justify-between">
                   <span className="font-medium">Updated:</span>
                   <span className="text-gray-600">
-                    {new Date(adoptionData.updatedAt).toLocaleTimeString()}
+                    {formatTime(adoptionData.updatedAt, locale)}
                   </span>
                 </div>
                 {adoptionStatusChanged && (
@@ -138,7 +142,7 @@ export default function StatusPollingDemo() {
                 <div className="flex justify-between">
                   <span className="font-medium">Updated:</span>
                   <span className="text-gray-600">
-                    {new Date(custodyData.updatedAt).toLocaleTimeString()}
+                    {formatTime(custodyData.updatedAt, locale)}
                   </span>
                 </div>
                 {custodyStatusChanged && (

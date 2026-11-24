@@ -6,6 +6,8 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { useApiQuery } from "../hooks/useApiQuery";
 import { apiClient } from "../lib/api-client";
 import type { Dispute, DisputeListResponse, DisputeUser } from "../types/dispute";
+import { useLocale } from "../i18n";
+import { formatDate } from "../lib/date";
 
 type DisputeWithOpponent = Dispute & { opponent?: DisputeUser };
 
@@ -27,6 +29,7 @@ function resolveOpponentName(dispute: DisputeWithOpponent): string {
 
 export default function MyDisputesPage() {
   const navigate = useNavigate();
+  const { locale } = useLocale();
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [disputes, setDisputes] = useState<DisputeWithOpponent[]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
@@ -162,11 +165,7 @@ export default function MyDisputesPage() {
                           {resolveOpponentName(dispute)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(dispute.createdAt).toLocaleDateString(undefined, {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {formatDate(dispute.createdAt, locale)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
                           <DisputeStatusBadge status={dispute.status} />

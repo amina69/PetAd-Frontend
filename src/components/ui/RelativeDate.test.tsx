@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { RelativeDate } from './RelativeDate';
+import { formatDateTime } from '../../lib/date';
+
+const DEFAULT_LOCALE = 'en-GB';
 
 describe('RelativeDate', () => {
   beforeEach(() => {
@@ -38,7 +41,7 @@ describe('RelativeDate', () => {
     render(<RelativeDate date={testDate} />);
 
     await waitFor(() => {
-      const element = screen.getByTitle(testDate.toLocaleString());
+      const element = screen.getByTitle(formatDateTime(testDate, DEFAULT_LOCALE));
       expect(element).toBeInTheDocument();
     });
   });
@@ -99,9 +102,10 @@ describe('RelativeDate', () => {
     render(<RelativeDate date={testDate} />);
 
     await waitFor(() => {
-      const span = screen.getByTitle(testDate.toLocaleString());
+      const expectedTitle = formatDateTime(testDate, DEFAULT_LOCALE);
+      const span = screen.getByTitle(expectedTitle);
       expect(span).toBeInTheDocument();
-      expect(span).toHaveAttribute('title', testDate.toLocaleString());
+      expect(span).toHaveAttribute('title', expectedTitle);
     });
   });
 

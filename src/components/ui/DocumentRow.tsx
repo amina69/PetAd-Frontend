@@ -7,6 +7,8 @@ import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { DocumentExpiryBadge } from './DocumentExpiryBadge';
 import { DocumentReUploadFlow } from './DocumentReUploadFlow';
 import { documentService } from '../../api/documentService';
+import { useLocale } from '../../i18n';
+import { formatDate } from '../../lib/date';
 import { logger } from "../../lib/logger";
 
 interface DocumentRowProps {
@@ -40,6 +42,7 @@ export function DocumentRow({
   currentUserRole,
   onDelete,
 }: DocumentRowProps) {
+  const { locale } = useLocale();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<{
@@ -83,11 +86,7 @@ export function DocumentRow({
   const isRejected = verificationResult.verified === false;
   const canReUpload = (isExpired || isRejected) && canDelete;
 
-  const uploadedDate = new Date(document.createdAt).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  const uploadedDate = formatDate(document.createdAt, locale);
 
   function handleDeleteClick() {
     setConfirmingDelete(true);

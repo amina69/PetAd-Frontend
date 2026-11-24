@@ -7,16 +7,17 @@ import { useRoleGuard } from "../../hooks/useRoleGuard";
 import { DeferredNotificationCentreDropdown } from "../notifications";
 import { ThemeToggle } from "../theme-toggle";
 import { FreighterWalletButton } from "../wallet/FreighterWalletButton";
+import { useLocale, type TranslationKey } from "../../i18n";
 
 const baseNavLinks = [
-  { label: "Home", path: "/home", icon: House },
-  { label: "Interests", path: "/interests", icon: Eye },
-  { label: "Listings", path: "/listings", icon: List },
-  { label: "Messages", path: "/messages", icon: MessageCircle },
-];
+  { labelKey: "nav.home", path: "/home", icon: House },
+  { labelKey: "nav.interests", path: "/interests", icon: Eye },
+  { labelKey: "nav.listings", path: "/listings", icon: List },
+  { labelKey: "nav.messages", path: "/messages", icon: MessageCircle },
+] satisfies { labelKey: TranslationKey; path: string; icon: typeof House }[];
 
 type NavLink = {
-  label: string;
+  labelKey: TranslationKey;
   path: string;
   icon: typeof House;
   hasBadge?: boolean;
@@ -25,13 +26,14 @@ type NavLink = {
 export function Navbar() {
   const location = useLocation();
   const { canApprove, isAdmin } = useRoleGuard();
+  const { t } = useLocale();
 
   const navLinks: NavLink[] = [
     ...baseNavLinks,
     ...(isAdmin
       ? [
           {
-            label: "Applications",
+            labelKey: "nav.applications" as const,
             path: "/admin/applications",
             icon: ClipboardList,
           },
@@ -40,7 +42,7 @@ export function Navbar() {
     ...(canApprove
       ? [
           {
-            label: "Approvals",
+            labelKey: "nav.approvals" as const,
             path: isAdmin ? "/admin/approvals" : "/shelter/approvals",
             icon: ClipboardList,
             hasBadge: true,
@@ -79,7 +81,7 @@ export function Navbar() {
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               <span className="inline-flex items-center gap-2">
-                {link.label}
+                {t(link.labelKey)}
                 {link.hasBadge ? <PendingApprovalBadge /> : null}
               </span>
             </Link>

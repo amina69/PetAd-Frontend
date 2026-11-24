@@ -1,6 +1,8 @@
 import { Link2, AlertTriangle, CheckCircle, Clock, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { notificationRouter } from '../../lib/notificationRouter';
+import { useLocale } from '../../i18n';
+import { formatDateTime, formatRelative } from '../../lib/date';
 import type { Notification, NotificationType } from '../../types/notifications';
 
 
@@ -16,27 +18,14 @@ interface TimeDisplay {
   absolute: string | null;
 }
 
-function getTimeDisplay(timeStr: string): TimeDisplay {
+function getTimeDisplay(timeStr: string, locale: string): TimeDisplay {
   const date = new Date(timeStr);
 
   if (!isNaN(date.getTime())) {
-    const diffMs = Date.now() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60_000);
-    const diffHours = Math.floor(diffMs / 3_600_000);
-    const diffDays = Math.floor(diffMs / 86_400_000);
-
-    let relative: string;
-    if (diffMins < 1) {
-      relative = 'just now';
-    } else if (diffMins < 60) {
-      relative = `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    } else if (diffHours < 24) {
-      relative = `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-    } else {
-      relative = `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-    }
-
-    return { relative, absolute: date.toLocaleString() };
+    return {
+      relative: formatRelative(date, locale),
+      absolute: formatDateTime(date, locale),
+    };
   }
 
   return { relative: timeStr, absolute: null };
@@ -88,7 +77,8 @@ export function NotificationItem({
   onRead,
 }: NotificationItemProps) {
   const navigate = useNavigate();
-  const { relative, absolute } = getTimeDisplay(notification.time);
+  const { locale } = useLocale();
+  const { relative, absolute } = getTimeDisplay(notification.time, locale);
   const { icon, wrapperBg } = getIconConfig(notification.type);
 
   function handleActivate() {

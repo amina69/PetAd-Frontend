@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
+import { useLocale } from '../../i18n';
+import { formatDateTime, formatRelative } from '../../lib/date';
 
 interface RelativeDateProps {
   date: Date | string;
@@ -8,20 +9,23 @@ interface RelativeDateProps {
 /**
  * Displays a date as relative text (e.g., "2 hours ago") that updates every 60 seconds.
  * Shows the absolute date on hover via title attribute.
+ *
+ * Both labels are produced by the active locale's `Intl` rules, so switching
+ * language live also re-renders this component with the new wording.
  */
 export const RelativeDate = ({ date }: RelativeDateProps) => {
+  const { locale } = useLocale();
   const [relativeText, setRelativeText] = useState<string>('');
 
   // Convert string to Date if needed and keep a stable reference for hooks.
   const dateObj = useMemo(() => (typeof date === 'string' ? new Date(date) : date), [date]);
 
   // Format absolute date for title attribute (locale-aware)
-  const absoluteDate = dateObj.toLocaleString();
+  const absoluteDate = formatDateTime(dateObj, locale);
 
   useEffect(() => {
     const updateRelativeDate = () => {
-      const formatted = formatDistanceToNow(dateObj, { addSuffix: true });
-      setRelativeText(formatted);
+      setRelativeText(formatRelative(dateObj, locale));
     };
 
     // Initial update
@@ -32,7 +36,7 @@ export const RelativeDate = ({ date }: RelativeDateProps) => {
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
-  }, [dateObj]);
+  }, [dateObj, locale]);
 
   if (!relativeText) {
     return <span title={absoluteDate}>Loading...</span>;
