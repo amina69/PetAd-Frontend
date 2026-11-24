@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ResponsiveImage } from "../components/shared/ResponsiveImage";
+import { recordRecentlyViewedPet } from "../hooks/useRecentlyViewed";
 import dogImage from "../assets/dog.png";
 import dog1Image from "../assets/dog_1.png";
 import goldenRetriever from "../assets/golden_retriever.png";
@@ -121,7 +122,12 @@ const RelatedCard = ({ listing, onClick }: { listing: typeof relatedListings[0];
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function PetListingDetailsPage() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const pet = mockPet; 
+
+  useEffect(() => {
+    if (id) recordRecentlyViewedPet(id);
+  }, [id]);
 
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<"owner" | "description">("owner");
