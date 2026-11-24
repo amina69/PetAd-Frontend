@@ -1,9 +1,11 @@
 import { rmSync } from "node:fs";
 import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
+import { VitePWA } from "vite-plugin-pwa";
 
 // MSW is dev/test-only: main.tsx guards the worker import behind DEV && VITE_MSW ===
 // 'true' so the bundler tree-shakes src/mocks/** out of production. Keep MSW out of
@@ -37,6 +39,39 @@ export default defineConfig(({ mode }) => ({
     react(),
     tailwindcss(),
     mswPlugin(),
+    ...(loadEnv(mode, process.cwd(), "").VITE_MSW === "true"
+      ? []
+      : [
+          VitePWA({
+            strategies: "injectManifest",
+            srcDir: "src",
+            filename: "sw.ts",
+            injectRegister: false,
+            registerType: "prompt",
+            devOptions: { enabled: false },
+            injectManifest: {
+              globPatterns: ["**/*.{html,js,css,ico,png,svg,webp,woff2}"],
+              globIgnores: ["**/mockServiceWorker.js"],
+            },
+            manifest: {
+              name: "PetAd",
+              short_name: "PetAd",
+              description: "Find a loving home for every pet.",
+              theme_color: "#ffffff",
+              background_color: "#ffffff",
+              display: "standalone",
+              start_url: "/",
+              icons: [
+                {
+                  src: "/vite.svg",
+                  sizes: "any",
+                  type: "image/svg+xml",
+                  purpose: "any",
+                },
+              ],
+            },
+          }),
+        ]),
     ...(mode === "analyze"
       ? [
           visualizer({

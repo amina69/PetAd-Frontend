@@ -15,6 +15,10 @@ export interface ShowToastInput {
   title: string;
   message: string;
   duration?: number;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 interface ToastItem extends ShowToastInput {
@@ -97,7 +101,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     for (const toast of state.visible) {
-      if (timeoutIdsRef.current[toast.id]) {
+      if (toast.duration === 0 || timeoutIdsRef.current[toast.id]) {
         continue;
       }
 
@@ -161,6 +165,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-900">{toast.title}</p>
                 <p className="mt-1 text-sm text-gray-600">{toast.message}</p>
+                {toast.action && (
+                  <button
+                    type="button"
+                    onClick={toast.action.onClick}
+                    className="mt-2 text-sm font-semibold text-[#d4431f] underline underline-offset-2"
+                  >
+                    {toast.action.label}
+                  </button>
+                )}
               </div>
               <button
                 type="button"

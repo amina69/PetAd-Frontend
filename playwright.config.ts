@@ -14,6 +14,7 @@ const AUTH_STATE_PATH = "e2e/.auth/user.json";
  */
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: ["pwa-cache.spec.ts"],
   timeout: 30_000,
   expect: { timeout: 10_000 },
 

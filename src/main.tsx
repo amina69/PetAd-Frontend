@@ -6,6 +6,7 @@ import { queryClient } from './lib/query-client'
 import { ToastProvider } from './components/toast/ToastProvider'
 import { ThemeProvider } from './components/theme-provider'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
+import { PwaUpdatePrompt } from './components/pwa/PwaUpdatePrompt'
 import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
@@ -38,7 +39,7 @@ async function cleanupServiceWorkers() {
     // is stale in this build and must be removed, not kept.
     const isMswWorker = scriptUrl.endsWith('/mockServiceWorker.js')
 
-    if (isMswWorker || !import.meta.env.DEV) {
+    if (isMswWorker) {
       await registration.unregister()
       removedStaleWorker = true
     }
@@ -89,8 +90,7 @@ async function bootstrap() {
       })
     }
   } else {
-    // A stale development worker must still be removed, but it should not
-    // delay the first production paint.
+    // A stale MSW worker must not intercept production requests.
     void cleanupServiceWorkers()
   }
 
@@ -99,6 +99,7 @@ async function bootstrap() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
           <ToastProvider>
+            <PwaUpdatePrompt />
             {/* Navbar's NotificationCentreDropdown consumes this context. */}
             <NotificationSocketProvider>
               <BrowserRouter> {/* 2. Wrap your App */}
