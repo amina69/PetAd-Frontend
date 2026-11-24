@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+# A tag must never race another production release.
+concurrency:
+  group: release-production
+  cancel-in-progress: false
+
+jobs:
+  release-production:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      # The git SHA is the Sentry release id for both the uploaded source maps
+      # and the runtime SDK (src/lib/errorTracking.ts). Issue 779.
+      VITE_RELEASE: ${{ github.sha }}
+      VITE_APP_ENV: production
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel
+
+      - name: Build, upload source maps and release production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
+          VITE_ENABLE_ANALYTICS: ${{ vars.VITE_ENABLE_ANALYTICS }}
+          VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+        run: |
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN" \
+            --build-env "VITE_API_URL=$VITE_API_URL" \
+            --build-env "VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL" \
+            --build-env "VITE_ENABLE_ANALYTICS=$VITE_ENABLE_ANALYTICS" \
+            --build-env "VITE_SENTRY_DSN=$VITE_SENTRY_DSN" \
+            --build-env "VITE_RELEASE=$VITE_RELEASE" \
+            --build-env "VITE_APP_ENV=$VITE_APP_ENV"
+
+          # The Sentry Vite plugin uploads the hidden .map files under
+          # VITE_RELEASE during the build. Remove anything left behind (builds
+          # without Sentry credentials generate maps but cannot upload them) so
+          # source maps are never served from the deployed site.
+          map_files=$(find dist .vercel/output -type f -name '*.map' 2>/dev/null || true)
+          if [ -n "$map_files" ]; then
+            echo "$map_files"
+            # shellcheck disable=SC2086
+            rm -f $map_files
+          fi
+          remaining=$(find .vercel/output -type f -name '*.map' 2>/dev/null || true)
+          if [ -n "$remaining" ]; then
+            echo "::error::Source maps are still present in the deployable artifact:"
+            echo "$remaining"
+            exit 1
+          fi
+
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

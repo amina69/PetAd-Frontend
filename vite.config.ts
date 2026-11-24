@@ -3,7 +3,19 @@ import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
+
+// Source maps are uploaded to the error tracker during the CI release build and
+// then deleted, so the release id must match the one the app reports at runtime
+// (see src/lib/errorTracking.ts). Issue 779.
+const sentryRelease = process.env.VITE_RELEASE?.trim();
+const sentryOrg = process.env.SENTRY_ORG?.trim();
+const sentryProject = process.env.SENTRY_PROJECT?.trim();
+const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN?.trim();
+const sentryUploadEnabled = Boolean(
+  sentryAuthToken && sentryOrg && sentryProject && sentryRelease,
+);
 
 // MSW is dev/test-only: main.tsx guards the worker import behind DEV && VITE_MSW ===
 // 'true' so the bundler tree-shakes src/mocks/** out of production. Keep MSW out of
@@ -37,6 +49,24 @@ export default defineConfig(({ mode }) => ({
     react(),
     tailwindcss(),
     mswPlugin(),
+    // Hidden source maps are generated for every build; the plugin uploads them
+    // to Sentry under the git-SHA release and deletes them afterwards so the
+    // deployed artifact never contains .map files. Without CI credentials it is
+    // skipped, and the release workflow strips any remaining maps before deploy.
+    ...(sentryUploadEnabled
+      ? [
+          sentryVitePlugin({
+            org: sentryOrg,
+            project: sentryProject,
+            authToken: sentryAuthToken,
+            release: { name: sentryRelease },
+            sourcemaps: {
+              filesToDeleteAfterUpload: "./dist/**/*.map",
+            },
+            telemetry: false,
+          }),
+        ]
+      : []),
     ...(mode === "analyze"
       ? [
           visualizer({
@@ -50,6 +80,9 @@ export default defineConfig(({ mode }) => ({
       : []),
   ],
   build: {
+    // "hidden" emits .map files without sourceMappingURL comments. They are
+    // uploaded to the tracker in CI and removed from the deployed artifact.
+    sourcemap: "hidden",
     rollupOptions: {
       output: {
         manualChunks: {

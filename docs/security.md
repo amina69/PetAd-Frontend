@@ -5,9 +5,11 @@ currently `Content-Security-Policy-Report-Only`, so it reports violations
 without blocking the app while the production API and realtime origins are
 confirmed. The `.example.com` hosts in the policy are documentation
 placeholders: replace them with the exact API and WebSocket origins configured
-in the GitHub `staging` and `production` Environments before relying on CSP
-reports. Keep `connect-src` limited to the app origin and those required API
-and realtime origins. Do not use wildcards or broad `https:`/`wss:` sources.
+in the GitHub `staging` and `production` Environments before relying on CSP  reports. Keep `connect-src` limited to the app origin and those required API
+  and realtime origins. Do not use wildcards or broad `https:`/`wss:` sources.
+  The `https://o000000.ingest.sentry.io` entry is a placeholder for the error
+  tracker's ingest origin; replace it with the exact host from the deployment's
+  `VITE_SENTRY_DSN` before enforcing the policy.
 
 After exercising the authenticated, adoption, dispute, upload, and notification
 flows in staging, review browser console CSP reports. Update the policy for
