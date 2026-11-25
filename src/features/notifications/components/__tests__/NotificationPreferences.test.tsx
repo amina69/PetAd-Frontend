@@ -162,8 +162,9 @@ describe("NotificationPreferences", () => {
     server.use(http.get(PREFS_URL, () => HttpResponse.json({}, { status: 500 })));
     renderPreferences();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "couldn't load your notification preferences",
-    );
+    // The API client retries the GET before the error state renders.
+    expect(
+      await screen.findByRole("alert", {}, { timeout: 5000 }),
+    ).toHaveTextContent("couldn't load your notification preferences");
   });
 });

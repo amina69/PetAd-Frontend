@@ -33,23 +33,27 @@ const optionalUrl = z
 		}
 	});
 
+const urlOrAppPath = z
+	.string()
+	.optional()
+	.superRefine((value, ctx) => {
+		if (value === undefined || value === "" || value.startsWith("/")) return;
+		try {
+			new URL(value);
+		} catch {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "must be a valid URL or an app-relative path",
+			});
+		}
+	});
+
 const envSchema = z.object({
 	// Optional: the API client falls back to /api under MSW and localhost otherwise.
 	// When set it must be an absolute URL or an app-relative path.
-	VITE_API_URL: z
-		.string()
-		.optional()
-		.superRefine((value, ctx) => {
-			if (value === undefined || value === "" || value.startsWith("/")) return;
-			try {
-				new URL(value);
-			} catch {
-				ctx.addIssue({
-					code: z.ZodIssueCode.custom,
-					message: "must be a valid URL or an app-relative path",
-				});
-			}
-		}),
+	VITE_API_URL: urlOrAppPath,
+	// Optional public status page linked from the degraded-mode banner.
+	VITE_STATUS_PAGE_URL: urlOrAppPath,
 	VITE_MSW: booleanString,
 	VITE_ENABLE_ANALYTICS: booleanString,
 	VITE_APP_NAME: z.string().optional(),
@@ -74,6 +78,7 @@ export type AppEnv = z.infer<typeof envSchema>;
 function readEnv(source: Record<string, string | boolean | undefined>): AppEnv {
 	const parsed = envSchema.safeParse({
 		VITE_API_URL: source.VITE_API_URL,
+		VITE_STATUS_PAGE_URL: source.VITE_STATUS_PAGE_URL,
 		VITE_MSW: source.VITE_MSW,
 		VITE_ENABLE_ANALYTICS: source.VITE_ENABLE_ANALYTICS,
 		VITE_APP_NAME: source.VITE_APP_NAME,
@@ -100,4 +105,15 @@ export function loadEnv(
 	source: Record<string, string | boolean | undefined> = import.meta.env,
 ): AppEnv {
 	return readEnv(source);
+}
+
+/**
+ * Optional public status page shown in the degraded-mode banner. Returns
+ * `undefined` when unset so the banner renders without a dead link.
+ */
+export function getStatusPageUrl(): string | undefined {
+	const value = import.meta.env.VITE_STATUS_PAGE_URL;
+	if (typeof value !== "string") return undefined;
+	const trimmed = value.trim();
+	return trimmed.length > 0 ? trimmed : undefined;
 }

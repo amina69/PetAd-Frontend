@@ -155,7 +155,12 @@ describe("ApprovalListPage", () => {
 
     renderPage();
 
-    const errorState = await screen.findByTestId("approval-error");
+    // The API client retries the GET twice before surfacing the error.
+    const errorState = await screen.findByTestId(
+      "approval-error",
+      {},
+      { timeout: 5000 },
+    );
     expect(errorState).toBeInTheDocument();
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
     expect(screen.getByTestId("retry-button")).toBeInTheDocument();
@@ -169,7 +174,8 @@ describe("ApprovalListPage", () => {
       http.get("http://localhost:3000/api/approvals", () => {
         callCount++;
 
-        if (callCount === 1) {
+        // Initial attempt + the API client's two idempotent GET retries.
+        if (callCount <= 3) {
           return new HttpResponse(
             JSON.stringify({ message: "Server Error" }),
             { status: 500, headers: { "Content-Type": "application/json" } },
@@ -193,13 +199,17 @@ describe("ApprovalListPage", () => {
 
     renderPage();
 
-    await waitFor(() => expect(screen.getByTestId("retry-button")).toBeInTheDocument());
-    expect(callCount).toBe(1);
+    await waitFor(
+      () => expect(screen.getByTestId("retry-button")).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+    expect(callCount).toBe(3);
 
     const user = userEvent.setup();
     await user.click(screen.getByTestId("retry-button"));
 
-    await waitFor(() => expect(callCount).toBe(2));
+    // One click on a recovered backend issues exactly one new network call.
+    await waitFor(() => expect(callCount).toBe(4));
     expect(screen.getByText("Buddy")).toBeInTheDocument();
   });
 

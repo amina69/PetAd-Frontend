@@ -4,6 +4,7 @@ import {
 	ValidationApiError,
 	NotFoundError,
 	ForbiddenError,
+	TimeoutError,
 } from "../api-errors";
 
 describe("Api errors", () => {
@@ -35,6 +36,16 @@ describe("Api errors", () => {
 		expect(error).toBeInstanceOf(NotFoundError);
 		expect(error).toBeInstanceOf(ApiError);
 		expect(error.status).toBe(404);
+	});
+
+	it("exposes timeouts as a distinct TimeoutError with retry copy", () => {
+		const error = new TimeoutError();
+
+		expect(error).toBeInstanceOf(TimeoutError);
+		expect(error).toBeInstanceOf(ApiError);
+		expect(error.name).toBe("TimeoutError");
+		expect(error.code).toBe("TIMEOUT");
+		expect(error.message).toMatch(/please try again/i);
 	});
 
 	it("supports instanceof checks for ForbiddenError", () => {

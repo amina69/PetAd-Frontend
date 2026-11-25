@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
+import { ApiStatusBanner } from "./components/layout/ApiStatusBanner";
 import { GuestRoute } from "./components/auth/GuestRoute";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
@@ -74,6 +75,8 @@ function App() {
      * provider reads the correct current pathname when requireAuth() is called.
      */
     <AuthGateProvider>
+      {/* Global, non-blocking API degradation notice. */}
+      <ApiStatusBanner />
       <Suspense fallback={<RouteLoadingFallback />}>
         <Routes>
         {/* ── Root redirect ─────────────────────────────────────────────── */}

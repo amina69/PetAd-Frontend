@@ -219,7 +219,10 @@ describe("useApprovalList", () => {
       wrapper,
     });
 
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    // GET retries in the API client delay the surfaced error past 1s.
+    await waitFor(() => expect(result.current.isLoading).toBe(false), {
+      timeout: 5000,
+    });
 
     expect(result.current.isError).toBe(true);
     expect(result.current.error).not.toBeNull();

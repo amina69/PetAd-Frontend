@@ -1,6 +1,12 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import type { ApiClientConfig } from "../../types/auth";
 import { createApiClient, getApiClient } from "../api-client";
+import { NetworkError, TimeoutError } from "../api-errors";
+import {
+	FAILURE_THRESHOLD,
+	getApiHealthSnapshot,
+	resetApiHealth,
+} from "../apiHealth";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -47,6 +53,7 @@ describe("ApiClient", () => {
 	beforeEach(() => {
 		fetchMock = vi.fn();
 		vi.stubGlobal("fetch", fetchMock);
+		resetApiHealth();
 
 		// Reset localStorage / sessionStorage
 		localStorage.clear();
@@ -272,7 +279,8 @@ describe("ApiClient", () => {
 
 		it("throws a network error when fetch rejects with TypeError", async () => {
 			fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
-			const client = freshClient();
+			// Retry behaviour is covered separately; keep this focused on the error type.
+			const client = freshClient({ maxRetries: 0 });
 
 			await expect(client.get("/offline")).rejects.toMatchObject({
 				name: "NetworkError",
@@ -291,7 +299,29 @@ describe("ApiClient", () => {
 			await expect(
 				client.get("/slow", { signal: controller.signal }),
 			).rejects.toMatchObject({ name: "AbortError" });
-			expect(fetchMock.mock.calls[0][1].signal).toBe(controller.signal);
+			// The client composes the caller signal with its timeout signal, so
+			// fetch receives the internal controller rather than the raw signal.
+			expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+		});
+
+		it("aborts the underlying fetch when the caller's signal aborts", async () => {
+			const controller = new AbortController();
+			fetchMock.mockImplementationOnce(
+				(_url: string, init: RequestInit) =>
+					new Promise((_resolve, reject) => {
+						init.signal?.addEventListener("abort", () =>
+							reject(
+								Object.assign(new Error("aborted"), { name: "AbortError" }),
+							),
+						);
+					}),
+			);
+			const client = freshClient();
+
+			const pending = client.get("/slow", { signal: controller.signal });
+			controller.abort();
+
+			await expect(pending).rejects.toMatchObject({ name: "AbortError" });
 		});
 
 		it("re-throws existing ApiErrors without wrapping them", async () => {
@@ -372,6 +402,128 @@ describe("ApiClient", () => {
 			);
 
 			expect(onUnauthorized).toHaveBeenCalledOnce();
+		});
+	});
+
+	// ── Timeout ───────────────────────────────────────────────────────────────
+
+	describe("timeout policy", () => {
+		it("throws a distinct TimeoutError when the request exceeds the timeout", async () => {
+			fetchMock.mockImplementation(
+				(_url: string, init: RequestInit) =>
+					new Promise((_resolve, reject) => {
+						init.signal?.addEventListener("abort", () =>
+							reject(
+								Object.assign(new Error("aborted"), { name: "AbortError" }),
+							),
+						);
+					}),
+			);
+			const client = freshClient({ timeoutMs: 5, maxRetries: 0 });
+
+			await expect(client.get("/slow")).rejects.toBeInstanceOf(TimeoutError);
+			await expect(client.get("/slow")).rejects.toMatchObject({
+				name: "TimeoutError",
+				code: "TIMEOUT",
+				message: expect.stringMatching(/please try again/i),
+			});
+		});
+	});
+
+	// ── Retry policy ──────────────────────────────────────────────────────────
+
+	describe("retry policy", () => {
+		it("retries an idempotent GET up to the configured maximum", async () => {
+			fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+			const client = freshClient({ retryBaseDelayMs: 0 });
+
+			await expect(client.get("/offline")).rejects.toBeInstanceOf(NetworkError);
+			// Initial attempt + 2 retries.
+			expect(fetchMock).toHaveBeenCalledTimes(3);
+		});
+
+		it("stops retrying once a GET succeeds", async () => {
+			fetchMock
+				.mockResolvedValueOnce(makeResponse({ message: "boom" }, 503))
+				.mockResolvedValueOnce(makeResponse({ ok: true }));
+			const client = freshClient({ retryBaseDelayMs: 0 });
+
+			const result = await client.get<{ ok: boolean }>("/flaky");
+
+			expect(result).toEqual({ ok: true });
+			expect(fetchMock).toHaveBeenCalledTimes(2);
+		});
+
+		it("never auto-retries a POST, even on 5xx", async () => {
+			fetchMock.mockResolvedValue(makeResponse({ message: "boom" }, 503));
+			const client = freshClient({ retryBaseDelayMs: 0 });
+
+			await expect(client.post("/pets", { name: "Rex" })).rejects.toMatchObject({
+				status: 503,
+			});
+			expect(fetchMock).toHaveBeenCalledTimes(1);
+		});
+
+		it("never auto-retries PUT, PATCH or DELETE", async () => {
+			fetchMock.mockResolvedValue(makeResponse({ message: "boom" }, 500));
+			const client = freshClient({ retryBaseDelayMs: 0 });
+
+			await expect(client.put("/pets/1", {})).rejects.toMatchObject({ status: 500 });
+			await expect(client.patch("/pets/1", {})).rejects.toMatchObject({ status: 500 });
+			await expect(client.delete("/pets/1")).rejects.toMatchObject({ status: 500 });
+
+			expect(fetchMock).toHaveBeenCalledTimes(3);
+		});
+
+		it("does not retry 4xx responses", async () => {
+			fetchMock.mockResolvedValue(makeResponse({ message: "Not found" }, 404));
+			const client = freshClient({ retryBaseDelayMs: 0 });
+
+			await expect(client.get("/missing")).rejects.toMatchObject({ status: 404 });
+			expect(fetchMock).toHaveBeenCalledTimes(1);
+		});
+
+		it("supports an Idempotency-Key header on create actions", async () => {
+			fetchMock.mockResolvedValueOnce(makeResponse({ created: true }, 201));
+			const client = freshClient();
+
+			await client.post(
+				"/pets",
+				{ name: "Rex" },
+				{ idempotencyKey: "create-pet-123" },
+			);
+
+			const [, init] = fetchMock.mock.calls[0];
+			expect(init.headers["Idempotency-Key"]).toBe("create-pet-123");
+		});
+	});
+
+	// ── Health reporting ──────────────────────────────────────────────────────
+
+	describe("API health reporting", () => {
+		it("degrades after repeated failures and recovers on the next success", async () => {
+			fetchMock.mockResolvedValue(makeResponse({ message: "boom" }, 500));
+			const client = freshClient({ maxRetries: 0 });
+
+			for (let index = 0; index < FAILURE_THRESHOLD; index++) {
+				await expect(client.get("/down")).rejects.toMatchObject({ status: 500 });
+			}
+			expect(getApiHealthSnapshot().isDegraded).toBe(true);
+
+			fetchMock.mockResolvedValueOnce(makeResponse({ ok: true }));
+			await client.get("/up");
+			expect(getApiHealthSnapshot().isDegraded).toBe(false);
+		});
+
+		it("does not count 4xx responses as an outage", async () => {
+			fetchMock.mockResolvedValue(makeResponse({ message: "Not found" }, 404));
+			const client = freshClient({ maxRetries: 0 });
+
+			for (let index = 0; index < FAILURE_THRESHOLD; index++) {
+				await expect(client.get("/missing")).rejects.toMatchObject({ status: 404 });
+			}
+
+			expect(getApiHealthSnapshot().isDegraded).toBe(false);
 		});
 	});
 
