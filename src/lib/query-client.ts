@@ -29,15 +29,24 @@ function statusOf(error: unknown): number | undefined {
 	return undefined;
 }
 
-function isClientError(error: unknown): boolean {
+function isExpectedClientError(error: unknown): boolean {
 	const status = statusOf(error);
-	return status !== undefined && status >= 400 && status < 500;
+	return (
+		status !== undefined &&
+		status >= 400 &&
+		status < 500 &&
+		status !== 408 &&
+		status !== 425 &&
+		status !== 429
+	);
 }
 
-/** One retry for unexpected failures. 4xx responses are not retried. */
+/** Retry transient network/server failures once; don't retry permanent 4xxs. */
 export function retryQuery(failureCount: number, error: unknown): boolean {
-	if (isClientError(error)) return false;
-	return failureCount < 1;
+	if (failureCount >= 1) return false;
+	const status = statusOf(error);
+	if (status === undefined) return true;
+	return status === 408 || status === 425 || status === 429 || status >= 500;
 }
 
 function logApiError(error: unknown): void {
@@ -47,7 +56,7 @@ function logApiError(error: unknown): void {
 }
 
 function showToastForUnexpectedErrors(error: unknown): void {
-	if (isClientError(error)) return;
+	if (isExpectedClientError(error)) return;
 	const message =
 		error instanceof Error && error.message
 			? error.message

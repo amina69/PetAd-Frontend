@@ -10,6 +10,11 @@ import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
 import { loadEnv } from './lib/env'
+import { FeatureFlagProvider } from './components/FeatureFlagProvider'
+import { useFlag } from './hooks/useFlag'
+import './i18n'
+import { MaintenanceRedirect } from './components/MaintenanceRedirect'
+import { NetworkStatusBanner } from './components/NetworkStatusBanner'
 
 loadEnv()
 
@@ -97,18 +102,30 @@ async function bootstrap() {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
-          <ToastProvider>
-            {/* Navbar's NotificationCentreDropdown consumes this context. */}
-            <NotificationSocketProvider>
-              <BrowserRouter> {/* 2. Wrap your App */}
-                <App />
-              </BrowserRouter>
-            </NotificationSocketProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <FeatureFlagProvider>
+          <Application />
+        </FeatureFlagProvider>
       </QueryClientProvider>
     </StrictMode>,
+  )
+}
+
+function Application() {
+  const pushNotificationsEnabled = useFlag("pushNotifications")
+
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
+      <ToastProvider>
+        {/* Navbar's NotificationCentreDropdown consumes this context. */}
+        <NotificationSocketProvider enabled={pushNotificationsEnabled}>
+          <BrowserRouter>
+            <NetworkStatusBanner />
+            <MaintenanceRedirect />
+            <App />
+          </BrowserRouter>
+        </NotificationSocketProvider>
+      </ToastProvider>
+    </ThemeProvider>
   )
 }
 

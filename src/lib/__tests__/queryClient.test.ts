@@ -31,7 +31,10 @@ describe("queryClient", () => {
 	it("does not retry 4xx errors and retries other failures once", () => {
 		expect(retryQuery(0, new ApiError("nope", { status: 404 }))).toBe(false);
 		expect(retryQuery(0, new ApiError("bad", { status: 400 }))).toBe(false);
+		expect(retryQuery(0, new ApiError("timed out", { status: 408 }))).toBe(true);
+		expect(retryQuery(0, new ApiError("rate limited", { status: 429 }))).toBe(true);
 		expect(retryQuery(0, new ApiError("down", { status: 500 }))).toBe(true);
+		expect(retryQuery(0, new ApiError("unavailable", { status: 503 }))).toBe(true);
 		expect(retryQuery(1, new ApiError("down", { status: 500 }))).toBe(false);
 	});
 });

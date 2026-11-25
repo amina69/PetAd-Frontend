@@ -9,6 +9,7 @@ import { custodyHandlers } from "./custody";
 import { authHandlers } from "./auth";
 import { listingsHandlers } from "./listings";
 import { messageHandlers } from "./messages";
+import { flagHandlers } from "./flags";
 
 /**
  * All MSW request handlers, combined from every domain module.
@@ -26,4 +27,5 @@ export const handlers = [
 	...custodyHandlers,
 	...listingsHandlers,
 	...messageHandlers,
+	...flagHandlers,
 ];

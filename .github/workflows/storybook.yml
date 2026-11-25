@@ -1,0 +1,42 @@
+name: Storybook Preview
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --maxsockets 1 --retry 3
+
+      - name: Build Storybook
+        run: npm run build:storybook
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Storybook smoke and accessibility tests
+        run: npm run test:storybook
+
+      - name: Upload Storybook preview
+        id: preview
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-preview
+          path: storybook-static
+          retention-days: 7

@@ -65,6 +65,11 @@ describe("analytics", () => {
       const body = JSON.parse(sendBeacon.mock.calls[0][1] as string);
       expect(body.message).not.toContain("jane@example.com");
       expect(body.message).not.toContain("abc.def.ghi");
+      expect(body.context.flags).toEqual({
+        darkMode: false,
+        pushNotifications: false,
+        messaging: false,
+      });
     });
   });
 
