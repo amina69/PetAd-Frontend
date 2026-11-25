@@ -101,7 +101,6 @@ export function Popover({
   const [layout, setLayout] = useState<PopoverLayout | null>(null);
   const wrapperRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const triggerElementRef = useRef<HTMLElement | null>(null);
 
   const setOpen = (nextOpen: boolean) => {
     if (open === undefined) {
@@ -111,12 +110,12 @@ export function Popover({
     onOpenChange?.(nextOpen);
   };
 
+  // The trigger is the wrapper's first focusable child. Looking it up on
+  // demand keeps the cloned trigger free of ref bookkeeping during render.
   const focusTrigger = () => {
-    const target =
-      triggerElementRef.current ??
-      wrapperRef.current?.querySelector<HTMLElement>(
-        "button, [href], input, select, textarea, [tabindex]",
-      );
+    const target = wrapperRef.current?.querySelector<HTMLElement>(
+      "button, [href], input, select, textarea, [tabindex]",
+    );
 
     target?.focus();
   };
@@ -255,7 +254,6 @@ export function Popover({
         "aria-controls": isOpen ? panelId : undefined,
         "aria-haspopup": hasPopup === true ? "true" : hasPopup,
         onClick: (event: ReactMouseEvent<HTMLElement>) => {
-          triggerElementRef.current = event.currentTarget;
           childOnClick?.(event);
 
           if (!event.defaultPrevented) {

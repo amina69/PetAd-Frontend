@@ -127,6 +127,7 @@ export function DialogBase({
 
     previouslyFocused.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const explicitReturnFocus = returnFocusRef?.current ?? null;
     registerLayer(layerId);
     lockBodyScroll();
 
@@ -141,7 +142,7 @@ export function DialogBase({
       unregisterLayer(layerId);
       unlockBodyScroll();
 
-      const target = returnFocusRef?.current ?? previouslyFocused.current;
+      const target = explicitReturnFocus ?? previouslyFocused.current;
       previouslyFocused.current = null;
       target?.focus();
     };

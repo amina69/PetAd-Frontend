@@ -83,7 +83,6 @@ export function Menu({
   const [layout, setLayout] = useState<MenuLayout | null>(null);
   const wrapperRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
   const searchBuffer = useRef("");
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -96,12 +95,12 @@ export function Menu({
     onOpenChange?.(nextOpen);
   };
 
+  // The trigger is the wrapper's first focusable child. Looking it up on
+  // demand keeps the cloned trigger free of ref bookkeeping during render.
   const focusTrigger = () => {
-    const target =
-      triggerRef.current ??
-      wrapperRef.current?.querySelector<HTMLElement>(
-        "button, [href], input, select, textarea, [tabindex]",
-      );
+    const target = wrapperRef.current?.querySelector<HTMLElement>(
+      "button, [href], input, select, textarea, [tabindex]",
+    );
 
     target?.focus();
   };
@@ -302,7 +301,6 @@ export function Menu({
         "aria-expanded": isOpen,
         "aria-controls": isOpen ? menuId : undefined,
         onClick: (event: ReactMouseEvent<HTMLElement>) => {
-          triggerRef.current = event.currentTarget;
           childOnClick?.(event);
 
           if (!event.defaultPrevented) {
