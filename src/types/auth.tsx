@@ -8,6 +8,12 @@ export interface ApiClientConfig {
   baseURL: string;
   headers?: Record<string, string>;
   onUnauthorized?: () => void;
+  /** Per-request timeout in milliseconds. Defaults to 15_000; `0` disables it. */
+  timeoutMs?: number;
+  /** Automatic retries for idempotent requests (GET/HEAD). Defaults to 2. */
+  maxRetries?: number;
+  /** Base delay for the jittered retry backoff in milliseconds. Defaults to 300. */
+  retryBaseDelayMs?: number;
 }
 // Define the specific roles allowed in the app
 export type UserRole = 'ADMIN' | 'SHELTER' | 'USER';

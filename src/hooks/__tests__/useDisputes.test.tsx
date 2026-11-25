@@ -166,9 +166,14 @@ describe("useDisputes", () => {
       wrapper: createWrapper(),
     });
 
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
+    // The API client retries idempotent GETs before surfacing the failure,
+    // so allow more than the default 1s waitFor budget.
+    await waitFor(
+      () => {
+        expect(result.current.isError).toBe(true);
+      },
+      { timeout: 5000 },
+    );
   });
 
   it("exposes isLoadingMore from isFetchingNextPage", async () => {

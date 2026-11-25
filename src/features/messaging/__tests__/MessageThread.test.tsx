@@ -113,7 +113,10 @@ describe("MessageThread — layout & rendering", () => {
       const user = userEvent.setup();
       seed([msg({ attachments: [pdf] })]);
       await user.click(screen.getByRole("button", { name: "Download vaccines.pdf" }));
-      expect(await screen.findByRole("alert")).toHaveTextContent("Couldn't get the download link");
+      // The API client retries the GET before surfacing the failure.
+      expect(
+        await screen.findByRole("alert", {}, { timeout: 5000 }),
+      ).toHaveTextContent("Couldn't get the download link");
     });
   });
 

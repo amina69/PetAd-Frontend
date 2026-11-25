@@ -10,6 +10,22 @@ describe("loadEnv", () => {
 		expect(loadEnv({ VITE_API_URL: "/api" }).VITE_API_URL).toBe("/api");
 	});
 
+	it("accepts an absolute or app-relative status page URL", () => {
+		expect(
+			loadEnv({ VITE_STATUS_PAGE_URL: "https://status.example.com" })
+				.VITE_STATUS_PAGE_URL,
+		).toBe("https://status.example.com");
+		expect(loadEnv({ VITE_STATUS_PAGE_URL: "/status" }).VITE_STATUS_PAGE_URL).toBe(
+			"/status",
+		);
+	});
+
+	it("rejects an invalid status page URL", () => {
+		expect(() =>
+			loadEnv({ VITE_STATUS_PAGE_URL: "status-page" }),
+		).toThrow(/VITE_STATUS_PAGE_URL/);
+	});
+
 	it("names each invalid variable", () => {
 		expect(() =>
 			loadEnv({

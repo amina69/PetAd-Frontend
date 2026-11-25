@@ -53,6 +53,22 @@ export class NetworkError extends ApiError {
 	}
 }
 
+/**
+ * A request that exceeded the client-side timeout.
+ *
+ * Kept distinct from a generic `ApiError` so callers (and the global error
+ * toast) can offer retry copy instead of "something went wrong".
+ */
+export class TimeoutError extends ApiError {
+	constructor(
+		message = "The server took too long to respond. Please try again.",
+	) {
+		super(message, { code: "TIMEOUT" });
+		this.name = "TimeoutError";
+		Object.setPrototypeOf(this, new.target.prototype);
+	}
+}
+
 export class NotFoundError extends ApiError {
 	constructor(
 		message: string,
