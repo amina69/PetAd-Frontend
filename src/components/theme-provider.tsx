@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { useFlag } from "../hooks/useFlag"
 
 type Theme = "dark" | "light" | "system"
 
@@ -26,6 +27,7 @@ export function ThemeProvider({
   storageKey = "petad-ui-theme",
   ...props
 }: ThemeProviderProps) {
+  const darkModeEnabled = useFlag("darkMode")
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
@@ -35,7 +37,9 @@ export function ThemeProvider({
 
     root.classList.remove("light", "dark")
 
-    if (theme === "system") {
+    if (!darkModeEnabled) {
+      root.classList.add("light")
+    } else if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
@@ -46,7 +50,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme)
-  }, [theme])
+  }, [darkModeEnabled, theme])
 
   const value = {
     theme,

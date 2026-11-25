@@ -8,6 +8,8 @@ import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
 import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
 import ListingsPage from "./pages/ListingsPage";
+import { Flag } from "./components/Flag";
+import MaintenancePage from "./pages/MaintenancePage";
 
 const FavouritePage = lazy(() => import("./pages/FavouritePage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -76,6 +78,7 @@ function App() {
     <AuthGateProvider>
       <Suspense fallback={<RouteLoadingFallback />}>
         <Routes>
+        <Route path="/maintenance" element={<MaintenancePage />} />
         {/* ── Root redirect ─────────────────────────────────────────────── */}
         <Route path="/" element={<Navigate to="/home" replace />} />
 
@@ -109,8 +112,22 @@ function App() {
             <Route path="/favourites" element={<FavouritePage />} />
             <Route path="/interests" element={<InterestPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/messages/:conversationId" element={<MessagesPage />} />
+            <Route
+              path="/messages"
+              element={
+                <Flag name="messaging" fallback={<Navigate to="/home" replace />}>
+                  <MessagesPage />
+                </Flag>
+              }
+            />
+            <Route
+              path="/messages/:conversationId"
+              element={
+                <Flag name="messaging" fallback={<Navigate to="/home" replace />}>
+                  <MessagesPage />
+                </Flag>
+              }
+            />
             <Route
               path="/notification-preferences"
               element={<NotificationPreferencesPage />}

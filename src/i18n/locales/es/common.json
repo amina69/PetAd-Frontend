@@ -1,0 +1,9 @@
+{
+  "language": "Idioma",
+  "navigation": {
+    "home": "Inicio",
+    "interests": "Intereses",
+    "listings": "Anuncios",
+    "messages": "Mensajes"
+  }
+}

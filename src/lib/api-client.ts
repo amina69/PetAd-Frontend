@@ -3,11 +3,16 @@ import { ApiError, NetworkError, ValidationApiError } from "./api-errors";
 import { logger } from "./logger";
 import { queryClient } from "./query-client";
 import { markSessionUnauthenticated, redirectToLogin } from "./session";
+import { recordApiFailure, recordApiSuccess } from "./resilience";
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
+
 class ApiClient {
 	private baseURL: string;
 	private defaultHeaders: Record<string, string>;
 	private onUnauthorized?: () => void;
 	private unauthorizedHandled = false;
+	private requestTimeoutMs: number;
 
 	constructor(config: ApiClientConfig) {
 		this.baseURL = config.baseURL;
@@ -16,6 +21,10 @@ class ApiClient {
 			...config.headers,
 		};
 		this.onUnauthorized = config.onUnauthorized;
+		this.requestTimeoutMs = Math.max(
+			1,
+			config.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
+		);
 	}
 
 	private getToken(): string | null {
@@ -128,6 +137,20 @@ if (response.status === 422) {
 	): Promise<T> {
 		const url = `${this.baseURL}${endpoint}`;
 		const headers = this.getHeaders() as Record<string, string>;
+		const controller = new AbortController();
+		let timedOut = false;
+		const forwardAbort = () => controller.abort();
+
+		if (options.signal?.aborted) {
+			controller.abort();
+		} else {
+			options.signal?.addEventListener("abort", forwardAbort, { once: true });
+		}
+
+		const timeoutId = setTimeout(() => {
+			timedOut = true;
+			controller.abort();
+		}, this.requestTimeoutMs);
 
 		// Multipart bodies need the browser to set Content-Type (with the boundary).
 		if (typeof FormData !== "undefined" && options.body instanceof FormData) {
@@ -135,27 +158,52 @@ if (response.status === 422) {
 		}
 
 		try {
+			const method = (options.method ?? "GET").toUpperCase();
+			if (
+				!["GET", "HEAD", "OPTIONS"].includes(method) &&
+				typeof navigator !== "undefined" &&
+				navigator.onLine === false
+			) {
+				recordApiFailure();
+				throw new NetworkError();
+			}
+
 			const response = await fetch(url, {
 				...options,
-				signal: options.signal,
+				signal: controller.signal,
 				headers: {
 					...headers,
 					...options.headers,
 				},
 			});
 
-			return this.handleResponse<T>(response);
-		} catch (error) {
-			if (error instanceof Error && error.name === "AbortError") {
-				throw error;
+			if (response.status >= 500) {
+				recordApiFailure();
+				if (
+					response.status === 503 &&
+					endpoint !== "/flags" &&
+					!endpoint.startsWith("/flags?") &&
+					typeof window !== "undefined"
+				) {
+					window.dispatchEvent(new Event("petad:maintenance"));
+				}
+			} else if (response.ok) {
+				recordApiSuccess();
 			}
 
-			const offline =
-				(typeof navigator !== "undefined" && navigator.onLine === false) ||
-				(error instanceof TypeError && error.message === "Failed to fetch");
+			return this.handleResponse<T>(response);
+		} catch (error) {
+			if (timedOut) {
+				const timeoutError = new ApiError(
+					"The request timed out. Please try again.",
+					{ status: 408, code: "TIMEOUT" },
+				);
+				recordApiFailure();
+				throw timeoutError;
+			}
 
-			if (offline) {
-				throw new NetworkError();
+			if (error instanceof Error && error.name === "AbortError") {
+				throw error;
 			}
 
 			if (
@@ -166,10 +214,23 @@ if (response.status === 422) {
 				throw error;
 			}
 
+			const offline =
+				(typeof navigator !== "undefined" && navigator.onLine === false) ||
+				(error instanceof TypeError && error.message === "Failed to fetch");
+
+			if (offline) {
+				const networkError = new NetworkError();
+				recordApiFailure();
+				throw networkError;
+			}
+
 			// Wrap unknown errors
 			throw new ApiError(
 				error instanceof Error ? error.message : "Unknown error occurred",
 			);
+		} finally {
+			clearTimeout(timeoutId);
+			options.signal?.removeEventListener("abort", forwardAbort);
 		}
 	}
 

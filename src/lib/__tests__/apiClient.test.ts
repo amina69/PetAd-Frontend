@@ -254,6 +254,24 @@ describe("ApiClient", () => {
 			});
 		});
 
+		it("requests maintenance navigation for 503s but not for feature-flag failures", async () => {
+			const dispatchEvent = vi.spyOn(window, "dispatchEvent");
+			const client = freshClient();
+			fetchMock
+				.mockResolvedValueOnce(makeResponse({}, 503))
+				.mockResolvedValueOnce(makeResponse({}, 503));
+
+			await expect(client.get("/listings")).rejects.toMatchObject({ status: 503 });
+			expect(dispatchEvent).toHaveBeenCalledWith(
+				expect.objectContaining({ type: "petad:maintenance" }),
+			);
+
+			dispatchEvent.mockClear();
+			await expect(client.get("/flags")).rejects.toMatchObject({ status: 503 });
+			expect(dispatchEvent).not.toHaveBeenCalled();
+			dispatchEvent.mockRestore();
+		});
+
 		it("falls back to a generic message when the 4xx body is not JSON", async () => {
 			fetchMock.mockResolvedValueOnce(
 				new Response("Bad Request", {
@@ -291,7 +309,38 @@ describe("ApiClient", () => {
 			await expect(
 				client.get("/slow", { signal: controller.signal }),
 			).rejects.toMatchObject({ name: "AbortError" });
-			expect(fetchMock.mock.calls[0][1].signal).toBe(controller.signal);
+			expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+			expect(fetchMock.mock.calls[0][1].signal).not.toBe(controller.signal);
+		});
+
+		it("blocks mutations while offline without sending the request", async () => {
+			const offline = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+			const client = freshClient();
+
+			await expect(client.post("/mutations", { value: true })).rejects.toMatchObject({
+				name: "NetworkError",
+			});
+			expect(fetchMock).not.toHaveBeenCalled();
+			offline.mockRestore();
+		});
+
+		it("converts a request timeout into a helpful API error", async () => {
+			fetchMock.mockImplementation(
+				(_url: string, options: RequestInit) =>
+					new Promise((_resolve, reject) => {
+						options.signal?.addEventListener("abort", () =>
+							reject(Object.assign(new Error("aborted"), { name: "AbortError" })),
+						);
+					}),
+			);
+			const client = freshClient({ requestTimeoutMs: 5 });
+
+			await expect(client.get("/slow")).rejects.toMatchObject({
+				name: "ApiError",
+				status: 408,
+				code: "TIMEOUT",
+				message: "The request timed out. Please try again.",
+			});
 		});
 
 		it("re-throws existing ApiErrors without wrapping them", async () => {

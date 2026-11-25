@@ -7,6 +7,10 @@ import { useRoleGuard } from "../../hooks/useRoleGuard";
 import { DeferredNotificationCentreDropdown } from "../notifications";
 import { ThemeToggle } from "../theme-toggle";
 import { FreighterWalletButton } from "../wallet/FreighterWalletButton";
+import { Flag } from "../Flag";
+import { useFlag } from "../../hooks/useFlag";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 const baseNavLinks = [
   { label: "Home", path: "/home", icon: House },
@@ -25,9 +29,21 @@ type NavLink = {
 export function Navbar() {
   const location = useLocation();
   const { canApprove, isAdmin } = useRoleGuard();
+  const messagingEnabled = useFlag("messaging");
+  const { t } = useTranslation();
+
+  function getNavLabel(link: NavLink): string {
+    if (link.path === "/home") return t("navigation.home");
+    if (link.path === "/interests") return t("navigation.interests");
+    if (link.path === "/listings") return t("navigation.listings");
+    if (link.path === "/messages") return t("navigation.messages");
+    return link.label;
+  }
 
   const navLinks: NavLink[] = [
-    ...baseNavLinks,
+    ...baseNavLinks.filter(
+      (link) => link.path !== "/messages" || messagingEnabled,
+    ),
     ...(isAdmin
       ? [
           {
@@ -79,7 +95,7 @@ export function Navbar() {
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               <span className="inline-flex items-center gap-2">
-                {link.label}
+                {getNavLabel(link)}
                 {link.hasBadge ? <PendingApprovalBadge /> : null}
               </span>
             </Link>
@@ -88,6 +104,20 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
+        <label className="sr-only" htmlFor="language-select">
+          {t("language")}
+        </label>
+        <select
+          id="language-select"
+          aria-label={t("language")}
+          value={i18n.resolvedLanguage ?? "en"}
+          onChange={(event) => void i18n.changeLanguage(event.target.value)}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-sm text-gray-700"
+        >
+          <option value="en">English</option>
+          <option value="es">Español</option>
+        </select>
+
         <Link
           to="/favourites"
           className="relative p-2.5 bg-gray-50 dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -98,7 +128,9 @@ export function Navbar() {
           </span>
         </Link>
 
-        <ThemeToggle />
+        <Flag name="darkMode">
+          <ThemeToggle />
+        </Flag>
 
         <FreighterWalletButton />
 

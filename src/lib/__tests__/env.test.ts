@@ -32,4 +32,24 @@ describe("loadEnv", () => {
 			}).VITE_API_URL,
 		).toBe("http://localhost:3000/api");
 	});
+
+	it("accepts optional feature flag defaults", () => {
+		expect(
+			loadEnv({
+				VITE_FLAG_DARK_MODE: "true",
+				VITE_FLAG_PUSH_NOTIFICATIONS: "false",
+				VITE_FLAG_MESSAGING: "true",
+			}),
+		).toMatchObject({
+			VITE_FLAG_DARK_MODE: "true",
+			VITE_FLAG_PUSH_NOTIFICATIONS: "false",
+			VITE_FLAG_MESSAGING: "true",
+		});
+	});
+
+	it("rejects invalid feature flag defaults", () => {
+		expect(() => loadEnv({ VITE_FLAG_DARK_MODE: "yes" })).toThrow(
+			/VITE_FLAG_DARK_MODE/,
+		);
+	});
 });

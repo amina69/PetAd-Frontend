@@ -52,6 +52,9 @@ const envSchema = z.object({
 		}),
 	VITE_MSW: booleanString,
 	VITE_ENABLE_ANALYTICS: booleanString,
+	VITE_FLAG_DARK_MODE: booleanString,
+	VITE_FLAG_PUSH_NOTIFICATIONS: booleanString,
+	VITE_FLAG_MESSAGING: booleanString,
 	VITE_APP_NAME: z.string().optional(),
 	VITE_STELLAR_NETWORK: z
 		.string()
@@ -76,6 +79,9 @@ function readEnv(source: Record<string, string | boolean | undefined>): AppEnv {
 		VITE_API_URL: source.VITE_API_URL,
 		VITE_MSW: source.VITE_MSW,
 		VITE_ENABLE_ANALYTICS: source.VITE_ENABLE_ANALYTICS,
+		VITE_FLAG_DARK_MODE: source.VITE_FLAG_DARK_MODE,
+		VITE_FLAG_PUSH_NOTIFICATIONS: source.VITE_FLAG_PUSH_NOTIFICATIONS,
+		VITE_FLAG_MESSAGING: source.VITE_FLAG_MESSAGING,
 		VITE_APP_NAME: source.VITE_APP_NAME,
 		VITE_STELLAR_NETWORK: source.VITE_STELLAR_NETWORK,
 		VITE_STELLAR_PUBLIC_KEY: source.VITE_STELLAR_PUBLIC_KEY,

@@ -8,6 +8,7 @@ export interface ApiClientConfig {
   baseURL: string;
   headers?: Record<string, string>;
   onUnauthorized?: () => void;
+  requestTimeoutMs?: number;
 }
 // Define the specific roles allowed in the app
 export type UserRole = 'ADMIN' | 'SHELTER' | 'USER';

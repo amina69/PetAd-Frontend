@@ -1,0 +1,9 @@
+{
+  "language": "Language",
+  "navigation": {
+    "home": "Home",
+    "interests": "Interests",
+    "listings": "Listings",
+    "messages": "Messages"
+  }
+}

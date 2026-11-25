@@ -1,5 +1,6 @@
 import { logger } from "./logger";
 import { scrubString, scrubValue } from "./scrub";
+import { getFeatureFlags } from "./flags";
 
 /**
  * Privacy-gated analytics.
@@ -119,7 +120,10 @@ export function reportError(error: unknown): void {
     name: err.name,
     message: scrubString(err.message),
     stack: err.stack ? scrubString(err.stack) : undefined,
-    context: scrubValue({ route: window.location.pathname }),
+    context: scrubValue({
+      route: window.location.pathname,
+      flags: getFeatureFlags(),
+    }),
   });
 }
 
