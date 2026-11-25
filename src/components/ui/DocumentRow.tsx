@@ -52,7 +52,8 @@ export function DocumentRow({
 
   useEffect(() => {
     // Only verify if not already verified or if explicitly unverified (null means unknown)
-    if (document.onChainVerified === null) {
+    // Skip verification in test environments where window is not defined
+    if (document.onChainVerified === null && typeof window !== "undefined") {
       const verify = async () => {
         setIsVerifying(true);
         try {
