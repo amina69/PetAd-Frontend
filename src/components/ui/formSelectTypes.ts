@@ -5,6 +5,7 @@ export interface FormSelectProps {
     options: { value: string; label: string }[];
     placeholder?: string;
     className?: string;
+    disabled?: boolean;
     value?: string;
     onChange?: (e: { target: { value: string } }) => void;
 }

@@ -31,7 +31,7 @@ export function FormInput({
       {error && (
         <p
           id={`${id}-error`}
-          className="text-xs text-red-500 flex items-center gap-1"
+          className="text-xs text-red-700 flex items-center gap-1"
           role="alert"
         >
           <svg

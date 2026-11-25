@@ -333,6 +333,8 @@ Remember to run `pnpm test` — `src/test/setup.ts` boots the same handler array
 | `pnpm run lint` | ESLint | none |
 | `pnpm run build` | `tsc -b` then `vite build` | none |
 | `pnpm e2e` | Playwright — **always boots its own server with `VITE_MSW=true`** | none |
+| `npm run storybook` | Storybook on port 6006 with primitive stories and a11y checks | none |
+| `npm run test:pwa` | Production build and authenticated-response cache check | none |
 
 Notes that save time later:
 

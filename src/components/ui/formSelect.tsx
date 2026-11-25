@@ -9,6 +9,7 @@ export function FormSelect({
   options,
   placeholder = "Select",
   className = "",
+  disabled = false,
   value,
   onChange,
 }: FormSelectProps) {
@@ -55,11 +56,14 @@ export function FormSelect({
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full flex justify-between items-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-[14px] outline-none transition-all text-start
             ${isOpen ? "border-[#0D162B] ring-1 ring-[#0D162B]" : ""}
-            ${!hasValue ? "text-gray-400" : "text-gray-900"}
+            ${!hasValue ? "text-gray-600" : "text-gray-900"}
+            ${disabled ? "cursor-not-allowed opacity-60" : ""}
             ${error ? "border-red-400 bg-red-50/10! focus:border-red-400 focus:ring-red-400" : ""}
             ${className}`}
+          disabled={disabled}
           aria-invalid={!!error}
           aria-expanded={isOpen}
+          aria-describedby={error ? `${id}-error` : undefined}
         >
           <span className="truncate">
             {hasValue ? selectedOption?.label : placeholder}
@@ -108,7 +112,7 @@ export function FormSelect({
       </div>
 
       {error && (
-        <p id={`${id}-error`} className="text-xs text-red-500 mt-0.5">
+        <p id={`${id}-error`} className="text-xs text-red-700 mt-0.5" role="alert">
           {error}
         </p>
       )}

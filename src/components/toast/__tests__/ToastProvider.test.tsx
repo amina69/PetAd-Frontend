@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ToastProvider } from "../ToastProvider";
 import { useToast } from "../useToast";
 
+const refreshAction = vi.fn();
+
 function ToastTrigger() {
   const { showToast } = useToast();
 
@@ -43,6 +45,19 @@ function ToastTrigger() {
         }}
       >
         Add four
+      </button>
+      <button
+        onClick={() =>
+          showToast({
+            type: "info",
+            title: "New version available",
+            message: "Refresh to load the latest version.",
+            duration: 0,
+            action: { label: "Refresh", onClick: refreshAction },
+          })
+        }
+      >
+        Add update toast
       </button>
     </div>
   );
@@ -122,5 +137,18 @@ describe("ToastProvider", () => {
 
     expect(statusToast).toBeInTheDocument();
     expect(alertToast).toBeInTheDocument();
+  });
+
+  it("runs an optional toast action when selected", () => {
+    renderToastProvider();
+
+    fireEvent.click(screen.getByRole("button", { name: "Add update toast" }));
+    act(() => {
+      vi.advanceTimersByTime(60_000);
+    });
+    expect(screen.getByText("New version available")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Refresh" }));
+
+    expect(refreshAction).toHaveBeenCalledOnce();
   });
 });

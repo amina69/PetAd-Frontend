@@ -8,12 +8,21 @@ npm run lint
 npm test
 npm run build
 npm run e2e
+npm run build-storybook
+npm run test:pwa
 ```
 
 `npm run lint` catches invalid JSX and common accessibility mistakes enforced by
 the configured ESLint rules. The unit and end-to-end suites cover component
 behavior and keyboard flows; the production build confirms that the checked
 routes compile as shipped.
+
+The Storybook primitives are checked with the a11y addon and include 375px,
+768px, and 1280px viewport presets. `npm run test:pwa` builds and previews the
+production app before verifying authenticated API responses never enter Cache
+Storage.
+
+Run `npm run storybook` to start the interactive component workbench locally.
 
 ## Manual keyboard and screen-reader checklist
 
