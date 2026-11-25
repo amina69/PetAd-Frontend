@@ -86,7 +86,7 @@ export default function AdoptionStatusPage() {
           to="/interests"
           className="mb-4 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="rtl-mirror h-4 w-4" />
           Back to My Interests
         </Link>
         <h1 className="mb-2 text-2xl font-bold text-gray-900">

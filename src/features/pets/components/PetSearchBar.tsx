@@ -77,7 +77,7 @@ export function PetSearchBar({ initialQuery = "", onPetsFetch, onSearchChange }:
             handleClear();
           }
         }}
-        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full ps-10 pe-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         aria-label="Search pets"
       />
 
@@ -86,7 +86,7 @@ export function PetSearchBar({ initialQuery = "", onPetsFetch, onSearchChange }:
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm text-gray-500 hover:text-gray-700"
+          className="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm text-gray-500 hover:text-gray-700"
           aria-label="Clear search"
         >
           ✕
@@ -101,7 +101,7 @@ export function PetSearchBar({ initialQuery = "", onPetsFetch, onSearchChange }:
           {data.map((pet) => (
             <li key={pet.id} className="flex items-center px-2 py-1 text-sm hover:bg-gray-100 rounded">
               <span className="font-medium">{pet.name}</span>
-              <span className="ml-2 text-gray-400">{pet.breed}</span>
+              <span className="ms-2 text-gray-400">{pet.breed}</span>
             </li>
           ))}
         </ul>

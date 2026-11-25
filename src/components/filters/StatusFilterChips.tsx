@@ -54,7 +54,7 @@ export const StatusFilterChips: React.FC<StatusFilterChipsProps> = ({
             {meta.label}
             <span
               className={`
-                ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold
+                ms-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold
                 ${isSelected ? "bg-white bg-opacity-50" : "bg-gray-200 text-gray-500"}
               `}
             >

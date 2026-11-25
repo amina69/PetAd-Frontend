@@ -30,7 +30,7 @@ function Toast({ message, type }: ToastPayload) {
       role="alert"
       aria-live="assertive"
       data-testid={`toast-${type}`}
-      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3
+      className={`fixed bottom-6 start-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3
         px-5 py-3.5 rounded-xl shadow-xl text-white text-[14px] font-medium
         ${type === "success" ? "bg-[#22863a]" : "bg-[#E84D2A]"}`}
     >
@@ -126,7 +126,7 @@ function RetryConfirmModal({
         <button
           onClick={onCancel}
           disabled={isPending}
-          className="absolute top-5 right-5 p-1 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+          className="absolute top-5 end-5 p-1 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
           aria-label="Close confirmation modal"
         >
           <svg

@@ -85,7 +85,7 @@ export function EscrowTimelinePanel({ adoptionId }: EscrowTimelinePanelProps) {
           No escrow events yet
         </div>
       ) : (
-        <ol className="mt-6 space-y-6 border-l border-slate-200 pl-8">
+        <ol className="mt-6 space-y-6 border-l border-slate-200 ps-8">
           {[...data]
             .sort(
               (a, b) =>
@@ -110,7 +110,7 @@ export function EscrowTimelinePanel({ adoptionId }: EscrowTimelinePanelProps) {
               return (
                 <li className="relative" data-latest={isLatest} key={`${event.type}-${event.timestamp}`}>
                   <div
-                    className={`absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border ${iconClasses}`}
+                    className={`absolute -start-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border ${iconClasses}`}
                     aria-hidden="true"
                   >
                     <Icon size={16} />
