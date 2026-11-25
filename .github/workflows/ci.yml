@@ -104,7 +104,9 @@ jobs:
             });
 
   e2e:
-    runs-on: ubuntu-latest
+    # ubuntu-latest now resolves to 26.04, which Playwright 1.x cannot install
+    # browsers on; pin the last image it supports.
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:

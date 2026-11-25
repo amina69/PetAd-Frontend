@@ -58,6 +58,22 @@ describe("date utilities", () => {
     expect(getFirstDayOfWeek("ar-EG")).toBe(6);
   });
 
+  it("keeps the region's week start when Intl has no week info (Node 20)", () => {
+    const prototype = Intl.Locale.prototype as { getWeekInfo?: () => { firstDay: number } };
+    const original = prototype.getWeekInfo;
+    prototype.getWeekInfo = undefined;
+
+    try {
+      expect(getFirstDayOfWeek("en-GB")).toBe(1);
+      expect(getFirstDayOfWeek("en-US")).toBe(0);
+      expect(getFirstDayOfWeek("fr-FR")).toBe(1);
+      expect(getFirstDayOfWeek("pt-BR")).toBe(0);
+      expect(getFirstDayOfWeek("ar-EG")).toBe(6);
+    } finally {
+      prototype.getWeekInfo = original;
+    }
+  });
+
   it("counts days between date-only strings and detects the past", () => {
     expect(daysBetween("2024-01-01", "2024-01-15")).toBe(14);
     expect(daysBetween("2024-01-15", "2024-01-01")).toBe(-14);

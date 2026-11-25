@@ -135,12 +135,40 @@ export function isPast(input: DateInput, now: Date = new Date()): boolean {
   return toDate(input).getTime() < now.getTime();
 }
 
+function normaliseTag(locale: string): string {
+  return locale.trim().replace(/_/g, "-").toLowerCase();
+}
+
+function language(locale: string): string {
+  return normaliseTag(locale).split("-")[0] ?? "";
+}
+
+// Runtimes without `Intl.Locale#getWeekInfo` (e.g. Node 20) must not fall back to
+// a language-wide guess: week start differs per region (en-GB Monday, en-US Sunday).
+// These entries match CLDR for every locale the app ships.
+const WEEK_START_FALLBACK: Record<string, number> = {
+  "ar-eg": 6,
+  "en-gb": 1,
+  "en-us": 0,
+  "es-es": 1,
+  "fr-fr": 1,
+  "pt-br": 0,
+};
+
+const WEEK_START_BY_LANGUAGE: Record<string, number> = {
+  ar: 6,
+  en: 0,
+  es: 1,
+  fr: 1,
+  pt: 0,
+};
+
 /**
  * Week start for a locale, as a `Date#getDay()` index (0 = Sunday).
  *
  * Uses the platform's CLDR data when available (`Intl.Locale#getWeekInfo`,
- * supported in modern V8/WebKit) and falls back to a small map for older
- * engines. Date range calendars must use this instead of assuming Monday.
+ * supported in modern V8/WebKit) and otherwise a region-aware map that matches
+ * CLDR for the supported locales, so the value does not change with the runtime. Date range calendars must use this instead of assuming Monday.
  */
 export function getFirstDayOfWeek(locale: string): number {
   try {
@@ -156,14 +184,5 @@ export function getFirstDayOfWeek(locale: string): number {
     // Unknown/invalid locale or runtime without week info: use the fallback.
   }
 
-  const language = locale.split("-")[0]?.toLowerCase() ?? "";
-  const fallback: Record<string, number> = {
-    ar: 6,
-    en: 0,
-    es: 1,
-    fr: 1,
-    pt: 0,
-  };
-
-  return fallback[language] ?? 1;
+  return WEEK_START_FALLBACK[normaliseTag(locale)] ?? WEEK_START_BY_LANGUAGE[language(locale)] ?? 1;
 }
