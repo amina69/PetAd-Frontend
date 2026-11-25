@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import ApprovalBanner from "./ApprovalBanner";
 import { GuestBanner } from "./GuestBanner";
 import { AuthGateModal } from "../auth/AuthGateModal";
+import { ConsentBanner } from "../notifications/ConsentBanner";
 
 export function MainLayout({ children }: PropsWithChildren) {
   return (
@@ -21,6 +22,8 @@ export function MainLayout({ children }: PropsWithChildren) {
       <ApprovalBanner />
 
       <Navbar />
+
+      <ConsentBanner />
 
       <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
         {children ?? <Outlet />}

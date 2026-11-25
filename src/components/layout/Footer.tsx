@@ -71,6 +71,34 @@ export function Footer() {
           />
         </button>
       </div>
+
+      {/* Legal links */}
+      <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-gray-500">
+        <a
+          href="/legal/terms"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#E84D2A] transition-colors"
+        >
+          Terms of Service
+        </a>
+        <a
+          href="/legal/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#E84D2A] transition-colors"
+        >
+          Privacy Policy
+        </a>
+        <a
+          href="/legal/cookies"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-[#E84D2A] transition-colors"
+        >
+          Cookie Policy
+        </a>
+      </div>
     </footer>
   );
 }
