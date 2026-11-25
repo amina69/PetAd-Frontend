@@ -3,6 +3,8 @@ import { StellarTxLink } from "../ui/StellarTxLink";
 import { SplitOutcomeChart } from "../escrow/SplitOutcomeChart";
 import type { DisputeDetail, ResolutionType } from "../../pages/disputes/types";
 import { stellarExplorerUrl } from "../../lib/stellar";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../../lib/date";
 
 interface Props {
   dispute: DisputeDetail;
@@ -17,17 +19,8 @@ const RESOLUTION_TYPE_META: Record<
   SPLIT: { label: "Split", color: "amber" },
 };
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 export function DisputeResolutionSection({ dispute }: Props) {
+  const { locale } = useLocale();
   if (dispute.status !== "RESOLVED" || !dispute.resolution) {
     return null;
   }
@@ -112,7 +105,13 @@ export function DisputeResolutionSection({ dispute }: Props) {
               className="text-sm text-gray-700"
               data-testid="resolution-resolved-at"
             >
-              {formatDate(resolution.resolvedAt)}
+              {formatDateTime(resolution.resolvedAt, locale, undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </p>
           </div>
 

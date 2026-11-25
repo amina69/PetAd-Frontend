@@ -5,9 +5,12 @@ import { adoptionService } from "../api/adoptionService";
 import { queryKeys } from "../lib/queryKeys";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
+import { useLocale } from "../i18n";
+import { formatDate } from "../lib/date";
 
 export default function ShelterApprovalQueuePage() {
   const navigate = useNavigate();
+  const { locale } = useLocale();
   const {
     data,
     fetchNextPage,
@@ -90,7 +93,7 @@ export default function ShelterApprovalQueuePage() {
                       >
                         <td className="px-6 py-5 font-semibold text-[#0D162B] text-sm">{item.pet}</td>
                         <td className="px-6 py-5 font-semibold text-[#0D162B] text-sm">{item.adopter}</td>
-                        <td className="px-6 py-5 text-gray-500 text-sm">{new Date(item.submitted).toLocaleDateString()}</td>
+                        <td className="px-6 py-5 text-gray-500 text-sm">{formatDate(item.submitted, locale)}</td>
                         <td className="px-6 py-5">
                           <span className={`text-sm font-bold ${item.daysWaiting > 3 ? "text-red-500" : "text-[#0D162B]"}`}>
                             {item.daysWaiting}d

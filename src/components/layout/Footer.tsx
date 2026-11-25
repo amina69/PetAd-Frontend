@@ -1,6 +1,8 @@
 import { ArrowUp } from "lucide-react";
 import logo from "../../assets/logo.svg";
 import pawsImg from "../../assets/paws.svg";
+import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
+import { useLocale } from "../../i18n";
 
 interface PawIconProps {
   className?: string;
@@ -13,6 +15,8 @@ function PawIcon({ className = "" }: PawIconProps) {
 }
 
 export function Footer() {
+  const { t } = useLocale();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -55,21 +59,25 @@ export function Footer() {
             </div>
           </div>
           <p className="text-[14px] text-gray-500 font-medium">
-            All rights reserved! Petad 2026
+            {t("footer.rights")}
           </p>
         </div>
 
-        {/* Scroll to Top Button */}
-        <button
-          onClick={scrollToTop}
-          className="p-4 bg-red-600 rounded-full text-white shadow-lg hover:bg-red-700 transition-all hover:scale-110 active:scale-95 group"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp
-            size={24}
-            className="group-hover:-translate-y-1 transition-transform"
-          />
-        </button>
+        <div className="flex items-center gap-6">
+          <LanguageSwitcher />
+
+          {/* Scroll to Top Button */}
+          <button
+            onClick={scrollToTop}
+            className="p-4 bg-red-600 rounded-full text-white shadow-lg hover:bg-red-700 transition-all hover:scale-110 active:scale-95 group"
+            aria-label={t("footer.scrollToTop")}
+          >
+            <ArrowUp
+              size={24}
+              className="group-hover:-translate-y-1 transition-transform"
+            />
+          </button>
+        </div>
       </div>
     </footer>
   );

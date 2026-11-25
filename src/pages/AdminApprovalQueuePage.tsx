@@ -14,6 +14,8 @@ import { useAdminApplications } from "../hooks/useAdminApplications";
 import { StatusFilterChips } from "../components/ui/StatusFilterChips";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
+import { useLocale } from "../i18n";
+import { formatDate, formatDateTime } from "../lib/date";
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { getStatusMeta } from "../lib/statusConfig";
 
@@ -32,6 +34,7 @@ const STATUS_OPTIONS = [
 
 export default function AdminApprovalQueuePage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { locale } = useLocale();
   const [shelterFilter, setShelterFilter] = useState("");
   const [showOverdueOnly, setShowOverdueOnly] = useState(false);
   const [selectedItem, setSelectedItem] = useState<AdminApprovalQueueItem | null>(null);
@@ -265,7 +268,7 @@ export default function AdminApprovalQueuePage() {
                           )}
                         </td>
                         <td className="px-6 py-5 text-gray-500 text-sm">
-                          {new Date(item.submitted).toLocaleDateString()}
+                          {formatDate(item.submitted, locale)}
                         </td>
                         <td className="px-6 py-5">
                           {item.shelterApproved ? (
@@ -370,7 +373,7 @@ export default function AdminApprovalQueuePage() {
               <div>
                 <dt className="text-xs font-semibold uppercase text-gray-500">Submitted</dt>
                 <dd className="mt-1 text-sm text-gray-900">
-                  {new Date(selectedItem.submitted).toLocaleString()}
+                  {formatDateTime(selectedItem.submitted, locale)}
                 </dd>
               </div>
               <div>

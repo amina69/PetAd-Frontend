@@ -5,6 +5,8 @@ import { useApprovalList } from "../features/approval/hooks/useApprovalList";
 import type { ApprovalItem } from "../features/approval/types/approval.types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
+import { useLocale } from "../i18n";
+import { formatDate } from "../lib/date";
 import { ApprovalStatusPill } from "../components/approval/ApprovalStatusWidget";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -299,6 +301,7 @@ function ApprovalPagination({
  */
 export default function ApprovalListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { locale } = useLocale();
 
   // ── URL state (read) ───────────────────────────────────────────────────────
   const activeStatus = parseStatusFilter(searchParams.get(STATUS_PARAM));
@@ -523,7 +526,7 @@ export default function ApprovalListPage() {
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-xs font-medium text-gray-500">
                       {item.submittedAt
-                        ? new Date(item.submittedAt).toLocaleDateString()
+                        ? formatDate(item.submittedAt, locale)
                         : "—"}
                     </span>
                     {item.status ? (

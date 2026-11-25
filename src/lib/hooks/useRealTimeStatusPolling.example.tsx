@@ -1,7 +1,10 @@
 import { useRealTimeStatusPolling } from "./useRealTimeStatusPolling";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../date";
 
 // Example component showing how to use the hook
 export function AdoptionStatusTracker({ adoptionId }: { adoptionId: string }) {
+  const { locale } = useLocale();
   const { data, statusChanged, isLoading } = useRealTimeStatusPolling(
     "adoption",
     adoptionId
@@ -20,7 +23,7 @@ export function AdoptionStatusTracker({ adoptionId }: { adoptionId: string }) {
       <h3>Adoption Status: {data.status}</h3>
       <p>Adoption ID: {data.id}</p>
       <p>Pet ID: {data.petId}</p>
-      <p>Last Updated: {new Date(data.updatedAt).toLocaleString()}</p>
+      <p>Last Updated: {formatDateTime(data.updatedAt, locale)}</p>
 
       {statusChanged && (
         <div className="status-change-indicator">

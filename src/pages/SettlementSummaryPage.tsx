@@ -12,6 +12,8 @@ import { ApproverRow } from "../components/approval/ApproverRow";
 import { useSubmitSignature } from "../hooks/useSubmitSignature";
 import { Loader2 } from "lucide-react";
 import { useEscrowStatus } from "../lib/hooks/useEscrowStatus";
+import { useLocale } from "../i18n";
+import { formatAmount, formatPercent } from "../lib/money";
 import {
   type EscrowStatus,
   type SettlementSummaryPageProps,
@@ -26,15 +28,6 @@ import {
 function extractTxHash(explorerUrl: string): string | undefined {
   const match = explorerUrl.split("/tx/");
   return match[1] ?? undefined;
-}
-
-/**
- * Format a payment's share of the total as a percentage string.
- * Returns "—" when total is zero to avoid division-by-zero display issues.
- */
-function formatPercentage(amount: number, total: number): string {
-  if (total === 0) return "—";
-  return `${((amount / total) * 100).toFixed(1)}%`;
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -57,6 +50,7 @@ export function SettlementSummaryPage({
   summary: propSummary,
   onComplete,
 }: SettlementSummaryPageProps) {
+  const { locale } = useLocale();
   const { adoptionId: paramAdoptionId } = useParams<{ adoptionId: string }>();
 
   // If we have a prop-driven summary, we follow its status/data.
@@ -242,16 +236,15 @@ export function SettlementSummaryPage({
 
                     {/* Amount in XLM/asset */}
                     <span className="text-sm font-semibold text-gray-900 text-right">
-                      {payment.amount.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 7,
-                      })}{" "}
+                      {formatAmount(payment.amount, locale)}{" "}
                       {payment.asset}
                     </span>
 
                     {/* Percentage of total */}
                     <span className="text-sm text-gray-500 text-right">
-                      {formatPercentage(payment.amount, totalAmount)}
+                      {totalAmount === 0
+                        ? "—"
+                        : formatPercent(payment.amount / totalAmount, locale)}
                     </span>
                   </div>
                 ))}

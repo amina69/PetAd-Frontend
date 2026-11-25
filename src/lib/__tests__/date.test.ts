@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { daysBetween, formatDate, formatDateTime, formatRelative, isPast } from "../date";
+import {
+  daysBetween,
+  formatDate,
+  formatDateTime,
+  formatRelative,
+  formatTime,
+  getFirstDayOfWeek,
+  isPast,
+} from "../date";
 
 describe("date utilities", () => {
   afterEach(() => {
@@ -26,9 +34,44 @@ describe("date utilities", () => {
     vi.setSystemTime(new Date("2024-06-15T12:00:00.000Z"));
     const now = new Date();
 
-    expect(formatRelative(new Date(now.getTime() - 10_000), now)).toBe("just now");
-    expect(formatRelative(new Date(now.getTime() - 2 * 60 * 60 * 1000), now)).toBe("2h ago");
-    expect(formatRelative("2024-06-14", now)).toBe("yesterday");
+    expect(formatRelative(new Date(now.getTime() - 10_000), "en-US", now)).toBe("now");
+    expect(formatRelative(new Date(now.getTime() - 2 * 60 * 60 * 1000), "en-US", now)).toBe(
+      "2 hours ago",
+    );
+    expect(formatRelative("2024-06-14", "en-US", now)).toBe("yesterday");
+  });
+
+  it("formats relative and clock values in the active locale", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-06-15T12:00:00.000Z"));
+    const now = new Date();
+
+    expect(formatRelative(new Date(now.getTime() - 2 * 60 * 60 * 1000), "fr-FR", now)).toBe(
+      "il y a 2 heures",
+    );
+    expect(formatTime("2024-06-15T15:30:00.000Z", "en-GB", "UTC")).toBe("15:30");
+  });
+
+  it("uses the locale's first day of week", () => {
+    expect(getFirstDayOfWeek("en-GB")).toBe(1);
+    expect(getFirstDayOfWeek("en-US")).toBe(0);
+    expect(getFirstDayOfWeek("ar-EG")).toBe(6);
+  });
+
+  it("keeps the region's week start when Intl has no week info (Node 20)", () => {
+    const prototype = Intl.Locale.prototype as { getWeekInfo?: () => { firstDay: number } };
+    const original = prototype.getWeekInfo;
+    prototype.getWeekInfo = undefined;
+
+    try {
+      expect(getFirstDayOfWeek("en-GB")).toBe(1);
+      expect(getFirstDayOfWeek("en-US")).toBe(0);
+      expect(getFirstDayOfWeek("fr-FR")).toBe(1);
+      expect(getFirstDayOfWeek("pt-BR")).toBe(0);
+      expect(getFirstDayOfWeek("ar-EG")).toBe(6);
+    } finally {
+      prototype.getWeekInfo = original;
+    }
   });
 
   it("counts days between date-only strings and detects the past", () => {

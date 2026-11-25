@@ -2,6 +2,8 @@
 import { AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { StellarTxLink } from "../ui/StellarTxLink";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../../lib/date";
 
 export interface DisputeBannerProps {
   disputeId: string;
@@ -9,10 +11,10 @@ export interface DisputeBannerProps {
   escrowAccountId: string;
 }
 
-function formatRaisedAt(iso: string): string {
+function formatRaisedAt(iso: string, locale: string): string {
   const date = new Date(iso);
   if (isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString(undefined, {
+  return formatDateTime(iso, locale, undefined, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -26,6 +28,8 @@ export function DisputeBanner({
   raisedAt,
   escrowAccountId,
 }: DisputeBannerProps) {
+  const { locale } = useLocale();
+
   return (
     <div
       role="alert"
@@ -66,7 +70,7 @@ export function DisputeBanner({
                 className="mt-1 text-sm font-medium text-red-900"
                 data-testid="dispute-raised-at"
               >
-                {formatRaisedAt(raisedAt)}
+                {formatRaisedAt(raisedAt, locale)}
               </dd>
             </div>
             <div className="sm:col-span-2">

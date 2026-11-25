@@ -4,6 +4,8 @@ import { useRoleGuard } from '../../hooks/useRoleGuard';
 import { useMutateReviewDocument } from '../../hooks/useMutateReviewDocument';
 import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { Skeleton } from './Skeleton';
+import { useLocale } from '../../i18n';
+import { formatDate } from '../../lib/date';
 import type { Document } from '../../types/documents';
 import { logger } from "../../lib/logger";
 import {
@@ -56,15 +58,6 @@ function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
 function FileTypeIcon({ mimeType }: { mimeType: string }) {
   if (mimeType === 'application/pdf') {
     return <FileText className="h-5 w-5 shrink-0 text-red-500" aria-label="PDF" />;
@@ -88,6 +81,7 @@ function DocumentReviewItem({
   onReject,
   isPending,
 }: DocumentReviewItemProps) {
+  const { locale } = useLocale();
   const [showRejectInput, setShowRejectInput] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
 
@@ -113,7 +107,7 @@ function DocumentReviewItem({
                 {document.fileName}
               </p>
               <p className="text-xs text-gray-500">
-                {formatBytes(document.size)} &middot; {formatDate(document.createdAt)}
+                {formatBytes(document.size)} &middot; {formatDate(document.createdAt, locale)}
               </p>
             </div>
             

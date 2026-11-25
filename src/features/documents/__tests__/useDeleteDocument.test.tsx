@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../../lib/api-errors";
 import type { Document } from "../../../types/documents";
 import { documentService } from "../../../api/documentService";
+import { queryKeys } from "../../../lib/queryKeys";
 import { DocumentList } from "../components/DocumentList";
 import { deletionErrorMessage, isConflictError } from "../hooks/useDeleteDocument";
 
@@ -46,7 +47,7 @@ function renderList() {
 
   function Harness() {
     const query = useQuery({
-      queryKey: ["documents"],
+      queryKey: queryKeys.documents.list(),
       queryFn: () => documentService.getDocuments(),
     });
     if (!query.data) return <p>Loading documents…</p>;

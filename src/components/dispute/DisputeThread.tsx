@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { RefreshCw, Send } from "lucide-react";
 import { Skeleton } from "../ui/Skeleton";
 import { EmptyState } from "../ui/emptyState";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../../lib/date";
 
 /**
  * A single comment on a dispute thread, matching the payload returned by
@@ -34,12 +36,12 @@ const THREAD_SKELETON_ROWS = 3;
 /** Reserved height for the thread body, in pixels. */
 const THREAD_MIN_HEIGHT_PX = 320;
 
-function formatTimestamp(value: string): string {
+function formatTimestamp(value: string, locale: string): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-  return date.toLocaleString(undefined, {
+  return formatDateTime(value, locale, undefined, {
     dateStyle: "medium",
     timeStyle: "short",
   });
@@ -118,6 +120,7 @@ export function DisputeThread({
   onRetry,
   onSubmitComment,
 }: DisputeThreadProps) {
+  const { locale } = useLocale();
   const [draft, setDraft] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -190,7 +193,7 @@ export function DisputeThread({
                       dateTime={comment.createdAt}
                       className="text-xs text-gray-400"
                     >
-                      {formatTimestamp(comment.createdAt)}
+                      {formatTimestamp(comment.createdAt, locale)}
                     </time>
                   </div>
                   <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gray-700">

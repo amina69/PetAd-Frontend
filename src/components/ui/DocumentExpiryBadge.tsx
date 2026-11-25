@@ -1,4 +1,6 @@
 import { StatusBadge } from './StatusBadge';
+import { useLocale } from '../../i18n';
+import { formatDate } from '../../lib/date';
 
 interface DocumentExpiryBadgeProps {
   expiresAt: string | null;
@@ -6,6 +8,8 @@ interface DocumentExpiryBadgeProps {
 }
 
 export function DocumentExpiryBadge({ expiresAt }: DocumentExpiryBadgeProps) {
+  const { locale } = useLocale();
+
   if (!expiresAt) return null;
 
   const now = new Date();
@@ -13,11 +17,7 @@ export function DocumentExpiryBadge({ expiresAt }: DocumentExpiryBadgeProps) {
   const msUntilExpiry = expiry.getTime() - now.getTime();
   const daysUntilExpiry = Math.ceil(msUntilExpiry / (1000 * 60 * 60 * 24));
 
-  const expiryDateStr = expiry.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  const expiryDateStr = formatDate(expiry, locale);
 
   if (daysUntilExpiry < 0) {
     return (

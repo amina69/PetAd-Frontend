@@ -3,8 +3,11 @@ import { AdminOnly } from "../../components/auth/AdminOnly";
 import { DateRangePicker, type DateRange } from "../../components/ui/DateRangePicker";
 import { useAuditLog } from "../../hooks/useAuditLog";
 import { downloadCsv, toCsv } from "../../utils/csv";
+import { useLocale } from "../../i18n";
+import { formatDateTime } from "../../lib/date";
 
 function AuditLogViewer() {
+  const { locale } = useLocale();
   const [actor, setActor] = useState("");
   const [action, setAction] = useState("");
   const [range, setRange] = useState<DateRange>({});
@@ -109,7 +112,7 @@ function AuditLogViewer() {
                   return (
                     <Fragment key={entry.id}>
                       <tr className="border-t border-gray-100">
-                        <td className="px-4 py-3">{new Date(entry.createdAt).toLocaleString()}</td>
+                        <td className="px-4 py-3">{formatDateTime(entry.createdAt, locale)}</td>
                         <td className="px-4 py-3">{entry.actorName}</td>
                         <td className="px-4 py-3">{entry.action}</td>
                         <td className="px-4 py-3">

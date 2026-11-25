@@ -5,30 +5,12 @@ import { useCustodyTimeline, type CustodyTimelineEventType } from "../lib/hooks/
 import { useCustodyDetails } from "../lib/hooks/useCustodyDetails";
 import { CustodyExpiringBanner } from "../components/custody";
 import type { CustodyTimelineEvent } from "../api/custodyService";
+import { useLocale } from "../i18n";
+import { formatDate, formatRelative } from "../lib/date";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatRelativeTime(timestamp: string, now = new Date()): string {
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return "";
-
-  const diffSeconds = Math.round((date.getTime() - now.getTime()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-
-  const absSeconds = Math.abs(diffSeconds);
-  if (absSeconds < 60) return rtf.format(diffSeconds, "second");
-
-  const diffMinutes = Math.round(diffSeconds / 60);
-  if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, "minute");
-
-  const diffHours = Math.round(diffMinutes / 60);
-  if (Math.abs(diffHours) < 24) return rtf.format(diffHours, "hour");
-
-  const diffDays = Math.round(diffHours / 24);
-  return rtf.format(diffDays, "day");
-}
 
 function getEventIcon(type: CustodyTimelineEventType) {
   const normalized = String(type).toUpperCase();
@@ -39,7 +21,13 @@ function getEventIcon(type: CustodyTimelineEventType) {
   return Plus;
 }
 
-function getDateLabel(timestamp: string, now = new Date()): string {
+function getDateLabel(
+  timestamp: string,
+  locale: string,
+  todayLabel: string,
+  yesterdayLabel: string,
+  now = new Date(),
+): string {
   const date = new Date(timestamp);
   if (Number.isNaN(date.getTime())) return "";
 
@@ -49,9 +37,9 @@ function getDateLabel(timestamp: string, now = new Date()): string {
     (nowDate.getTime() - evDate.getTime()) / (1000 * 60 * 60 * 24),
   );
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  return date.toLocaleDateString("en", {
+  if (diffDays === 0) return todayLabel;
+  if (diffDays === 1) return yesterdayLabel;
+  return formatDate(date, locale, undefined, {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -68,7 +56,12 @@ interface DateGroup {
   events: CustodyTimelineEvent[];
 }
 
-function groupByDate(events: CustodyTimelineEvent[]): DateGroup[] {
+function groupByDate(
+  events: CustodyTimelineEvent[],
+  locale: string,
+  todayLabel: string,
+  yesterdayLabel: string,
+): DateGroup[] {
   const now = new Date();
   const sorted = [...events].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
@@ -78,7 +71,13 @@ function groupByDate(events: CustodyTimelineEvent[]): DateGroup[] {
   const seen = new Map<string, DateGroup>();
 
   for (const event of sorted) {
-    const label = getDateLabel(event.timestamp, now);
+    const label = getDateLabel(
+      event.timestamp,
+      locale,
+      todayLabel,
+      yesterdayLabel,
+      now,
+    );
     if (!seen.has(label)) {
       const group: DateGroup = { label, events: [] };
       groups.push(group);
@@ -96,10 +95,14 @@ function groupByDate(events: CustodyTimelineEvent[]): DateGroup[] {
 
 export default function CustodyTimelinePage() {
   const { custodyId } = useParams<{ custodyId: string }>();
+  const { locale, t } = useLocale();
   const { data, isLoading, isError } = useCustodyTimeline(custodyId);
   const { data: custodyDetails } = useCustodyDetails(custodyId);
 
-  const groups = data && data.length > 0 ? groupByDate(data) : [];
+  const groups =
+    data && data.length > 0
+      ? groupByDate(data, locale, t("time.today"), t("time.yesterday"))
+      : [];
   const isLatestEvent = (groupIdx: number, eventIdx: number) =>
     groupIdx === 0 && eventIdx === 0;
 
@@ -174,7 +177,7 @@ export default function CustodyTimelinePage() {
                     {group.events.map((event, eventIdx) => {
                       const latest = isLatestEvent(groupIdx, eventIdx);
                       const Icon = getEventIcon(event.type);
-                      const relative = formatRelativeTime(event.timestamp);
+                      const relative = formatRelative(event.timestamp, locale);
 
                       const cardClasses = latest
                         ? "border-sky-200 bg-sky-50 text-slate-900"

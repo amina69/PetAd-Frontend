@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/query-client'
 import { ToastProvider } from './components/toast/ToastProvider'
 import { ThemeProvider } from './components/theme-provider'
+import { LanguageProvider } from './i18n'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
 import { initAnalytics } from './lib/analytics'
 import './index.css'
@@ -97,16 +98,18 @@ async function bootstrap() {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
-          <ToastProvider>
-            {/* Navbar's NotificationCentreDropdown consumes this context. */}
-            <NotificationSocketProvider>
-              <BrowserRouter> {/* 2. Wrap your App */}
-                <App />
-              </BrowserRouter>
-            </NotificationSocketProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
+            <ToastProvider>
+              {/* Navbar's NotificationCentreDropdown consumes this context. */}
+              <NotificationSocketProvider>
+                <BrowserRouter> {/* 2. Wrap your App */}
+                  <App />
+                </BrowserRouter>
+              </NotificationSocketProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </QueryClientProvider>
     </StrictMode>,
   )

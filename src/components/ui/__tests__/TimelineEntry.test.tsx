@@ -44,19 +44,6 @@ describe("TimelineEntry", () => {
     // This ensures consistent snapshots regardless of when tests are run
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2025-03-26T11:00:00Z"));
-
-    vi.spyOn(Date.prototype, "toLocaleString").mockImplementation(function (this: any) {
-      return new Intl.DateTimeFormat("en-US", {
-        timeZone: "UTC",
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      }).format(this);
-    });
   });
 
   afterEach(() => {
@@ -154,8 +141,8 @@ describe("TimelineEntry", () => {
     const timeElement = container.querySelector("time");
     expect(timeElement).toBeTruthy();
 
-    // Title should contain absolute time
+    // Title should contain the locale-formatted absolute date.
     const title = timeElement?.getAttribute("title");
-    expect(title).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/);
+    expect(title).toContain("2024");
   });
 });

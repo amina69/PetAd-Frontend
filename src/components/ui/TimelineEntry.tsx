@@ -1,31 +1,15 @@
 import { ArrowRight } from 'lucide-react';
 import { AdoptionStatusBadge } from './AdoptionStatusBadge';
 import { StellarTxLink } from './StellarTxLink';
+import { useLocale } from '../../i18n';
+import { formatDateTime, formatRelative } from '../../lib/date';
 import type { AdoptionTimelineEntry } from '../../types/adoption';
 
 interface TimelineEntryProps {
   entry: AdoptionTimelineEntry;
 }
 
-function getRelativeTime(timestamp: string): string {
-  const now = new Date();
-  const time = new Date(timestamp);
-  const diffMs = now.getTime() - time.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-  return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-}
-
-function getAbsoluteTime(timestamp: string): string {
-  return new Date(timestamp).toLocaleString();
-}
-
-function getAriaLabel(entry: AdoptionTimelineEntry): string {
+function getAriaLabel(entry: AdoptionTimelineEntry, locale: string): string {
   const parts = [];
   
   if (entry.fromStatus && entry.toStatus) {
@@ -47,15 +31,16 @@ function getAriaLabel(entry: AdoptionTimelineEntry): string {
     parts.push('Admin override');
   }
   
-  parts.push(`at ${getAbsoluteTime(entry.timestamp)}`);
+  parts.push(`at ${formatDateTime(entry.timestamp, locale)}`);
   
   return parts.join(' ');
 }
 
 export function TimelineEntry({ entry }: TimelineEntryProps) {
-  const relativeTime = getRelativeTime(entry.timestamp);
-  const absoluteTime = getAbsoluteTime(entry.timestamp);
-  const ariaLabel = getAriaLabel(entry);
+  const { locale } = useLocale();
+  const relativeTime = formatRelative(entry.timestamp, locale);
+  const absoluteTime = formatDateTime(entry.timestamp, locale);
+  const ariaLabel = getAriaLabel(entry, locale);
 
   return (
     <li 
