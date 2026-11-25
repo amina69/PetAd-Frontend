@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-quer
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../../lib/api-errors";
+import { queryKeys } from "../../../lib/queryKeys";
 import type { Document } from "../../../types/documents";
 import { documentService } from "../../../api/documentService";
 import { DocumentList } from "../components/DocumentList";
@@ -46,7 +47,7 @@ function renderList() {
 
   function Harness() {
     const query = useQuery({
-      queryKey: ["documents"],
+      queryKey: queryKeys.documents.list(),
       queryFn: () => documentService.getDocuments(),
     });
     if (!query.data) return <p>Loading documents…</p>;
