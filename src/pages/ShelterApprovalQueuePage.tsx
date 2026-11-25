@@ -72,7 +72,7 @@ export default function ShelterApprovalQueuePage() {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-start border-collapse">
                   <thead>
                     <tr className="bg-gray-50 border-b border-gray-100">
                       <th className="px-6 py-4 text-xs font-bold text-gray-700 uppercase tracking-wider">Pet</th>

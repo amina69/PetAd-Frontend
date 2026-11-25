@@ -22,22 +22,22 @@ export function Footer() {
       {/* Background Paw Pattern — Matching Screenshot */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Far left paw */}
-        <PawIcon className="absolute w-[180px] h-[180px] -bottom-12 -left-10 rotate-[15deg] opacity-[0.25]" />
+        <PawIcon className="absolute w-[180px] h-[180px] -bottom-12 -start-10 rotate-[15deg] opacity-[0.25]" />
 
         {/* Left-center cluster */}
-        <PawIcon className="absolute w-[140px] h-[140px] -bottom-6 left-[15%] rotate-[-10deg] opacity-[0.2]" />
-        <PawIcon className="absolute w-[160px] h-[160px] -bottom-16 left-[28%] rotate-[25deg] opacity-[0.22]" />
+        <PawIcon className="absolute w-[140px] h-[140px] -bottom-6 start-[15%] rotate-[-10deg] opacity-[0.2]" />
+        <PawIcon className="absolute w-[160px] h-[160px] -bottom-16 start-[28%] rotate-[25deg] opacity-[0.22]" />
 
         {/* Center area */}
-        <PawIcon className="absolute w-[150px] h-[150px] -bottom-10 left-[45%] rotate-[-5deg] opacity-[0.18]" />
-        <PawIcon className="absolute w-[130px] h-[130px] -bottom-4 left-[58%] rotate-[15deg] opacity-[0.25]" />
+        <PawIcon className="absolute w-[150px] h-[150px] -bottom-10 start-[45%] rotate-[-5deg] opacity-[0.18]" />
+        <PawIcon className="absolute w-[130px] h-[130px] -bottom-4 start-[58%] rotate-[15deg] opacity-[0.25]" />
 
         {/* Right-center cluster */}
-        <PawIcon className="absolute w-[170px] h-[170px] -bottom-14 left-[72%] rotate-[-20deg] opacity-[0.2]" />
-        <PawIcon className="absolute w-[140px] h-[140px] -bottom-8 left-[85%] rotate-[10deg] opacity-[0.22]" />
+        <PawIcon className="absolute w-[170px] h-[170px] -bottom-14 start-[72%] rotate-[-20deg] opacity-[0.2]" />
+        <PawIcon className="absolute w-[140px] h-[140px] -bottom-8 start-[85%] rotate-[10deg] opacity-[0.22]" />
 
         {/* Far right paw */}
-        <PawIcon className="absolute w-[180px] h-[180px] -bottom-12 -right-10 rotate-[35deg] opacity-[0.25]" />
+        <PawIcon className="absolute w-[180px] h-[180px] -bottom-12 -end-10 rotate-[35deg] opacity-[0.25]" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-10">

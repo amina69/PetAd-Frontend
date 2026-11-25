@@ -54,7 +54,7 @@ export function FormSelect({
           type="button"
           id={id}
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex justify-between items-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-[14px] outline-none transition-all text-left
+          className={`w-full flex justify-between items-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-[14px] outline-none transition-all text-start
             ${isOpen ? "border-[#0D162B] ring-1 ring-[#0D162B]" : ""}
             ${!hasValue ? "text-gray-600" : "text-gray-900"}
             ${disabled ? "cursor-not-allowed opacity-60" : ""}
@@ -98,7 +98,7 @@ export function FormSelect({
                   <button
                     type="button"
                     onClick={() => handleSelect(opt.value)}
-                    className={`w-full text-left px-4 py-3 text-[14px] transition-colors
+                    className={`w-full text-start px-4 py-3 text-[14px] transition-colors
                       ${value === opt.value ? "bg-[#FFF2E5] text-[#E84D2A] font-medium" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"}
                     `}
                   >

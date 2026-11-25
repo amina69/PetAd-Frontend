@@ -67,7 +67,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
         {entry.fromStatus && (
           <>
             <AdoptionStatusBadge status={entry.fromStatus} />
-            <ArrowRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+            <ArrowRight className="rtl-mirror h-4 w-4 text-gray-400 flex-shrink-0" />
           </>
         )}
         {entry.toStatus && <AdoptionStatusBadge status={entry.toStatus} />}
@@ -117,7 +117,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
         {entry.escrowPaused && (
           <div className="mb-2 flex items-center gap-1.5" data-testid="escrow-paused-badge">
             <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 border border-red-200">
-              <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-3 h-3 me-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Escrow Paused
@@ -127,7 +127,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
       </div>
 
       {/* Timestamp */}
-      <div className="flex-shrink-0 text-right">
+      <div className="flex-shrink-0 text-end">
         <time 
           dateTime={entry.timestamp}
           title={absoluteTime}

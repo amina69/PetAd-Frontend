@@ -77,7 +77,7 @@ export function ReportUserModal({
         <div className="w-full max-w-[480px] bg-white rounded-2xl p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-300">
           <button
             onClick={handleClose}
-            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-6 end-6 text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="Close"
           >
             <svg

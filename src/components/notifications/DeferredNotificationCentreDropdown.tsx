@@ -55,7 +55,7 @@ export function DeferredNotificationCentreDropdown() {
         <span
           data-testid="notification-unread-count"
           aria-hidden="true"
-          className="pointer-events-none absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[10px] font-bold text-white"
+          className="pointer-events-none absolute -top-1 -end-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[10px] font-bold text-white"
         >
           {unreadCount > 9 ? "9+" : unreadCount}
         </span>

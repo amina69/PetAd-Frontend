@@ -26,7 +26,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         {isFetchingNextPage ? (
           <>
             <svg
-              className="w-4 h-4 mr-2 text-white animate-spin"
+              className="w-4 h-4 me-2 text-white animate-spin"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

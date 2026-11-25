@@ -11,6 +11,7 @@ import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
 import { loadEnv } from './lib/env'
+import { logger } from './lib/logger'
 
 loadEnv()
 
@@ -38,8 +39,9 @@ async function cleanupServiceWorkers() {
     // registration we encounter here (e.g. left behind by an earlier dev visit)
     // is stale in this build and must be removed, not kept.
     const isMswWorker = scriptUrl.endsWith('/mockServiceWorker.js')
+    const isPetAdWorker = scriptUrl.endsWith('/sw.js')
 
-    if (isMswWorker) {
+    if (isMswWorker || (!import.meta.env.DEV && !isPetAdWorker)) {
       await registration.unregister()
       removedStaleWorker = true
     }
@@ -90,8 +92,17 @@ async function bootstrap() {
       })
     }
   } else {
-    // A stale MSW worker must not intercept production requests.
+    // Keep the application worker registered in production, but remove stale
+    // development workers before registering the current worker.
     void cleanupServiceWorkers()
+      .then((reloadingAfterCleanup) => {
+        if (!reloadingAfterCleanup && 'serviceWorker' in navigator) {
+          void navigator.serviceWorker
+            .register('/sw.js')
+            .catch((error: unknown) => logger.error('Failed to register app service worker', error))
+        }
+      })
+      .catch((error: unknown) => logger.error('Failed to clean up service workers', error))
   }
 
   createRoot(document.getElementById('root')!).render(

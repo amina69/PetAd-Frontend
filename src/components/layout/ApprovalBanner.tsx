@@ -31,7 +31,7 @@ export default function ApprovalBanner() {
     <div className="w-full bg-amber-100 border-b border-amber-300 px-4 py-2 flex justify-between items-center">
       <div className="text-amber-900">
         You have {count} adoption(s) awaiting your approval
-        <Link to="/shelter/approvals" className="ml-2 underline font-semibold">
+        <Link to="/shelter/approvals" className="ms-2 underline font-semibold">
           View
         </Link>
       </div>

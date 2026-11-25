@@ -65,9 +65,9 @@ export function AdminDisputeResolutionForm({ onSubmit, isSubmitting = false }: A
                 checked={resolutionType === 'REFUND'}
                 onChange={() => setResolutionType('REFUND')}
               />
-              <span className="ml-3 font-medium text-gray-900">REFUND</span>
+              <span className="ms-3 font-medium text-gray-900">REFUND</span>
             </label>
-            <p className="ml-7 mt-1 text-sm text-gray-500">Return the escrow funds back to the adopter. The shelter will not receive payment.</p>
+            <p className="ms-7 mt-1 text-sm text-gray-500">Return the escrow funds back to the adopter. The shelter will not receive payment.</p>
           </div>
 
           {/* RELEASE */}
@@ -82,9 +82,9 @@ export function AdminDisputeResolutionForm({ onSubmit, isSubmitting = false }: A
                 checked={resolutionType === 'RELEASE'}
                 onChange={() => setResolutionType('RELEASE')}
               />
-              <span className="ml-3 font-medium text-gray-900">RELEASE</span>
+              <span className="ms-3 font-medium text-gray-900">RELEASE</span>
             </label>
-            <p className="ml-7 mt-1 text-sm text-gray-500">Release the escrow funds to the shelter. The adopter will not receive a refund.</p>
+            <p className="ms-7 mt-1 text-sm text-gray-500">Release the escrow funds to the shelter. The adopter will not receive a refund.</p>
           </div>
 
           {/* SPLIT */}
@@ -99,9 +99,9 @@ export function AdminDisputeResolutionForm({ onSubmit, isSubmitting = false }: A
                 checked={resolutionType === 'SPLIT'}
                 onChange={() => setResolutionType('SPLIT')}
               />
-              <span className="ml-3 font-medium text-gray-900">SPLIT</span>
+              <span className="ms-3 font-medium text-gray-900">SPLIT</span>
             </label>
-            <p className="ml-7 mt-1 text-sm text-gray-500">Divide the escrow funds between the adopter and shelter based on the specified percentages.</p>
+            <p className="ms-7 mt-1 text-sm text-gray-500">Divide the escrow funds between the adopter and shelter based on the specified percentages.</p>
           </div>
         </div>
       </div>

@@ -32,7 +32,9 @@ export function useDeleteDocument() {
     mutationFn: (documentId: string) => documentService.deleteDocument(documentId),
     onMutate: async (documentId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.documents.list() });
-      const previous = queryClient.getQueriesData<Document[]>({ queryKey: queryKeys.documents.list() });
+      const previous = queryClient.getQueriesData<Document[]>({
+        queryKey: queryKeys.documents.list(),
+      });
       queryClient.setQueriesData<Document[]>({ queryKey: queryKeys.documents.list() }, (current) =>
         Array.isArray(current) ? current.filter((doc) => doc.id !== documentId) : current,
       );

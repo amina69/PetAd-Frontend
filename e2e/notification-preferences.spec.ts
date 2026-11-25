@@ -30,7 +30,7 @@ test.describe("Notification preferences flow", () => {
     expect(body.DOCUMENT_EXPIRING).toBe(true);
     expect(body.CUSTODY_EXPIRING).toBe(true);
 
-    await expect(page.getByText("Saved")).toBeVisible();
+    await expect(page.getByText("Saved", { exact: true })).toBeVisible();
     await page.waitForTimeout(100);
 
     const classAfter = await inner.getAttribute("class");
@@ -65,7 +65,7 @@ test.describe("Notification preferences flow", () => {
       expect(v).toBe(true);
     }
 
-    await expect(page.getByText("Saved")).toBeVisible();
+    await expect(page.getByText("Saved", { exact: true })).toBeVisible();
     const innerAfterReset = page.getByText("Escrow Funded").locator("..").locator("div").first().locator("div").first();
     const classAfterReset = await innerAfterReset.getAttribute("class");
     expect(classAfterReset).toContain("translate-x-4");

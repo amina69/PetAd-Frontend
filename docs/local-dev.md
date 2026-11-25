@@ -313,6 +313,17 @@ Remember to run `pnpm test` — `src/test/setup.ts` boots the same handler array
 
 ---
 
+## Browser-only app capabilities
+
+- In development, use the fixed **RTL: Off/On** control to toggle `dir` on the document and
+  smoke-test primary layouts, timelines, and directional icons.
+- Location permission is requested only after selecting **Use my location**. Text location and
+  saved filters are stored in the URL; saved searches themselves are kept in local storage
+  (maximum 10 per browser).
+- Install prompts are browser-controlled and appear under **Settings** only when the browser
+  emits `beforeinstallprompt`. The production build registers `/sw.js`; test installability on
+  a secure origin with `npm run build` and `npm run preview`.
+
 ## Tooling Reference
 
 | Command | What it does | Network |
