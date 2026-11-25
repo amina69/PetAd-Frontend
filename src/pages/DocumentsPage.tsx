@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../lib/queryKeys";
 import { documentService } from "../api/documentService";
 import { DocumentList } from "../features/documents/components/DocumentList";
 import { DocumentUploadPanel } from "../features/documents/components/DocumentUploadPanel";

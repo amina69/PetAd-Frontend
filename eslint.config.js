@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import globals from 'globals'
+import i18next from 'eslint-plugin-i18next'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
@@ -30,6 +31,20 @@ export default defineConfig([
         {
           selector: "JSXAttribute[name.name='dangerouslySetInnerHTML']",
           message: 'Render user content as text. Sanitize rich text with a strict allow-list before rendering it.',
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/pages/HomePage.tsx', 'src/pages/notificationPage.tsx', 'src/components/auth/SignInForm.tsx'],
+    plugins: { i18next },
+    rules: {
+      'i18next/no-literal-string': [
+        'error',
+        {
+          mode: 'jsx-only',
+          callees: { exclude: ['t', 'notificationCount'] },
+          'jsx-attributes': { include: ['aria-label', 'label', 'placeholder', 'title', 'description'] },
         },
       ],
     },

@@ -1,3 +1,5 @@
+import { t } from "../i18n";
+import { notificationCount } from "../i18n/notification-count";
 import { useRef, useEffect, useCallback, useMemo, useState } from "react";
 import { useNotifications } from "../hooks/useNotifications";
 import { NotificationItem } from "../components/notifications";
@@ -45,27 +47,27 @@ export function groupByDate(notifications: Notification[]): NotificationGroup[] 
 
 
 const TABS: { value: NotificationFilter; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "unread", label: "Unread" },
-  { value: "read", label: "Read" },
+  { value: "all", label: t("notifications", "all") },
+  { value: "unread", label: t("notifications", "unread") },
+  { value: "read", label: t("notifications", "read") },
 ];
 
 function emptyStateProps(filter: NotificationFilter) {
   if (filter === "unread") {
     return {
-      title: "No unread notifications",
-      description: "You're all caught up! New notifications will appear here.",
+      title: t("notifications", "noUnread"),
+      description: t("notifications", "noUnreadDescription"),
     };
   }
   if (filter === "read") {
     return {
-      title: "No read notifications",
-      description: "Notifications you've opened will appear here.",
+      title: t("notifications", "noRead"),
+      description: t("notifications", "noReadDescription"),
     };
   }
   return {
-    title: "No notifications yet",
-    description: "When activity happens on your adoptions, you'll see updates here.",
+    title: t("notifications", "empty"),
+    description: t("notifications", "emptyDescription"),
   };
 }
 
@@ -130,14 +132,14 @@ export default function NotificationsListPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold text-gray-900 tracking-tight">
-            Notifications
+            {t("notifications", "title")}
           </h1>
           {filter === "all" && unreadCount > 0 && (
             <span
-              aria-label={`${unreadCount} unread`}
+              aria-label={notificationCount("unread", unreadCount)}
               className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-orange-500 text-white text-xs font-bold"
             >
               {unreadCount}
@@ -146,7 +148,7 @@ export default function NotificationsListPage() {
         </div>
         {total > 0 && (
           <span className="text-sm text-gray-400">
-            {total} notification{total !== 1 ? "s" : ""}
+            {notificationCount("total", total)}
           </span>
         )}
       </div>
@@ -168,8 +170,8 @@ export default function NotificationsListPage() {
               }`}
             />
             {connectionState === "reconnecting"
-              ? "Reconnecting to notification service..."
-              : "Disconnected from notification service"}
+              ? t("notifications", "reconnecting")
+              : t("notifications", "disconnected")}
           </span>
           {connectionState === "disconnected" && (
             <button
@@ -178,7 +180,7 @@ export default function NotificationsListPage() {
               onClick={reconnect}
               className="text-sm font-medium text-red-600 hover:text-red-800 underline"
             >
-              Reconnect
+              {t("notifications", "reconnect")}
             </button>
           )}
         </div>
@@ -187,7 +189,7 @@ export default function NotificationsListPage() {
       {/* Filter tabs */}
       <div
         role="tablist"
-        aria-label="Notification filters"
+        aria-label={t("notifications", "filters")}
         className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1"
       >
         {TABS.map((tab) => (
@@ -197,7 +199,7 @@ export default function NotificationsListPage() {
             aria-selected={filter === tab.value}
             onClick={() => setFilter(tab.value)}
             className={[
-              "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
+              "flex-1 min-w-0 [overflow-wrap:anywhere] py-1.5 text-sm font-medium rounded-md transition-colors",
               filter === tab.value
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-500 hover:text-gray-700",
@@ -211,8 +213,8 @@ export default function NotificationsListPage() {
       {/* Body */}
       {isError ? (
         <EmptyState
-          title="Something went wrong"
-          description="Failed to load notifications. Please try again."
+          title={t("notifications", "error")}
+          description={t("notifications", "loadFailed")}
         />
       ) : isLoading ? (
         <div
@@ -228,7 +230,7 @@ export default function NotificationsListPage() {
       ) : (
         <div
           role="list"
-          aria-label="Notifications"
+          aria-label={t("notifications", "title")}
           className="rounded-xl border border-gray-100 overflow-hidden"
         >
           {grouped.map((group) => (
@@ -238,7 +240,7 @@ export default function NotificationsListPage() {
                 className="px-4 py-2 bg-gray-50 border-b border-gray-100"
               >
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {group.label}
+                  {t("notifications", group.label)}
                 </span>
               </div>
               <div className="divide-y divide-gray-100">
@@ -271,7 +273,7 @@ export default function NotificationsListPage() {
 
           {!hasNextPage && notifications.length > 0 && (
             <p className="text-center text-xs text-gray-400 py-4">
-              You've reached the end
+              {t("notifications", "end")}
             </p>
           )}
         </div>

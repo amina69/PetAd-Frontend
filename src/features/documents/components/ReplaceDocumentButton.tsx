@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { queryKeys } from "../../../lib/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
