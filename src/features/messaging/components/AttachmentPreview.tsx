@@ -30,7 +30,7 @@ export function AttachmentPreview({ src, alt, onClose }: AttachmentPreviewProps)
         onClick={onClose}
         aria-label="Close preview"
         autoFocus
-        className="absolute right-4 top-4 rounded-full bg-white/90 p-2 text-gray-900"
+        className="absolute end-4 top-4 rounded-full bg-white/90 p-2 text-gray-900"
       >
         <X size={20} aria-hidden="true" />
       </button>

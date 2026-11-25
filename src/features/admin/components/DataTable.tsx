@@ -69,7 +69,7 @@ export function DataTable<T>({
         <>
           {renderCard && <div className="divide-y divide-slate-200 md:hidden">{loading ? <p role="status" className="p-6 text-slate-500">Loading records…</p> : rows.map((row) => <article key={getRowId(row)} className="p-4">{renderCard(row)}</article>)}</div>}
           <div className={`overflow-x-auto ${renderCard ? "hidden md:block" : ""}`}>
-            <table className="min-w-full border-collapse text-left text-sm">
+            <table className="min-w-full border-collapse text-start text-sm">
               <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-600"><tr>
                 <th scope="col" className="w-10 px-4 py-3"><input type="checkbox" aria-label="Select all rows on this page" checked={allSelected} onChange={toggleAll} /></th>
                 {columns.map((column) => <th key={column.id} scope="col" aria-sort={sortField === column.id ? (direction === "asc" ? "ascending" : "descending") : "none"} className={`px-4 py-3 ${column.className ?? ""}`}>

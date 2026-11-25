@@ -321,7 +321,7 @@ export function EvidenceUpload({
       {items.length > 0 && (
         <p
           aria-live="polite"
-          className="text-xs text-black text-right mt-2"
+          className="text-xs text-black text-end mt-2"
         >
           <span className="text-[#E84D2A] font-medium">{validCount}</span>
           {" / "}

@@ -212,7 +212,7 @@ function ThreadInner({ conversationId, className }: Required<MessageThreadProps>
         <button
           type="button"
           onClick={scrollToBottom}
-          className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#0D162B] px-3 py-1.5 text-xs font-medium text-white shadow-lg"
+          className="absolute bottom-3 start-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#0D162B] px-3 py-1.5 text-xs font-medium text-white shadow-lg"
         >
           <ArrowDown size={14} aria-hidden="true" />
           {unseen === 1 ? "1 new message" : `${unseen} new messages`}

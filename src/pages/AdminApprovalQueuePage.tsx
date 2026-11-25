@@ -113,14 +113,14 @@ export default function AdminApprovalQueuePage() {
                 <select
                   value={shelterFilter}
                   onChange={(e) => setShelterFilter(e.target.value)}
-                  className="w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-[#0D162B] appearance-none focus:ring-2 focus:ring-[#E84D2A]/20 focus:border-[#E84D2A] transition-all outline-none"
+                  className="w-full ps-4 pe-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-[#0D162B] appearance-none focus:ring-2 focus:ring-[#E84D2A]/20 focus:border-[#E84D2A] transition-all outline-none"
                 >
                   <option value="">All Shelters</option>
                   <option value="happy-paws">Happy Paws Shelter</option>
                   <option value="rescue-league">Rescue League</option>
                   <option value="city-animal-center">City Animal Center</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
               </div>
             </div>
 
@@ -211,7 +211,7 @@ export default function AdminApprovalQueuePage() {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-start border-collapse">
                   <thead>
                     <tr className="bg-gray-50 border-b border-gray-100">
                       <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Shelter</th>

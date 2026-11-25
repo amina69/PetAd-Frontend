@@ -50,6 +50,10 @@
 
 
 @layer utilities {
+  [dir="rtl"] .rtl-mirror {
+    transform: scaleX(-1);
+  }
+
   @keyframes status-badge-pulse {
     0%,
     100% {

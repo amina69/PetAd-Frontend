@@ -33,7 +33,7 @@ export default function ModalPreview() {
         </p>
         
         <div className="space-y-4 mb-8">
-          <div className="text-left bg-white p-4 rounded-lg border border-gray-200">
+          <div className="text-start bg-white p-4 rounded-lg border border-gray-200">
             <h3 className="font-semibold text-gray-900 mb-2">Features:</h3>
             <ul className="text-sm text-gray-600 space-y-1">
               <li>• Interactive 5-star rating system</li>
@@ -45,7 +45,7 @@ export default function ModalPreview() {
             </ul>
           </div>
           
-          <div className="text-left bg-white p-4 rounded-lg border border-gray-200">
+          <div className="text-start bg-white p-4 rounded-lg border border-gray-200">
             <h3 className="font-semibold text-gray-900 mb-2">Test Scenarios:</h3>
             <ul className="text-sm text-gray-600 space-y-1">
               <li>• Try selecting different star ratings</li>

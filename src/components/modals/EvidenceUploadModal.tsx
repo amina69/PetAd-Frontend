@@ -32,7 +32,7 @@ export function EvidenceUploadModal({ isOpen, onClose }: Props) {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="absolute top-4 end-4 text-gray-500 hover:text-gray-700 focus:outline-none"
           aria-label="Close modal"
         >
           ✕
@@ -47,7 +47,7 @@ export function EvidenceUploadModal({ isOpen, onClose }: Props) {
           <input
             id="evidence-file"
             type="file"
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            className="block w-full text-sm text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
         </div>
         <div className="flex justify-end gap-3">

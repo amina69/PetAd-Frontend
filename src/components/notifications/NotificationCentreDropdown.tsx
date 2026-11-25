@@ -183,7 +183,7 @@ export function NotificationCentreDropdown({
           <span
             data-testid="unread-dot"
             aria-label={unreadCount > 0 ? `${unreadCount} unread notifications` : "Unread notifications"}
-            className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
+            className="absolute top-2.5 end-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
           />
         )}
       </button>
@@ -198,7 +198,7 @@ export function NotificationCentreDropdown({
           aria-modal="true"
           tabIndex={-1}
           data-testid="notification-dropdown"
-          className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 z-[60] overflow-hidden"
+          className="absolute end-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 z-[60] overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
@@ -317,7 +317,7 @@ export function NotificationCentreDropdown({
               >
                 View all notifications
                 {isMarkingRead && (
-                  <span className="ml-2 w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+                  <span className="ms-2 w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
                 )}
               </Link>
             </div>

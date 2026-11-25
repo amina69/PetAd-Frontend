@@ -103,7 +103,7 @@ export function AdminStatusOverrideModal({
         <button
           ref={closeButtonRef}
           onClick={handleClose}
-          className="absolute right-5 top-5 rounded-lg p-1 transition-colors hover:bg-gray-100"
+          className="absolute end-5 top-5 rounded-lg p-1 transition-colors hover:bg-gray-100"
           aria-label="Close modal"
           type="button"
         >
