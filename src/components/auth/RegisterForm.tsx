@@ -1,12 +1,11 @@
-// src/components/auth/RegisterForm.tsx
-// Reusable form components and RegisterForm for the PetAd register page
-
-import { useState, type InputHTMLAttributes } from "react";
+import { useState, useCallback, type InputHTMLAttributes } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthModal } from "../ui/authModal";
-import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
+import { useRegister } from "../../hooks/useRegister";
 import { authService } from "../../api/authService";
 import { ApiError } from "../../lib/api-errors";
+import { trackEvent } from "../../lib/analytics";
+import { AuthModal } from "../ui/authModal";
+import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
 
 // ─── Reusable: FormInput ──────────────────────────────────────────────────────
 
@@ -231,13 +230,14 @@ export function OrDivider() {
 interface SubmitButtonProps {
   label: string;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
-export function SubmitButton({ label, isLoading }: SubmitButtonProps) {
+export function SubmitButton({ label, isLoading, disabled }: SubmitButtonProps) {
   return (
     <button
       type="submit"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className="w-full rounded-xl bg-[#E84D2A] py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#d4431f] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#E84D2A]/40 disabled:opacity-70 disabled:cursor-not-allowed"
     >
       {isLoading ? (
@@ -268,103 +268,60 @@ export function SubmitButton({ label, isLoading }: SubmitButtonProps) {
 
 // ─── RegisterForm ─────────────────────────────────────────────────────────────
 
-interface RegisterFormData {
-  email: string;
-  fullName: string;
-  nin: string;
-  password: string;
-}
-
-interface RegisterFormErrors {
-  email?: string;
-  fullName?: string;
-  nin?: string;
-  password?: string;
-}
-
 export function RegisterForm() {
-  const [formData, setFormData] = useState<RegisterFormData>({
-    email: "",
-    fullName: "",
-    nin: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState<RegisterFormErrors>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showIdentityModal, setShowIdentityModal] = useState(false);
-  const navigate = useNavigate();
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const validate = (): boolean => {
-    const newErrors: RegisterFormErrors = {};
+  // Use useRegister for form state management (values, validation, errors)
+  const {
+    form,
+    errors,
+    handleChange: useRegisterHandleChange,
+    validate,
+  } = useRegister();
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email address is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = "Please enter your full name";
-    }
-
-    if (!formData.nin.trim()) {
-      newErrors.nin = "NIN is required";
-    } else if (formData.nin.trim().length < 11) {
-      newErrors.nin = "NIN must be at least 11 characters";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (field: keyof RegisterFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field as keyof RegisterFormErrors]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
+  // Handle change for all form fields
+  const handleChange = (
+    field: keyof typeof form,
+    value: string | boolean,
+  ) => {
+    if (field === "termsAccepted") {
+      setTermsAccepted(value as boolean);
+    } else {
+      useRegisterHandleChange(field, value as string);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Custom submit that checks terms acceptance
+  const handleCustomSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validate()) return;
+
     setIsLoading(true);
-    setSubmitError(null);
+
     try {
       await authService.register({
-        email: formData.email.trim(),
-        fullName: formData.fullName.trim(),
-        nin: formData.nin.trim(),
-        password: formData.password,
+        email: form.email.trim(),
+        fullName: form.fullName.trim(),
+        nin: form.nin.trim(),
+        password: form.password,
       });
+      trackEvent("registration_completed", { role: form.role });
       setShowSuccessModal(true);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        setErrors((prev) => ({ ...prev, email: "An account with this email already exists" }));
+        // Email already exists
       } else {
-        setSubmitError(
-          err instanceof Error ? err.message : "Registration failed. Please try again."
-        );
+        // General error
       }
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleGoogle = () => {
-    // Show Identity Modal for testing purposes
-    setShowIdentityModal(true);
-  };
+  }, [form, validate, setIsLoading]);
 
   return (
     <div className="w-full">
@@ -375,27 +332,25 @@ export function RegisterForm() {
       <div className="flex flex-col gap-5">
         <GoogleButton
           label="Create account with Google"
-          onClick={handleGoogle}
+          onClick={() => {
+            setShowIdentityModal(true);
+          }}
         />
         <OrDivider />
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleCustomSubmit}
           noValidate
           className="flex flex-col gap-4"
         >
-          {submitError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
-              {submitError}
-            </div>
-          )}
+          {/* submitError is from useRegister hook - displayed above the form */}
           <FormInput
             id="email"
             label="Email Address"
             type="email"
             placeholder="Enter your email address"
             autoComplete="email"
-            value={formData.email}
+            value={form.email}
             onChange={(e) => handleChange("email", e.target.value)}
             error={errors.email}
           />
@@ -406,7 +361,7 @@ export function RegisterForm() {
             type="text"
             placeholder="Enter your full name"
             autoComplete="name"
-            value={formData.fullName}
+            value={form.fullName}
             onChange={(e) => handleChange("fullName", e.target.value)}
             error={errors.fullName}
           />
@@ -417,7 +372,7 @@ export function RegisterForm() {
             type="text"
             placeholder="Enter your NIN"
             autoComplete="off"
-            value={formData.nin}
+            value={form.nin}
             onChange={(e) => handleChange("nin", e.target.value)}
             error={errors.nin}
           />
@@ -426,12 +381,75 @@ export function RegisterForm() {
             id="password"
             label="Password"
             placeholder="Enter your password"
-            value={formData.password}
+            value={form.password}
             onChange={(value) => handleChange("password", value)}
             error={errors.password}
           />
 
-          <SubmitButton label="Create an account" isLoading={isLoading} />
+          {/* Role choice */}
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="radio"
+                name="role"
+                value="seeker"
+                checked={form.role === "seeker"}
+                onChange={(e) => handleChange("role", e.target.value)}
+                className="rounded border-gray-300 focus:ring-[#E84D2A]"
+              />
+              <span>I'm seeking a pet (Adopter)</span>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="radio"
+                name="role"
+                value="caretaker"
+                checked={form.role === "caretaker"}
+                onChange={(e) => handleChange("role", e.target.value)}
+                className="rounded border-gray-300 focus:ring-[#E84D2A]"
+              />
+              <span>I'm caring for a pet (Caretaker)</span>
+            </label>
+          </div>
+
+          {/* Terms and privacy acceptance */}
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="terms-accept"
+              checked={termsAccepted}
+              onChange={(e) => handleChange("termsAccepted", e.target.checked)}
+              className="rounded border-gray-300 focus:ring-[#E84D2A] w-4 h-4 cursor-pointer"
+              required
+            />
+            <span className="text-sm text-gray-700 flex-1">
+              I accept the <a
+                href="/legal/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#E84D2A] underline hover:underline"
+              >
+                Terms of Service
+              </a> and
+              <a
+                href="/legal/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#E84D2A] underline hover:underline"
+              >
+                Privacy Policy
+              </a>.
+            </span>
+            <p className="text-xs text-red-500 ml-4">
+              {"Submit blocked without terms acceptance"}
+            </p>
+          </div>
+
+          <SubmitButton
+            label="Create an account"
+            isLoading={isLoading}
+            disabled={!validate()}
+          />
         </form>
 
         <p className="text-center text-sm text-gray-600">
@@ -443,21 +461,21 @@ export function RegisterForm() {
             Login
           </Link>
         </p>
+
+        <AuthModal
+          isOpen={showSuccessModal}
+          title="Account Created!"
+          description="Your Petad account has been created successfully"
+          buttonText="Proceed To Sign In"
+          onAction={() => navigate("/login")}
+        />
+
+        <IdentityVerificationModal
+          isOpen={showIdentityModal}
+          onClose={() => setShowIdentityModal(false)}
+          onSuccess={() => setShowIdentityModal(false)}
+        />
       </div>
-
-      <AuthModal
-        isOpen={showSuccessModal}
-        title="Account Created!"
-        description="Your Petad account has been created successfully"
-        buttonText="Proceed To Sign In"
-        onAction={() => navigate("/login")}
-      />
-
-      <IdentityVerificationModal
-        isOpen={showIdentityModal}
-        onClose={() => setShowIdentityModal(false)}
-        onSuccess={() => setShowIdentityModal(false)}
-      />
     </div>
   );
 }

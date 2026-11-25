@@ -8,6 +8,9 @@ import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
 import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
 import ListingsPage from "./pages/ListingsPage";
+import { PrivacyPage } from "./pages/legal/PrivacyPage";
+import { TermsPage } from "./pages/legal/TermsPage";
+import { CookiesPage } from "./pages/legal/CookiesPage";
 
 const FavouritePage = lazy(() => import("./pages/FavouritePage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -174,6 +177,11 @@ function App() {
         </Route>
 
         <Route path="/403" element={<ForbiddenPage />} />
+
+        {/* ── Legal pages ───────────────────────────────────────────────────── */}
+        <Route path="/legal/terms" element={<TermsPage />} />
+        <Route path="/legal/privacy" element={<PrivacyPage />} />
+        <Route path="/legal/cookies" element={<CookiesPage />} />
 
         {/* ── Catch-all ─────────────────────────────────────────────────── */}
         <Route path="*" element={<Navigate to="/home" replace />} />
