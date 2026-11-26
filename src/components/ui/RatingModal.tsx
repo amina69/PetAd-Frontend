@@ -81,7 +81,7 @@ export function RatingModal({
         <button
           onClick={handleClose}
           disabled={isSubmitting}
-          className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute top-4 end-4 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Close modal"
         >
           <svg
@@ -146,7 +146,7 @@ export function RatingModal({
                     min-h-[100px]"
                   rows={4}
                 />
-                <div className="text-xs text-gray-500 text-right">
+                <div className="text-xs text-gray-500 text-end">
                   {feedback.length}/{maxFeedbackLength}
                 </div>
               </div>

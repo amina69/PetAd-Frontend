@@ -187,7 +187,7 @@ export function ListingModal({ isOpen, onClose }: ListingModalProps) {
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 -mr-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                        className="p-2 -me-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -196,7 +196,7 @@ export function ListingModal({ isOpen, onClose }: ListingModalProps) {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto scrollbar-minimal pr-2 -mr-2">
+                <div className="flex-1 overflow-y-auto scrollbar-minimal pe-2 -me-2">
 
                     {step === 1 && (
                         <div className="space-y-4 py-2">

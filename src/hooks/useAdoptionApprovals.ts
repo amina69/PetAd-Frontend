@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ApprovalStatus } from '../features/approval';
+import { logger } from "../lib/logger";
 
 export function useAdoptionApprovals(adoptionId: string) {
   const [hasDecided, setHasDecided] = useState(false);
@@ -45,7 +46,7 @@ export function useAdoptionApprovals(adoptionId: string) {
   }, [quorumMet, startPolling]);
 
   const mutateApprovalDecision = useCallback((payload?: { decision: "APPROVED" | "REJECTED"; reason?: string }) => {
-    console.log(`[Mock] mutateApprovalDecision for ${adoptionId}:`, payload);
+    logger.debug(`[Mock] mutateApprovalDecision for ${adoptionId}:`, payload?.decision);
     setIsPending(true);
 
     return new Promise<void>((resolve) => {

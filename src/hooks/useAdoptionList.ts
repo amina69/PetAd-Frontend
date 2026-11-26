@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
+import type { ApprovalStatusCode } from "../types/approval";
 
-export type AdoptionStatus =
-  | "PENDING"
-  | "APPROVED"
-  | "REJECTED"
-  | "DISPUTED";
+export type AdoptionStatus = Extract<
+  ApprovalStatusCode,
+  "PENDING" | "APPROVED" | "REJECTED" | "DISPUTED"
+>;
 
 export interface Adoption {
   id: string;

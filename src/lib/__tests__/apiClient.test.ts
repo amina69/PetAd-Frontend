@@ -104,6 +104,19 @@ describe("ApiClient", () => {
 			const [, init] = fetchMock.mock.calls[0];
 			expect(init.body).toBeUndefined();
 		});
+
+		it("passes FormData through untouched and lets the browser set the multipart Content-Type", async () => {
+			fetchMock.mockResolvedValueOnce(makeResponse({ ok: true }, 201));
+			const client = freshClient();
+			const form = new FormData();
+			form.append("body", "hi");
+
+			await client.post("/upload", form);
+
+			const [, init] = fetchMock.mock.calls[0];
+			expect(init.body).toBe(form);
+			expect(init.headers["Content-Type"]).toBeUndefined();
+		});
 	});
 
 	describe("PUT", () => {
@@ -262,10 +275,23 @@ describe("ApiClient", () => {
 			const client = freshClient();
 
 			await expect(client.get("/offline")).rejects.toMatchObject({
-				name: "ApiError",
+				name: "NetworkError",
 				isNetworkError: true,
-				message: expect.stringContaining("Network error"),
+				message: "You appear to be offline",
 			});
+		});
+
+		it("passes AbortSignal through to fetch and rethrows abort errors", async () => {
+			const controller = new AbortController();
+			fetchMock.mockRejectedValueOnce(
+				Object.assign(new Error("aborted"), { name: "AbortError" }),
+			);
+			const client = freshClient();
+
+			await expect(
+				client.get("/slow", { signal: controller.signal }),
+			).rejects.toMatchObject({ name: "AbortError" });
+			expect(fetchMock.mock.calls[0][1].signal).toBe(controller.signal);
 		});
 
 		it("re-throws existing ApiErrors without wrapping them", async () => {
@@ -330,6 +356,22 @@ describe("ApiClient", () => {
 				status: 401,
 				message: "Unauthorized access",
 			});
+		});
+
+		it("runs the unauthorized handler once for five simultaneous 401s", async () => {
+			const onUnauthorized = vi.fn();
+			fetchMock.mockImplementation(() =>
+				Promise.resolve(makeResponse({}, 401)),
+			);
+			const client = freshClient({ onUnauthorized });
+
+			await Promise.all(
+				Array.from({ length: 5 }, () =>
+					client.get("/secret").catch(() => undefined),
+				),
+			);
+
+			expect(onUnauthorized).toHaveBeenCalledOnce();
 		});
 	});
 

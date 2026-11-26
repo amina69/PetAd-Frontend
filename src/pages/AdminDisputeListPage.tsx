@@ -70,7 +70,7 @@ export default function AdminDisputeListPage() {
                 id="status-filter"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as DisputeStatus | "all")}
-                className="block w-full rounded-md border-gray-300 py-1.5 pl-3 pr-8 text-sm focus:border-emerald-500 focus:ring-emerald-500 bg-gray-50 text-gray-900 shadow-sm border"
+                className="block w-full rounded-md border-gray-300 py-1.5 ps-3 pe-8 text-sm focus:border-emerald-500 focus:ring-emerald-500 bg-gray-50 text-gray-900 shadow-sm border"
               >
                 <option value="all">All Statuses</option>
                 <option value="open">Open</option>
@@ -90,7 +90,7 @@ export default function AdminDisputeListPage() {
                   checked={isOverdueFilter}
                   onChange={(e) => setIsOverdueFilter(e.target.checked)}
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
               </div>
               <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">SLA Breached Only</span>
             </label>
@@ -118,11 +118,11 @@ export default function AdminDisputeListPage() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pet</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Adopter</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Shelter</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Pet</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Adopter</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Shelter</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
                     <th scope="col" className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                     <th scope="col" className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">SLA</th>
                   </tr>

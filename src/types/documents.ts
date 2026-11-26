@@ -16,6 +16,8 @@ export interface Document {
   type: string;
   kind?: string;
   verificationStatus?: DocumentVerificationStatus;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_REVIEW' | null;
+  applicationInReview?: boolean;
   // Admin review fields
   adminReviewStatus?: 'APPROVED' | 'REJECTED' | null;
   rejectionReason?: string | null;

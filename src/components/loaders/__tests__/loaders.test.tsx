@@ -29,8 +29,8 @@ describe('Spinner', () => {
   });
 
   it('forwards extra className', () => {
-    render(<Spinner className="ml-2" />);
-    expect(screen.getByTestId('spinner').className).toContain('ml-2');
+    render(<Spinner className="ms-2" />);
+    expect(screen.getByTestId('spinner').className).toContain('ms-2');
   });
 });
 

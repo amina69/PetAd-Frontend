@@ -107,10 +107,10 @@ export default function MyDisputesPage() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pet</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Opponent</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Pet</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Opponent</th>
+                    <th scope="col" className="px-6 py-4 text-start text-xs font-semibold text-gray-500 uppercase tracking-wider">Raised Date</th>
                     <th scope="col" className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>

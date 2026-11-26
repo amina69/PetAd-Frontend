@@ -1,97 +1,75 @@
-import { StatusBadge } from "../../../components/ui/StatusBadge";
-import { DocumentReUploadFlow } from "../../../components/ui/DocumentReUploadFlow";
+import { useState } from "react";
 import type { Document } from "../../../types/documents";
-import { resolveVerificationStatus } from "../hooks/useDocuments";
-import { statusConfig, WORKFLOW_DOCUMENT_CHECKLIST } from "../statusConfig";
+import { deletionErrorMessage, useDeleteDocument } from "../hooks/useDeleteDocument";
+import { DocumentStatusBadge } from "./DocumentStatusBadge";
+import { ReplaceDocumentButton } from "./ReplaceDocumentButton";
 
 interface DocumentListProps {
   documents: Document[];
-  onReplace?: (document: Document) => void;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  const kb = bytes / 1024;
-  if (kb < 1024) return `${kb % 1 === 0 ? kb.toFixed(0) : kb.toFixed(1)} KB`;
-  const mb = bytes / (1024 * 1024);
-  return `${mb % 1 === 0 ? mb.toFixed(0) : mb.toFixed(1)} MB`;
-}
+export function DocumentList({ documents }: DocumentListProps) {
+  const deletion = useDeleteDocument();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
-export function DocumentList({ documents, onReplace }: DocumentListProps) {
-  const kindsPresent = new Set(documents.map((document) => document.kind ?? document.type));
+  const pending = documents.find((doc) => doc.id === pendingId) ?? null;
+
+  async function confirmDelete() {
+    if (!pendingId) return;
+    const id = pendingId;
+    setPendingId(null);
+    try {
+      await deletion.mutateAsync(id);
+      setMessage(null);
+    } catch (error) {
+      setMessage(deletionErrorMessage(error));
+    }
+  }
 
   return (
-    <div className="space-y-6">
-      <section aria-label="Required documents checklist">
-        <h2 className="text-sm font-semibold text-gray-900">Workflow checklist</h2>
-        <ul className="mt-2 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white">
-          {WORKFLOW_DOCUMENT_CHECKLIST.map((item) => {
-            const uploaded = kindsPresent.has(item.kind);
-            return (
-              <li key={item.kind} className="flex items-center justify-between px-4 py-2 text-sm">
-                <span>
-                  {item.label}
-                  <span className="ml-2 text-xs text-gray-500">
-                    {item.required ? "Required" : "Optional"}
-                  </span>
-                </span>
-                <span className={uploaded ? "text-green-700" : "text-amber-700"}>
-                  {uploaded ? "Uploaded" : "Missing"}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <ul className="space-y-3" aria-label="Document list">
-        {documents.map((document) => {
-          const status = resolveVerificationStatus(document);
-          const config = statusConfig[status];
-          const kind = document.kind ?? document.type;
-          const uploadedDate = new Date(document.createdAt).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          });
-
-          return (
-            <li
-              key={document.id}
-              className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+    <div className="flex flex-col gap-3">
+      {message && (
+        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+          {message}
+        </p>
+      )}
+      <ul className="flex flex-col gap-2">
+        {documents.map((doc) => (
+          <li
+            key={doc.id}
+            className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 p-3"
+          >
+            <span className="text-sm font-medium text-gray-900">{doc.fileName}</span>
+            <DocumentStatusBadge status={doc.status} />
+            <ReplaceDocumentButton documentId={doc.id} documentType={doc.type} />
+            <button
+              type="button"
+              onClick={() => {
+                setMessage(null);
+                setPendingId(doc.id);
+              }}
+              aria-label={`Delete ${doc.fileName}`}
             >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-gray-900">{document.fileName}</p>
-                <p className="text-xs text-gray-500">
-                  {kind} · {formatBytes(document.size)} · {uploadedDate}
-                </p>
-                {status === "REJECTED" && document.rejectionReason ? (
-                  <p className="mt-1 text-sm text-red-600" data-testid={`rejection-reason-${document.id}`}>
-                    {document.rejectionReason}
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <StatusBadge color={config.color} label={config.label} tooltip={config.description} />
-                {status === "REJECTED" ? (
-                  onReplace ? (
-                    <button
-                      type="button"
-                      onClick={() => onReplace(document)}
-                      className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
-                    >
-                      Replace
-                    </button>
-                  ) : (
-                    <DocumentReUploadFlow documentId={document.id} documentType={kind} />
-                  )
-                ) : null}
-              </div>
-            </li>
-          );
-        })}
+              Delete
+            </button>
+          </li>
+        ))}
       </ul>
+      {pending && (
+        <div role="dialog" aria-label="Delete document" className="rounded-md border p-3">
+          <p>Delete this file?</p>
+          <p className="text-sm text-gray-600">
+            {pending.fileName} will be removed unless it is attached to an application in review.
+          </p>
+          <button type="button" onClick={() => void confirmDelete()}>
+            Confirm delete
+          </button>
+          <button type="button" onClick={() => setPendingId(null)}>
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -99,7 +99,7 @@ export function PasswordInput({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           autoComplete="new-password"
-          className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-all
+          className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pe-11 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-all
             focus:border-[#E84D2A] focus:ring-2 focus:ring-[#E84D2A]/20
             ${error ? "border-red-400 focus:border-red-400 focus:ring-red-400/20" : ""}`}
           aria-invalid={!!error}
@@ -108,7 +108,7 @@ export function PasswordInput({
         <button
           type="button"
           onClick={() => setShow((prev) => !prev)}
-          className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute inset-y-0 end-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
           aria-label={show ? "Hide password" : "Show password"}
         >
           {show ? (

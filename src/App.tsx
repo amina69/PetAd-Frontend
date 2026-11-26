@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
@@ -6,16 +6,19 @@ import { GuestRoute } from "./components/auth/GuestRoute";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
+import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
+import ListingsPage from "./pages/ListingsPage";
+import { useInstallPrompt } from "./hooks/useInstallPrompt";
 
 const FavouritePage = lazy(() => import("./pages/FavouritePage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
-const ListingsPage = lazy(() => import("./pages/ListingsPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const ForgetPasswordPage = lazy(() => import("./pages/forgetPasswordPage"));
 const InterestPage = lazy(() => import("./pages/interestPage"));
 const NotificationPage = lazy(() => import("./pages/notificationPage"));
+const MessagesPage = lazy(() => import("./pages/MessagesPage"));
 const NotificationPreferencesPage = lazy(() =>
   import("./pages/NotificationPreferencesPage"),
 );
@@ -35,15 +38,30 @@ const SettlementSummaryPage = lazy(() =>
   })),
 );
 const AdoptionTimelinePage = lazy(() => import("./pages/AdoptionTimelinePage"));
+const AdoptionStatusPage = lazy(() => import("./pages/AdoptionStatusPage"));
 const ModalPreview = lazy(() => import("./pages/ModalPreview"));
 const StatusPollingDemo = lazy(() => import("./pages/StatusPollingDemo"));
 const CustodyTimelinePage = lazy(() => import("./pages/CustodyTimelinePage"));
 const AdminApprovalQueuePage = lazy(() => import("./pages/AdminApprovalQueuePage"));
+const ApprovalListPage = lazy(() => import("./pages/ApprovalListPage"));
 const AdminDisputeListPage = lazy(() => import("./pages/AdminDisputeListPage"));
 const DisputeDetailPage = lazy(() => import("./pages/DisputeDetailPage"));
 const ShelterApprovalQueuePage = lazy(() => import("./pages/ShelterApprovalQueuePage"));
 const MyDisputesPage = lazy(() => import("./pages/MyDisputesPage"));
 const DocumentsPage = lazy(() => import("./pages/DocumentsPage"));
+const AdminLayout = lazy(() => import("./features/admin/components/AdminLayout"));
+const AdminOverviewPage = lazy(() => import("./pages/admin/AdminOverviewPage"));
+const AdminSectionPage = lazy(() => import("./pages/admin/AdminSectionPage"));
+const ForbiddenPage = lazy(() => import("./pages/ForbiddenPage"));
+const DocumentVerificationPage = lazy(() => import("./pages/admin/DocumentVerificationPage"));
+const UsersPage = lazy(() => import("./pages/admin/UsersPage"));
+const AuditLogPage = lazy(() => import("./pages/admin/AuditLogPage"));
+const CaretakerDashboardPage = lazy(() => import("./pages/CaretakerDashboardPage"));
+const SavedSearchesPage = lazy(() =>
+  import("./features/pets/components/SavedSearchesPage").then(({ SavedSearchesPage }) => ({
+    default: SavedSearchesPage,
+  })),
+);
 
 function RouteLoadingFallback() {
   return (
@@ -55,6 +73,12 @@ function RouteLoadingFallback() {
 
 function App() {
   useNotificationDeepLink();
+  const installPrompt = useInstallPrompt();
+  const [isRtl, setIsRtl] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dir = isRtl ? "rtl" : "ltr";
+  }, [isRtl]);
 
   return (
     /**
@@ -63,6 +87,16 @@ function App() {
      */
     <AuthGateProvider>
       <Suspense fallback={<RouteLoadingFallback />}>
+        {import.meta.env.DEV && (
+          <button
+            type="button"
+            onClick={() => setIsRtl((current) => !current)}
+            aria-pressed={isRtl}
+            className="fixed bottom-4 end-4 z-[100] rounded-full bg-[#0D162B] px-4 py-2 text-sm font-semibold text-white shadow-lg"
+          >
+            RTL: {isRtl ? "On" : "Off"}
+          </button>
+        )}
         <Routes>
         {/* ── Root redirect ─────────────────────────────────────────────── */}
         <Route path="/" element={<Navigate to="/home" replace />} />
@@ -84,6 +118,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/saved-searches" element={<SavedSearchesPage />} />
             <Route path="/listings" element={<ListingsPage />} />
             <Route path="/listings/:id" element={<PetListingDetailsPage />} />
           </Route>
@@ -93,16 +128,19 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/favourites" element={<FavouritePage />} />
             <Route path="/interests" element={<InterestPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/messages/:conversationId" element={<MessagesPage />} />
             <Route
               path="/notification-preferences"
               element={<NotificationPreferencesPage />}
             />
             <Route
               path="/settings/notifications"
-              element={<NotificationsPage />}
+              element={<NotificationsPage installPrompt={installPrompt} />}
             />
             <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
             <Route path="/my-listings/:id" element={<ListingDetailsPage />} />
@@ -114,14 +152,26 @@ function App() {
               path="/adoption/:adoptionId/timeline"
               element={<AdoptionTimelinePage />}
             />
+            <Route
+              path="/adoption/:adoptionId/status"
+              element={<AdoptionStatusPage />}
+            />
             <Route path="/admin/approvals" element={<AdminApprovalQueuePage />} />
+            <Route path="/approvals" element={<ApprovalListPage />} />
             <Route path="/admin/disputes" element={<AdminDisputeListPage />} />
+            <Route path="/admin/documents" element={<DocumentVerificationPage />} />
+            <Route path="/admin/users" element={<UsersPage />} />
+            <Route path="/admin/audit-log" element={<AuditLogPage />} />
             <Route
               path="/shelter/approvals"
               element={<ShelterApprovalQueuePage />}
             />
             <Route path="/disputes" element={<MyDisputesPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
+            <Route
+              path="/caretaker/dashboard"
+              element={<CaretakerDashboardPage />}
+            />
             <Route path="/disputes/:id" element={<DisputeDetailPage />} />
             <Route
               path="/custody/:custodyId/timeline"
@@ -134,7 +184,20 @@ function App() {
             />
             <Route path="/status-polling-demo" element={<StatusPollingDemo />} />
           </Route>
+          <Route path="/admin/*" element={<AdminRouteGuard />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminOverviewPage />} />
+              <Route path="approvals" element={<AdminApprovalQueuePage />} />
+              <Route path="disputes" element={<AdminDisputeListPage />} />
+              <Route path="documents" element={<AdminSectionPage />} />
+              <Route path="users" element={<AdminSectionPage />} />
+              <Route path="audit" element={<AdminSectionPage />} />
+              <Route path="*" element={<AdminSectionPage />} />
+            </Route>
+          </Route>
         </Route>
+
+        <Route path="/403" element={<ForbiddenPage />} />
 
         {/* ── Catch-all ─────────────────────────────────────────────────── */}
         <Route path="*" element={<Navigate to="/home" replace />} />

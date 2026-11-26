@@ -127,7 +127,7 @@ export default function DisputeDetailPage() {
           to={`/admin/disputes`}
           className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="rtl-mirror h-4 w-4" />
           Back to Disputes
         </Link>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Dispute Detail</h1>
@@ -152,7 +152,7 @@ export default function DisputeDetailPage() {
           <div className="space-y-8">
             <ul className="relative">
               {/* Vertical line connecting entries */}
-              <div className="absolute top-0 bottom-0 left-8 w-px bg-gray-200" aria-hidden="true" />
+              <div className="absolute top-0 bottom-0 start-8 w-px bg-gray-200" aria-hidden="true" />
               
               {timelineEntries.map((entry, index) => {
                 const isLatest = index === 0;

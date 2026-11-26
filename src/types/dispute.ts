@@ -1,5 +1,32 @@
 export type DisputeStatus = "open" | "under_review" | "resolved" | "closed";
 
+/**
+ * Uppercase dispute status codes used by the admin and dispute-detail APIs.
+ *
+ * Canonical home for the union so `src/lib/statusConfig.ts` can derive an
+ * exhaustive badge map from it.
+ */
+export const DISPUTE_STATUS_CODES = [
+  "OPEN",
+  "UNDER_REVIEW",
+  "RESOLVED",
+  "CLOSED",
+  "REJECTED",
+  "SLA_BREACHED",
+] as const;
+
+export type DisputeStatusCode = (typeof DISPUTE_STATUS_CODES)[number];
+
+/** Escrow status codes as seen from a dispute record. */
+export const DISPUTE_ESCROW_STATUSES = ["LOCKED", "RELEASED", "REFUNDED"] as const;
+
+export type DisputeEscrowStatus = (typeof DISPUTE_ESCROW_STATUSES)[number];
+
+/** SLA health of a dispute. */
+export const DISPUTE_SLA_STATUSES = ["ON_TIME", "AT_RISK", "BREACHED"] as const;
+
+export type DisputeSlaStatus = (typeof DISPUTE_SLA_STATUSES)[number];
+
 export interface DisputeUser {
   id: string;
   name: string;

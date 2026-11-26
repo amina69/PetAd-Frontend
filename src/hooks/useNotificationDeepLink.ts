@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { notificationRouter } from "../lib/notificationRouter";
 import type { Notification } from "../types/notifications";
+import { logger } from "../lib/logger";
 
 async function fetchNotification(id: string): Promise<Notification> {
   const res = await fetch(`/api/notifications/${id}`);
@@ -36,9 +37,9 @@ export function useNotificationDeepLink() {
       })
       .catch((err: { status?: number }) => {
         if (err?.status === 404) {
-          console.warn(`Notification ${notificationId} not found, ignoring deep-link.`);
+          logger.warn(`Notification ${notificationId} not found, ignoring deep-link.`);
         } else {
-          console.error("Failed to handle notification deep-link:", err);
+          logger.error("Failed to handle notification deep-link:", err);
         }
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps

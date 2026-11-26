@@ -5,6 +5,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type { ApiError } from "../types/auth";
+import { redirectToLogin } from "../lib/session";
 
 interface UseApiQueryReturn<T> {
   data: T | undefined;
@@ -39,9 +40,7 @@ export function useApiQuery<T>(
 
   // Handle 401 Unauthorized
   if (status === 401) {
-    if (typeof window !== "undefined") {
-      window.location.assign("/login");
-    }
+    redirectToLogin();
   }
 
   return {

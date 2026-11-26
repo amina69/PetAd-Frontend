@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ResponsiveImage } from '../shared/ResponsiveImage';
 import { ClockIcon, CheckCircleIcon, EditIcon, TrashIcon } from '../icons/StatusIcons';
 
 interface Listing {
@@ -14,24 +15,29 @@ interface Listing {
 
 interface ListingCardProps {
   listing: Listing;
+  /** The first visible card is the LCP candidate and should load eagerly. */
+  priority?: boolean;
 }
 
-export default function ListingCard({ listing }: ListingCardProps) {
+export default function ListingCard({ listing, priority = false }: ListingCardProps) {
   return (
     <div className="bg-white border text-gray-900 border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6 relative overflow-hidden">
       
       {/* Image - Full Height */}
       <div className="md:col-span-2 h-48 md:h-auto">
-        <img 
-          src={listing.imageUrl} 
-          alt={listing.name} 
-          loading="lazy"
+        <ResponsiveImage
+          src={listing.imageUrl}
+          alt={listing.name}
+          width={320}
+          height={192}
+          priority={priority}
+          sizes="(min-width: 768px) 17vw, 100vw"
           className="w-full h-full object-cover"
         />
       </div>
 
       {/* Content Area */}
-      <div className="md:col-span-10 flex flex-col md:grid md:grid-cols-10 gap-4 p-4 sm:p-6 md:py-6 md:pr-6 md:pl-0">
+      <div className="md:col-span-10 flex flex-col md:grid md:grid-cols-10 gap-4 p-4 sm:p-6 md:py-6 md:pe-6 md:ps-0">
         
         {/* Details */}
         <div className="md:col-span-4 flex flex-col justify-center">

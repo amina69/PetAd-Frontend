@@ -6,9 +6,14 @@ import { queryClient } from './lib/query-client'
 import { ToastProvider } from './components/toast/ToastProvider'
 import { ThemeProvider } from './components/theme-provider'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
+import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
 import { AppErrorBoundary } from './components/common/ErrorBoundary'
+import { loadEnv } from './lib/env'
+import { logger } from './lib/logger'
+
+loadEnv()
 
 const STALE_SW_RELOAD_KEY = 'petad:stale-sw-reload'
 
@@ -34,8 +39,9 @@ async function cleanupServiceWorkers() {
     // registration we encounter here (e.g. left behind by an earlier dev visit)
     // is stale in this build and must be removed, not kept.
     const isMswWorker = scriptUrl.endsWith('/mockServiceWorker.js')
+    const isPetAdWorker = scriptUrl.endsWith('/sw.js')
 
-    if (isMswWorker || !import.meta.env.DEV) {
+    if (isMswWorker || (!import.meta.env.DEV && !isPetAdWorker)) {
       await registration.unregister()
       removedStaleWorker = true
     }
@@ -52,34 +58,51 @@ async function cleanupServiceWorkers() {
 }
 
 async function bootstrap() {
-  const reloadingAfterCleanup = await cleanupServiceWorkers()
+  // No-op unless VITE_ENABLE_ANALYTICS === 'true'.
+  initAnalytics()
 
-  if (reloadingAfterCleanup) {
-    return
-  }
+  if (import.meta.env.DEV) {
+    const reloadingAfterCleanup = await cleanupServiceWorkers()
 
-  if (import.meta.env.DEV && import.meta.env.VITE_MSW === 'true') {
-    // Some browsers (Firefox in particular) report no `serviceWorker.controller`
-    // even while the MSW worker is active. MSW treats that combination as a
-    // "first load" and calls location.reload(), producing an endless reload
-    // loop. Dropping the stale registration lets MSW register cleanly instead.
-    if (navigator.serviceWorker.controller == null) {
-      const staleRegistrations = await navigator.serviceWorker.getRegistrations()
-
-      if (staleRegistrations.length > 0) {
-        await Promise.all(
-          staleRegistrations.map((registration) => registration.unregister()),
-        )
-      }
+    if (reloadingAfterCleanup) {
+      return
     }
 
-    const { worker } = await import('./mocks/browser')
-    await worker.start({
-      onUnhandledRequest: 'warn',
-      serviceWorker: {
-        url: '/mockServiceWorker.js',
-      },
-    })
+    if (import.meta.env.VITE_MSW === 'true') {
+      // Some browsers (Firefox in particular) report no `serviceWorker.controller`
+      // even while the MSW worker is active. MSW treats that combination as a
+      // "first load" and calls location.reload(), producing an endless reload
+      // loop. Dropping the stale registration lets MSW register cleanly instead.
+      if (navigator.serviceWorker.controller == null) {
+        const staleRegistrations = await navigator.serviceWorker.getRegistrations()
+
+        if (staleRegistrations.length > 0) {
+          await Promise.all(
+            staleRegistrations.map((registration) => registration.unregister()),
+          )
+        }
+      }
+
+      const { worker } = await import('./mocks/browser')
+      await worker.start({
+        onUnhandledRequest: 'warn',
+        serviceWorker: {
+          url: '/mockServiceWorker.js',
+        },
+      })
+    }
+  } else {
+    // Keep the application worker registered in production, but remove stale
+    // development workers before registering the current worker.
+    void cleanupServiceWorkers()
+      .then((reloadingAfterCleanup) => {
+        if (!reloadingAfterCleanup && 'serviceWorker' in navigator) {
+          void navigator.serviceWorker
+            .register('/sw.js')
+            .catch((error: unknown) => logger.error('Failed to register app service worker', error))
+        }
+      })
+      .catch((error: unknown) => logger.error('Failed to clean up service workers', error))
   }
 
   createRoot(document.getElementById('root')!).render(

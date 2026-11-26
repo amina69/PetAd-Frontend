@@ -1,18 +1,19 @@
 import { useApiMutation } from "./useApiMutation";
 import { escrowService } from "../api/escrowService";
+import { queryKeys } from "../lib/queryKeys";
 
 /**
  * useRetrySettlement
  *
  * Wraps useApiMutation to retry a failed escrow settlement.
- * Invalidates ["escrow", escrowId] on success so any parent query
+ * Invalidates the escrow detail query on success so any parent query
  * showing escrow status refreshes automatically.
  */
 export function useRetrySettlement(escrowId: string) {
   const { mutate, isPending, isError, error } = useApiMutation<void, string>(
     (id: string) => escrowService.retrySettlement(id),
     {
-      invalidates: [["escrow", escrowId]],
+      invalidates: [queryKeys.escrow.detail(escrowId)],
     },
   );
 

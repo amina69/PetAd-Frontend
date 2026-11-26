@@ -1,3 +1,9 @@
+import type {
+  DisputeEscrowStatus,
+  DisputeSlaStatus,
+  DisputeStatusCode,
+} from "../../types/dispute";
+
 export interface EvidenceFile {
   id: string;
   fileName: string;
@@ -29,10 +35,10 @@ export interface DisputeDetail {
     role: "ADOPTER" | "SHELTER" | "ADMIN";
   };
   reason: string;
-  status: "OPEN" | "UNDER_REVIEW" | "RESOLVED" | "REJECTED";
-  slaStatus: "ON_TIME" | "AT_RISK" | "BREACHED";
+  status: DisputeStatusCode;
+  slaStatus: DisputeSlaStatus;
   escrow: {
-    status: "LOCKED" | "RELEASED" | "REFUNDED";
+    status: DisputeEscrowStatus;
     accountId: string;
   };
   evidence: EvidenceFile[];

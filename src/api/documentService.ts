@@ -2,7 +2,10 @@ import { apiClient } from "../lib/api-client";
 import { type Document } from "../types/documents";
 import { ApiError, ValidationApiError } from "../lib/api-errors";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+const isMockServiceWorkerEnabled = import.meta.env.VITE_MSW === "true";
+const API_URL =
+    import.meta.env.VITE_API_URL ??
+    (isMockServiceWorkerEnabled ? "/api" : "http://localhost:3000/api");
 
 function getToken(): string | null {
     if (typeof window !== "undefined") {
@@ -15,6 +18,21 @@ function getToken(): string | null {
     return null;
 }
 
+/**
+ * The document record returned by `POST /documents`.
+ *
+ * The backend may wrap the record (for example `{ document }` or
+ * `{ documents: [...] }`); `normaliseUploadedDocument` handles those shapes so
+ * callers can rely on a flat `{ id, fileName, size, mimeType }`.
+ */
+export interface UploadedDocument {
+    id: string;
+    fileName: string;
+    size: number;
+    mimeType: string;
+    url?: string;
+}
+
 export interface UploadDocumentOptions {
     file: File;
     type: string;
@@ -22,8 +40,73 @@ export interface UploadDocumentOptions {
     signal?: AbortSignal;
 }
 
+function parseJsonResponse(text: string): unknown {
+    if (!text) return null;
+    try {
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
+}
+
+function normaliseUploadedDocument(
+    payload: unknown,
+    file: File,
+): UploadedDocument {
+    const record = extractDocumentRecord(payload);
+    const id =
+        typeof record?.id === "string"
+            ? record.id
+            : typeof record?.documentId === "string"
+              ? record.documentId
+              : null;
+
+    if (!record || id === null || id.length === 0) {
+        throw new ApiError(
+            "Upload succeeded but the server did not return a document id.",
+            { code: "UPLOAD_RESPONSE_INVALID" },
+        );
+    }
+
+    return {
+        id,
+        fileName:
+            typeof record.fileName === "string" ? record.fileName : file.name,
+        size: typeof record.size === "number" ? record.size : file.size,
+        mimeType:
+            typeof record.mimeType === "string" ? record.mimeType : file.type,
+        url:
+            typeof record.fileUrl === "string"
+                ? record.fileUrl
+                : typeof record.url === "string"
+                  ? record.url
+                  : undefined,
+    };
+}
+
+function extractDocumentRecord(
+    payload: unknown,
+): Record<string, unknown> | null {
+    if (Array.isArray(payload)) {
+        return extractDocumentRecord(payload[0]);
+    }
+
+    if (typeof payload !== "object" || payload === null) return null;
+
+    const record = payload as Record<string, unknown>;
+
+    if (typeof record.id === "string") return record;
+    if (typeof record.documentId === "string") return record;
+
+    if (record.document) return extractDocumentRecord(record.document);
+    if (record.documents) return extractDocumentRecord(record.documents);
+    if (record.data) return extractDocumentRecord(record.data);
+
+    return null;
+}
+
 export const documentService = {
-    uploadDocument: (options: UploadDocumentOptions): Promise<void> => {
+    uploadDocument: (options: UploadDocumentOptions): Promise<UploadedDocument> => {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const url = `${API_URL}/documents`;
@@ -48,9 +131,35 @@ export const documentService = {
                 };
             }
 
+            if (options.signal) {
+                if (options.signal.aborted) {
+                    reject(new DOMException("Upload cancelled", "AbortError"));
+                    return;
+                }
+
+                options.signal.addEventListener(
+                    "abort",
+                    () => xhr.abort(),
+                    { once: true },
+                );
+            }
+
+            xhr.onabort = () => {
+                reject(new DOMException("Upload cancelled", "AbortError"));
+            };
+
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve();
+                    try {
+                        resolve(
+                            normaliseUploadedDocument(
+                                parseJsonResponse(xhr.responseText),
+                                options.file,
+                            ),
+                        );
+                    } catch (error) {
+                        reject(error);
+                    }
                 } else {
                     let errorData: any;
                     let message = `Request failed with status ${xhr.status}`;
@@ -87,24 +196,16 @@ export const documentService = {
                 }));
             };
 
-            xhr.onabort = () => {
-                reject(new DOMException("Upload cancelled", "AbortError"));
-            };
-
-            if (options.signal) {
-                if (options.signal.aborted) {
-                    xhr.abort();
-                    return;
-                }
-                options.signal.addEventListener("abort", () => xhr.abort(), { once: true });
-            }
-
             const formData = new FormData();
             formData.append("file", options.file);
             formData.append("type", options.type);
 
             xhr.send(formData);
         });
+    },
+
+    deleteDocument: async (documentId: string): Promise<void> => {
+        await apiClient.delete(`/documents/${documentId}`);
     },
 
     getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {
@@ -116,6 +217,11 @@ export const documentService = {
         const endpoint = `/documents${queryString ? `?${queryString}` : ""}`;
 
         return apiClient.get(endpoint);
+    },
+
+    /** Documents awaiting an admin decision. GET /documents?status=pending */
+    getPendingDocuments: async (): Promise<Document[]> => {
+        return apiClient.get("/documents?status=pending");
     },
 
     verifyDocument: async (documentId: string): Promise<{ verified: boolean, hash: string }> => {
@@ -185,18 +291,6 @@ export const documentService = {
                     isNetworkError: true,
                 }));
             };
-
-            xhr.onabort = () => {
-                reject(new DOMException("Upload cancelled", "AbortError"));
-            };
-
-            if (options.signal) {
-                if (options.signal.aborted) {
-                    xhr.abort();
-                    return;
-                }
-                options.signal.addEventListener("abort", () => xhr.abort(), { once: true });
-            }
 
             const formData = new FormData();
             formData.append("file", options.file);

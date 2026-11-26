@@ -45,7 +45,7 @@ export function FileUpload({
           ${error ? "border-red-400 bg-red-50/10" : ""}
         `}
             >
-                <span className={`text-[14px] truncate flex-1 pr-4 ${selectedFile ? "text-gray-900 font-medium" : "text-gray-400"}`}>
+                <span className={`text-[14px] truncate flex-1 pe-4 ${selectedFile ? "text-gray-900 font-medium" : "text-gray-400"}`}>
                     {selectedFile ? selectedFile.name : placeholder}
                 </span>
 
