@@ -1,6 +1,6 @@
 import { apiClient } from "../lib/api-client";
+import type { EscrowStatusResponse } from "../lib/hooks/useEscrowStatus";
 import type { SettlementSummary } from "../types/escrow";
-
 
 /**
  * escrowService
@@ -10,6 +10,14 @@ import type { SettlementSummary } from "../types/escrow";
 export const escrowService = {
   async retrySettlement(escrowId: string): Promise<void> {
     return apiClient.post(`/escrow/${escrowId}/retry-settlement`);
+  },
+
+  /**
+   * Fetch the status for the given escrow.
+   * @param escrowId - The ID of the escrow.
+   */
+async getStatus(escrowId: string): Promise<EscrowStatusResponse> {
+    return apiClient.get<EscrowStatusResponse>(`/escrow/${escrowId}/status`);
   },
 
   /**

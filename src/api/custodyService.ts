@@ -143,3 +143,5 @@ export const custodyService = {
     return custodyArrangementSchema.parse(response);
   },
 };
+
+export type { CustodyRequest, CustodyListResponse };
