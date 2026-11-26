@@ -1,16 +1,19 @@
 import { useState, useMemo } from "react";
 import { PetCard, type Pet } from "../ui/PetCard";
 import { FormSelect } from "../ui/formSelect";
+import { PetSortSelect } from "../ui/PetSortSelect";
 import { MOCK_LISTINGS, CATEGORY_OPTIONS, type PetListingSectionProps } from "./petListingData";
+import type { PetSortOption } from "../../types/petList";
 
 export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
   const [pets, setPets] = useState<Pet[]>(MOCK_LISTINGS);
   const [locationFilter, setLocationFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [sortOption, setSortOption] = useState<PetSortOption>("newest");
 
-  // Filter logic
+  // Filter + sort logic
   const filteredPets = useMemo(() => {
-    return pets.filter((pet) => {
+    const filtered = pets.filter((pet) => {
       const matchesCategory =
         categoryFilter === "all" || pet.category === categoryFilter;
       const matchesLocation =
@@ -18,7 +21,19 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
         pet.location.toLowerCase().includes(locationFilter.toLowerCase());
       return matchesCategory && matchesLocation;
     });
-  }, [pets, locationFilter, categoryFilter]);
+
+    // Sort: "newest" is the default insertion order (no-op); others re-sort a copy.
+    // Age strings like "4yrs old" / "1yr old" are parsed as integers for youngest/oldest.
+    const parseAge = (age: string) => parseInt(age, 10) || 0;
+    if (sortOption === "youngest") {
+      return [...filtered].sort((a, b) => parseAge(a.age) - parseAge(b.age));
+    }
+    if (sortOption === "oldest") {
+      return [...filtered].sort((a, b) => parseAge(b.age) - parseAge(a.age));
+    }
+    // "nearest" requires geolocation; fall back to default order when unavailable.
+    return filtered;
+  }, [pets, locationFilter, categoryFilter, sortOption]);
 
   // Action Handlers
   const handleToggleFavourite = (id: string) => {
@@ -48,10 +63,17 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
         {/* ── Header & Filters ── */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <h2 className="text-[22px] font-bold text-[#0D162B]">
-            Available For Adoption ({filteredPets.length})
+            Available For Adoption
           </h2>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Sort + result count */}
+            <PetSortSelect
+              value={sortOption}
+              onChange={setSortOption}
+              resultCount={filteredPets.length}
+              hasLocation={locationFilter.trim().length > 0}
+            />
             {/* Location Filter */}
             <div className="relative w-full sm:w-[220px]">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
