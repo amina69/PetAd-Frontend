@@ -19,7 +19,7 @@ exports[`TimelineEntry > handles missing optional fields gracefully 1`] = `
       </p>
     </div>
     <div
-      class="flex-shrink-0 text-right"
+      class="flex-shrink-0 text-end"
     >
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
@@ -97,7 +97,7 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
       </div>
       <svg
         aria-hidden="true"
-        class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
+        class="lucide lucide-arrow-right rtl-mirror h-4 w-4 text-gray-400 flex-shrink-0"
         fill="none"
         height="24"
         stroke="currentColor"
@@ -228,7 +228,7 @@ exports[`TimelineEntry > renders SDK-driven entry with transaction link 1`] = `
       </div>
     </div>
     <div
-      class="flex-shrink-0 text-right"
+      class="flex-shrink-0 text-end"
     >
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
@@ -297,7 +297,7 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
       </div>
       <svg
         aria-hidden="true"
-        class="lucide lucide-arrow-right h-4 w-4 text-gray-400 flex-shrink-0"
+        class="lucide lucide-arrow-right rtl-mirror h-4 w-4 text-gray-400 flex-shrink-0"
         fill="none"
         height="24"
         stroke="currentColor"
@@ -409,7 +409,7 @@ exports[`TimelineEntry > renders admin override entry correctly 1`] = `
       </div>
     </div>
     <div
-      class="flex-shrink-0 text-right"
+      class="flex-shrink-0 text-end"
     >
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"
@@ -517,7 +517,7 @@ exports[`TimelineEntry > renders regular entry correctly 1`] = `
       </p>
     </div>
     <div
-      class="flex-shrink-0 text-right"
+      class="flex-shrink-0 text-end"
     >
       <time
         class="text-sm text-gray-500 hover:text-gray-700 cursor-help"

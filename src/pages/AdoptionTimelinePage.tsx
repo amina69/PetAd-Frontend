@@ -61,7 +61,7 @@ export default function AdoptionTimelinePage() {
           to={`/adoption/${adoptionId}`}
           className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="rtl-mirror h-4 w-4" />
           Back to Adoption
         </Link>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Adoption Timeline</h1>
@@ -89,7 +89,7 @@ export default function AdoptionTimelinePage() {
                 </h3>
                 <ul className="relative">
                   {/* Vertical line connecting entries */}
-                  <div className="absolute top-0 bottom-0 left-8 w-px bg-gray-200" aria-hidden="true" />
+                  <div className="absolute top-0 bottom-0 start-8 w-px bg-gray-200" aria-hidden="true" />
                   
                   {group.items.map((entry, index) => {
                     const isFirstOverall = entries[0]?.id === entry.id;

@@ -247,7 +247,7 @@ function ApprovalPagination({
         aria-label="Previous page"
         className={buttonClass}
       >
-        <ChevronLeft size={16} aria-hidden="true" />
+        <ChevronLeft className="rtl-mirror" size={16} aria-hidden="true" />
       </button>
 
       {pages.map((page) => (
@@ -276,7 +276,7 @@ function ApprovalPagination({
         aria-label="Next page"
         className={buttonClass}
       >
-        <ChevronRight size={16} aria-hidden="true" />
+        <ChevronRight className="rtl-mirror" size={16} aria-hidden="true" />
       </button>
     </nav>
   );

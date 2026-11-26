@@ -197,7 +197,7 @@ export default function EditAdoptionListing() {
                 className={`flex items-center justify-between p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-white transition-all ${errors.images && i === 0 ? "border-red-500" : "border-gray-200"}`}
               >
                 <span
-                  className={`text-sm truncate pr-4 ${name === "Select file" ? "text-gray-400" : "text-gray-800"}`}
+                  className={`text-sm truncate pe-4 ${name === "Select file" ? "text-gray-400" : "text-gray-800"}`}
                 >
                   {name}
                 </span>

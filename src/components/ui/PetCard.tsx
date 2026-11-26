@@ -45,7 +45,7 @@ export function PetCard({ pet, onToggleFavourite, onToggleInterested, onOwnerCli
                 />
 
                 {/* Action Buttons Container */}
-                <div className="absolute top-4 right-4 flex flex-col gap-[16px]">
+                <div className="absolute top-4 end-4 flex flex-col gap-[16px]">
                     {/* Favourite Button */}
                     <button
                         onClick={() => onToggleFavourite(pet.id)}

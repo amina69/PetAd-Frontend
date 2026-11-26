@@ -23,7 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 md:flex">
-      <a href="#admin-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:p-3">Skip to admin content</a>
+      <a href="#admin-content" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:p-3">Skip to admin content</a>
       <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white p-5 md:block" aria-label="Administration navigation">
         <NavLink to="/admin" className="mb-8 block text-xl font-bold text-slate-900">PetAd Admin</NavLink>
         <nav className="space-y-1">{links()}</nav>

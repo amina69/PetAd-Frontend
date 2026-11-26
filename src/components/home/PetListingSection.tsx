@@ -1,12 +1,53 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { PetCard, type Pet } from "../ui/PetCard";
 import { FormSelect } from "../ui/formSelect";
 import { MOCK_LISTINGS, CATEGORY_OPTIONS, type PetListingSectionProps } from "./petListingData";
+import { LocationInput, type LocationRadius } from "../../features/pets/components/LocationInput";
+import { SaveSearchButton } from "../../features/pets/components/SaveSearchButton";
+import type { Coordinates } from "../../features/pets/hooks/useGeolocation";
+
+const CATEGORIES = ["all", "dog", "cat", "bird"] as const;
+const DEFAULT_RADIUS: LocationRadius = 10;
+
+function isLocationRadius(value: number): value is LocationRadius {
+  return value === 5 || value === 10 || value === 25 || value === 50;
+}
+
+function readCoordinates(params: URLSearchParams): Coordinates | null {
+  const latitude = Number(params.get("latitude"));
+  const longitude = Number(params.get("longitude"));
+  if (!params.has("latitude") || !params.has("longitude")) return null;
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return null;
+  return { latitude: Number(latitude.toFixed(2)), longitude: Number(longitude.toFixed(2)) };
+}
 
 export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>(MOCK_LISTINGS);
-  const [locationFilter, setLocationFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState(() => searchParams.get("location") ?? "");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "dog" | "cat" | "bird">(() => {
+    const category = searchParams.get("category");
+    return CATEGORIES.find((value) => value === category) ?? "all";
+  });
+  const [radius, setRadius] = useState<LocationRadius>(() => {
+    const value = Number(searchParams.get("radius"));
+    return isLocationRadius(value) ? value : DEFAULT_RADIUS;
+  });
+  const [coordinates, setCoordinates] = useState(() => readCoordinates(searchParams));
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (locationFilter.trim()) next.set("location", locationFilter.trim());
+    if (categoryFilter !== "all") next.set("category", categoryFilter);
+    if (radius !== DEFAULT_RADIUS) next.set("radius", String(radius));
+    if (coordinates) {
+      next.set("latitude", coordinates.latitude.toFixed(2));
+      next.set("longitude", coordinates.longitude.toFixed(2));
+    }
+    setSearchParams(next, { replace: true });
+  }, [categoryFilter, coordinates, locationFilter, radius, setSearchParams]);
 
   // Filter logic
   const filteredPets = useMemo(() => {
@@ -40,6 +81,8 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
   const handleResetFilters = () => {
     setLocationFilter("");
     setCategoryFilter("all");
+    setRadius(DEFAULT_RADIUS);
+    setCoordinates(null);
   };
 
   return (
@@ -52,37 +95,13 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
           </h2>
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Location Filter */}
-            <div className="relative w-full sm:w-[220px]">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <svg
-                  className="w-[18px] h-[18px] text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </div>
-              <input
-                id="home-location-filter"
-                type="text"
-                placeholder="Filter by Location"
-                value={locationFilter}
-                onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
-              />
-            </div>
+            <LocationInput
+              location={locationFilter}
+              radius={radius}
+              onLocationChange={setLocationFilter}
+              onRadiusChange={setRadius}
+              onCoordinatesChange={setCoordinates}
+            />
 
             {/* Category Filter */}
             <div className="w-[170px]">
@@ -91,7 +110,9 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
                 label="Filter by category"
                 options={CATEGORY_OPTIONS}
                 value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
+                onChange={(e) =>
+                  setCategoryFilter(CATEGORIES.find((value) => value === e.target.value) ?? "all")
+                }
                 className="py-2.5!"
               />
             </div>
@@ -117,6 +138,20 @@ export function PetListingSection({ onOwnerClick }: PetListingSectionProps) {
               Reset
             </button>
           </div>
+        </div>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <SaveSearchButton
+            params={{
+              location: locationFilter.trim() || undefined,
+              category: categoryFilter,
+              radius,
+              latitude: coordinates?.latitude,
+              longitude: coordinates?.longitude,
+            }}
+          />
+          <Link to="/saved-searches" className="text-sm font-semibold text-[#0D162B] underline underline-offset-2">
+            View saved searches
+          </Link>
         </div>
 
         {/* ── Pet Card Grid ── */}
