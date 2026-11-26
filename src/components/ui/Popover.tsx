@@ -83,7 +83,7 @@ export function Popover({
   role = "dialog",
   ariaLabel,
   ariaLabelledBy,
-  ariaModal = false,
+  ariaModal = true,
   hasPopup = "dialog",
   matchTriggerWidth = false,
   closeOnOutsideClick = true,

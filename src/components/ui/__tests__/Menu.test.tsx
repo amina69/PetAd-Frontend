@@ -60,8 +60,11 @@ describe("Menu", () => {
     fireEvent.keyDown(menu, { key: "Home" });
     expect(duplicate).toHaveFocus();
 
+    // End moves to the last enabled item; "Edit listing" is rendered last.
     fireEvent.keyDown(menu, { key: "End" });
-    expect(archive).toHaveFocus();
+    expect(
+      screen.getByRole("menuitem", { name: "Edit listing" }),
+    ).toHaveFocus();
 
     // Typeahead matches item labels and skips disabled entries.
     fireEvent.keyDown(menu, { key: "d" });
