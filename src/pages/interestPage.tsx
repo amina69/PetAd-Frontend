@@ -144,7 +144,7 @@ export default function InterestPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-full sm:w-[220px]">
-              {/* <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 start-4 flex items-center pointer-events-none">
                 <svg
                   className="w-4.5 h-4.5 text-gray-400"
                   fill="none"
@@ -169,7 +169,7 @@ export default function InterestPage() {
                 placeholder="filter by Location"
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
+                className="w-full ps-11 pe-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
               /> */}
             </div>
 

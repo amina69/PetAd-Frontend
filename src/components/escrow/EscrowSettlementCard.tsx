@@ -84,7 +84,7 @@ export function EscrowSettlementCard({ escrowId }: EscrowSettlementCardProps) {
       className="group relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition-all duration-500 hover:shadow-2xl"
     >
       {/* Background radial highlight */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-50/50 blur-3xl transition-all duration-700 group-hover:bg-indigo-100/50" />
+      <div className="absolute -end-20 -top-20 h-64 w-64 rounded-full bg-indigo-50/50 blur-3xl transition-all duration-700 group-hover:bg-indigo-100/50" />
       
       <div className="relative">
         <div className="flex items-center justify-between">

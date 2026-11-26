@@ -4,7 +4,6 @@ import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import { validateUploadFiles } from "../../../lib/documentUploadRules";
 import { queryKeys } from "../../../lib/queryKeys";
-import { PERF_MEASURES, startPerfMeasure } from "../../../lib/perf";
 
 export function DocumentUploadPanel() {
   const queryClient = useQueryClient();

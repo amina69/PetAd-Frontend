@@ -78,14 +78,14 @@ export default function UserDashboardPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <button
                                 onClick={() => navigate("/listings")}
-                                className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-left group"
+                                className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-start group"
                             >
                                 <h3 className="font-semibold text-[#0D162B] group-hover:text-[#E84D2A]">View Pet Listings</h3>
                                 <p className="text-[13px] text-[#475467] mt-1">Browse available pets for adoption</p>
                             </button>
                             <button
                                 onClick={() => navigate("/home")}
-                                className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-left group"
+                                className="p-4 border border-[#ECEFF3] rounded-xl hover:border-[#E84D2A] hover:bg-orange-50 transition-all text-start group"
                             >
                                 <h3 className="font-semibold text-[#0D162B] group-hover:text-[#E84D2A]">List a Pet</h3>
                                 <p className="text-[13px] text-[#475467] mt-1">Create a new adoption listing</p>
