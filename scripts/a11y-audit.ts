@@ -68,7 +68,6 @@ async function auditRoute(page: Page, route: { path: string; label: string }): P
 
     const axeResults = await page.evaluate(() => {
       return new Promise<{ violations: Array<{ id: string; impact: string; description: string; nodes: unknown[] }> }>((resolve) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).axe.run(document, {}, (_err: unknown, results: { violations: Array<{ id: string; impact: string; description: string; nodes: unknown[] }> }) => {
           resolve(results);
         });
