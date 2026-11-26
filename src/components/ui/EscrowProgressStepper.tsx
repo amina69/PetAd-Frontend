@@ -131,7 +131,7 @@ export function EscrowProgressStepper({
                 {index < steps.length - 1 ? (
                   <div
                     aria-hidden="true"
-                    className={`ml-3 hidden h-0.5 w-full min-w-8 rounded-full sm:block ${
+                    className={`ms-3 hidden h-0.5 w-full min-w-8 rounded-full sm:block ${
                       isComplete ? "bg-[#E84D2A]" : "bg-[#D7DEE8]"
                     }`}
                   />

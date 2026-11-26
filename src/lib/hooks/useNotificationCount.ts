@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../api-client";
 import { usePolling } from "./usePolling";
+import { queryKeys } from "../queryKeys";
 import { logger } from "../logger";
 
 interface NotificationCountResponse {
@@ -14,7 +15,7 @@ export function useNotificationCount() {
   const queryClient = useQueryClient();
 
   const query = usePolling<NotificationCountResponse>(
-    ["notification-count"],
+    queryKeys.notifications.count(),
     () => apiClient.get<NotificationCountResponse>("/notifications?status=UNREAD&limit=0"),
     {
       intervalMs: 60000,
@@ -30,7 +31,7 @@ export function useNotificationCount() {
     const markAllRead = async () => {
       try {
         await apiClient.post("/notifications/read-all");
-        queryClient.setQueryData<NotificationCountResponse>(["notification-count"], {
+        queryClient.setQueryData<NotificationCountResponse>(queryKeys.notifications.count(), {
           count: 0,
         });
       } catch (error) {

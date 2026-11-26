@@ -33,7 +33,7 @@ export function AttachmentChips({ files, onRemove }: AttachmentChipsProps) {
       {files.map((file, index) => (
         <li
           key={`${file.name}-${file.size}-${index}`}
-          className="flex max-w-[220px] items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 py-1 pl-1 pr-2"
+          className="flex max-w-[220px] items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 py-1 ps-1 pe-2"
         >
           {previews[index] ? (
             <img src={previews[index]!} alt="" className="h-9 w-9 rounded object-cover" />

@@ -63,7 +63,7 @@ export function UserDetailDrawer({ userId, onClose }: UserDetailDrawerProps) {
     <aside
       role="dialog"
       aria-label="User details"
-      className="fixed inset-y-0 right-0 z-40 w-full max-w-md overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-xl"
+      className="fixed inset-y-0 end-0 z-40 w-full max-w-md overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-xl"
     >
       <button type="button" onClick={onClose} className="mb-4 text-sm text-gray-500 underline">
         Close

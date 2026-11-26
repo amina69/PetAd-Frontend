@@ -37,7 +37,7 @@ export default function ListingCard({ listing, priority = false }: ListingCardPr
       </div>
 
       {/* Content Area */}
-      <div className="md:col-span-10 flex flex-col md:grid md:grid-cols-10 gap-4 p-4 sm:p-6 md:py-6 md:pr-6 md:pl-0">
+      <div className="md:col-span-10 flex flex-col md:grid md:grid-cols-10 gap-4 p-4 sm:p-6 md:py-6 md:pe-6 md:ps-0">
         
         {/* Details */}
         <div className="md:col-span-4 flex flex-col justify-center">

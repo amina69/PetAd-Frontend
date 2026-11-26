@@ -4,12 +4,10 @@ import { useApiQuery } from "../../hooks/useApiQuery";
 import { StellarTxLink } from "../ui/StellarTxLink";
 import { Skeleton } from "../ui/Skeleton";
 import { EmptyState } from "../ui/emptyState";
+import { StatusBadge } from "../common/StatusBadge";
 import type { ApprovalDecision } from "../../types/adoption";
+import { queryKeys } from "../../lib/queryKeys";
 import { STALE_TIME } from "../../lib/staleTime";
-import {
-  getStatusMeta,
-  STATUS_COLOR_CLASSES,
-} from "../../lib/statusConfig";
 
 interface ApprovalHistoryTabProps {
   adoptionId: string;
@@ -17,7 +15,7 @@ interface ApprovalHistoryTabProps {
 
 export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabProps) {
   const { data: approvals, isLoading, isError } = useApiQuery<ApprovalDecision[]>(
-    ["approvals", adoptionId],
+    queryKeys.approvals.detail(adoptionId),
     () => adoptionService.getApprovals(adoptionId),
     // Approval history is operator-driven; a one-minute cache matches the approvals domain.
     { staleTime: STALE_TIME.APPROVALS },
@@ -85,7 +83,7 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
                 <p className="text-xs text-gray-500">{decision.approverRole}</p>
               </div>
             </div>
-            <StatusBadge status={decision.status} />
+            <StatusBadge domain="approval" status={decision.status} />
           </div>
 
           {decision.reason && (
@@ -112,17 +110,3 @@ export default function ApprovalHistoryTab({ adoptionId }: ApprovalHistoryTabPro
   );
 }
 
-function StatusBadge({ status }: { status: ApprovalDecision["status"] }) {
-  const meta = getStatusMeta("approval", status);
-  const Icon = meta.icon;
-  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
-
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold ${tokenClasses.text} ${tokenClasses.softBg} border ${tokenClasses.border} rounded-full`}
-    >
-      <Icon size={12} strokeWidth={3} aria-hidden="true" />
-      {meta.label}
-    </span>
-  );
-}

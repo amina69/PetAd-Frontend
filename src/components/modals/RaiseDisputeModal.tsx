@@ -91,7 +91,7 @@ export function RaiseDisputeModal({ isOpen, onClose, adoptionId, raisedBy }: Pro
         {!isPending && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+            className="absolute top-4 end-4 text-gray-400 hover:text-gray-700"
             aria-label="Close modal"
           >
             ✕

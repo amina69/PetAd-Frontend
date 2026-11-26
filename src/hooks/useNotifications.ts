@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import type { Notification, NotificationFilter, NotificationsPage } from "../types/notifications";
+import { queryKeys } from "../lib/queryKeys";
 import { STALE_TIME } from "../lib/staleTime";
 
 const PAGE_SIZE = 10;
@@ -41,7 +42,7 @@ function applyOptimisticRead(
 ): void {
   const idSet = new Set(ids);
   queryClient.setQueriesData<NotificationsCache>(
-    { queryKey: ["notifications"] },
+    { queryKey: queryKeys.notifications.list() },
     (old) => {
       // Guard against caches with a different shape (e.g. the dropdown's
       // plain NotificationsPage) that also match the "notifications" prefix.
@@ -80,7 +81,7 @@ export function useNotifications(filter: NotificationFilter): UseNotificationsRe
   const queryClient = useQueryClient();
 
   const query = useInfiniteQuery({
-    queryKey: ["notifications", filter],
+    queryKey: queryKeys.notifications.list(filter),
     // Notifications are live: always stale so mount/focus refetches pick up new items.
     staleTime: STALE_TIME.NOTIFICATIONS,
     queryFn: ({ pageParam }) =>

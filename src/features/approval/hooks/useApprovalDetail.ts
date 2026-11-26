@@ -8,12 +8,12 @@ import { STALE_TIME } from "../../../lib/staleTime";
 // ─── Cache seeding ───────────────────────────────────────────────────────────
 
 /**
- * Scans every cached approvals list page (`["approvals", <params>]`) and
+ * Scans every cached approvals list page (the approvals list keys) and
  * returns the row whose `id` matches, so a detail view can render immediately
  * instead of flashing a loading state.
  *
- * The `["approvals"]` root also matches detail entries and other legacy
- * payloads stored under this feature (e.g. `["approvals", adoptionId]`), so
+ * The approvals root key also matches detail entries and other legacy
+ * payloads stored under this feature (e.g. the per-adoption approvals key), so
  * entries that do not expose a list-shaped `items` array are skipped.
  *
  * @param queryClient - The client owning the cache the list hook populated.
@@ -51,7 +51,7 @@ function findCachedApprovalItem(
 /**
  * TanStack Query hook to retrieve a single approval by id.
  *
- * - `queryKey`: `["approvals", id]` — shares the `["approvals"]` root with the
+ * - `queryKey`: the approvals detail key — shares the approvals root with the
  *   list so one `invalidateQueries({ queryKey: approvalKeys.all })` refreshes
  *   both.
  * - `enabled: !!id` — no request is issued while the id is missing.

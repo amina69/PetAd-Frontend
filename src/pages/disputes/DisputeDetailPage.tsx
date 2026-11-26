@@ -5,6 +5,8 @@ import { DisputeInfoSection } from "../../components/dispute/DisputeInfoSection"
 import { DisputeResolutionSection } from "../../components/dispute/DisputeResolutionSection";
 import { DisputeThread } from "../../components/dispute/DisputeThread";
 import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
+import { useRoleGuard } from "../../hooks/useRoleGuard";
+import AdminDisputeResolutionForm from "../../components/disputes/AdminDisputeResolutionForm";
 
 function DisputeErrorState({ onRetry }: { onRetry: () => void }) {
   return (
@@ -39,6 +41,7 @@ function DisputeErrorState({ onRetry }: { onRetry: () => void }) {
 
 export function DisputeDetailPage() {
   const { disputeId } = useParams<{ disputeId: string }>();
+  const { isAdmin } = useRoleGuard();
   const { data, isLoading, isError, isNotFound, refetch } = useDisputeDetail(
     disputeId || "",
   );
@@ -77,6 +80,9 @@ export function DisputeDetailPage() {
       <>
         <DisputeInfoSection dispute={data} />
         <DisputeThread comments={data.comments ?? []} />
+        {isAdmin && data.status !== "RESOLVED" && data.status !== "REJECTED" && (
+          <AdminDisputeResolutionForm disputeId={data.id} />
+        )}
         <DisputeResolutionSection dispute={data} />
       </>
     );

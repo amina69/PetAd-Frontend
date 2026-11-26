@@ -1,5 +1,6 @@
 import { useApiQuery } from "./useApiQuery";
 import { adoptionService } from "../api/adoptionService";
+import { queryKeys } from "../lib/queryKeys";
 import type { AdoptionDetails, AdoptionStatus } from "../types/adoption";
 import { STALE_TIME } from "../lib/staleTime";
 
@@ -15,7 +16,7 @@ const POLL_INTERVAL_MS = 3_000;
  */
 export function useEscrowStatus(adoptionId: string) {
   const result = useApiQuery<AdoptionDetails>(
-    ["adoption", adoptionId],
+    queryKeys.adoptions.detail(adoptionId),
     () => adoptionService.getDetails(adoptionId),
     {
       enabled: !!adoptionId,

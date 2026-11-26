@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { custodyService, type CustodyTimelineEvent } from "../../api/custodyService";
+import { queryKeys } from "../queryKeys";
 import { STALE_TIME } from "../staleTime";
 
 export type { CustodyTimelineEvent };
@@ -24,7 +25,7 @@ export function useCustodyTimeline(
   const enabled = Boolean(custodyId) && (options?.enabled ?? true);
 
   const query = useQuery<CustodyTimelineEvent[]>({
-    queryKey: ["custody-timeline", custodyId],
+    queryKey: queryKeys.custody.timeline(custodyId ?? ""),
     queryFn: () => custodyService.getTimeline(custodyId!),
     enabled,
     // Custody timelines are append-only, so a short cache avoids refetching on every navigation.

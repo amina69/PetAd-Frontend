@@ -5,6 +5,7 @@ import { useRetrySettlement } from "../useRetrySettlement";
 import { server } from "../../mocks/server";
 import { describe, it, expect, vi } from "vitest";
 import React from "react";
+import { queryKeys } from "../../lib/queryKeys";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -52,7 +53,7 @@ describe("useRetrySettlement", () => {
   it("invalidates escrow query on success", async () => {
     const { queryClient, wrapper } = createWrapper();
     // Seed a query to watch for invalidation
-    queryClient.setQueryData(["escrow", "escrow-001"], { status: "FUNDED" });
+    queryClient.setQueryData(queryKeys.escrow.detail("escrow-001"), { status: "FUNDED" });
 
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
@@ -68,7 +69,7 @@ describe("useRetrySettlement", () => {
 
     expect(result.current.isError).toBe(false);
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: ["escrow", "escrow-001"] }),
+      expect.objectContaining({ queryKey: queryKeys.escrow.detail("escrow-001") }),
     );
   });
 

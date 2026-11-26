@@ -23,7 +23,7 @@ function ApprovalStatusPill({
   approvalId,
 }: {
   status: ApprovalRowData['status'];
-  approvalId: string;
+  approvalId?: string;
 }) {
   const meta = getStatusMeta('approval', status);
   const Icon = meta.icon;
@@ -31,13 +31,15 @@ function ApprovalStatusPill({
 
   return (
     <span
-      data-testid={`status-badge-${status}-${approvalId}`}
+      data-testid={approvalId ? `status-badge-${status}-${approvalId}` : `status-badge-${status}`}
       className={`inline-flex items-center gap-1 text-xs font-medium ${tokenClasses.text} ${tokenClasses.bg} px-2 py-1 rounded-full`}
     >
       <Icon className="w-3 h-3" aria-hidden="true" /> {meta.label}
     </span>
   );
 }
+
+export { ApprovalStatusPill };
 
 export interface ApprovalStatusWidgetProps {
   /** Current number of approvals received */

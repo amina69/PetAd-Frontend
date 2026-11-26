@@ -106,7 +106,7 @@ export function AdoptionTimeline({
               {!isLast && (
                 <div
                   aria-hidden="true"
-                  className={`absolute left-4 top-8 h-[calc(100%-1rem)] w-px ${styles.connector}`}
+                  className={`absolute start-4 top-8 h-[calc(100%-1rem)] w-px ${styles.connector}`}
                 />
               )}
 

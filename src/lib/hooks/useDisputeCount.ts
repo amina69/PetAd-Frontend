@@ -5,6 +5,7 @@ import { apiClient } from "../api-client";
 import { usePolling } from "./usePolling";
 import { useRoleGuard } from "../../hooks/useRoleGuard";
 import type { DisputeListResponse } from "../../types/dispute";
+import { queryKeys } from "../queryKeys";
 
 const DISPUTE_ROUTES = ["/disputes", "/admin/disputes"];
 const POLL_INTERVAL_MS = 300_000; // 5 minutes
@@ -17,7 +18,7 @@ export function useDisputeCount() {
 
   // Primitive string — stable across renders when role doesn't change
   const role = isAdmin ? "admin" : "user";
-  const queryKey = ["dispute-count", role];
+  const queryKey = queryKeys.disputes.count(role);
 
   const fetchCount = useCallback(async (): Promise<number> => {
     if (isAdmin) {
@@ -40,7 +41,7 @@ export function useDisputeCount() {
   // Reset count to 0 when user visits a dispute route
   useEffect(() => {
     if (!DISPUTE_ROUTES.includes(location.pathname)) return;
-    queryClient.setQueryData(["dispute-count", role], 0);
+    queryClient.setQueryData(queryKeys.disputes.count(role), 0);
   }, [location.pathname, queryClient, role]);
 
   const count = query.data ?? 0;

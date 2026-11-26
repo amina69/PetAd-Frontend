@@ -61,7 +61,7 @@ export function AuthGateModal() {
         {/* Close */}
         <button
           onClick={close}
-          className="absolute top-4 right-4 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
+          className="absolute top-4 end-4 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
           aria-label="Close"
         >
           <X size={18} />

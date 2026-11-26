@@ -11,6 +11,7 @@ import {
   isTerminalAdoptionStatus,
   type AdoptionStatusConfigEntry,
 } from "../constants/statusConfig";
+import { queryKeys } from "../../../lib/queryKeys";
 
 /**
  * Poll the adoption status endpoint every 30 seconds while the status is
@@ -55,7 +56,7 @@ export function useAdoptionStatus(adoptionId: string): UseAdoptionStatusResult {
   const { lastMessage } = useNotificationSocket();
 
   const result = useApiQuery<AdoptionStatusPayload>(
-    ["adoption", adoptionId, "status"],
+    queryKeys.adoptions.status(adoptionId),
     async () => {
       const payload = await adoptionService.getDetails(adoptionId);
       return adoptionStatusSchema.parse(payload);

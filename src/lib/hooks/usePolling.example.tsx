@@ -6,6 +6,7 @@
  */
 
 import { usePolling } from "./usePolling";
+import { queryKeys } from "../queryKeys";
 
 // Example 1: Basic polling for adoption status
 export function AdoptionStatusTracker({ adoptionId }: { adoptionId: string }) {
@@ -71,7 +72,7 @@ export function PetLocationTracker({
 // Example 3: Polling without pause on hidden
 export function NotificationPoller() {
 	const { data } = usePolling(
-		["notifications"],
+		queryKeys.notifications.list(),
 		async () => {
 			const response = await fetch("/api/notifications/unread");
 			return response.json();

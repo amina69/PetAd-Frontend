@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { apiClient } from "../lib/api-client";
 import type { DisputeListResponse } from "../types/dispute";
+import { queryKeys } from "../lib/queryKeys";
 import { STALE_TIME } from "../lib/staleTime";
 
 
@@ -13,7 +14,7 @@ export function useDisputes({ status, overdue }: UseDisputesParams = {}) {
   const queryParams = { status, overdue };
 
   const query = useInfiniteQuery({
-    queryKey: ["disputes", queryParams],
+    queryKey: queryKeys.disputes.list(queryParams),
     // Dispute lists carry SLA/overdue flags that move with the clock, so keep the cache short.
     staleTime: STALE_TIME.DISPUTES,
     queryFn: ({ pageParam }) => {

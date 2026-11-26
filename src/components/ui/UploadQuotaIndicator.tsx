@@ -64,10 +64,10 @@ export function UploadQuotaIndicator({
           {isAtCapacity && (
             <div
               role="tooltip"
-              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+              className="absolute bottom-full start-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
             >
               Upload limit reached
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+              <div className="absolute top-full start-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
             </div>
           )}
         </div>

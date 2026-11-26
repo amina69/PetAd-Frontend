@@ -42,6 +42,17 @@ export class ValidationApiError extends ApiError {
 	}
 }
 
+export class NetworkError extends ApiError {
+	constructor(message = "You appear to be offline") {
+		super(message, {
+			code: "NETWORK_ERROR",
+			isNetworkError: true,
+		});
+		this.name = "NetworkError";
+		Object.setPrototypeOf(this, new.target.prototype);
+	}
+}
+
 export class NotFoundError extends ApiError {
 	constructor(
 		message: string,

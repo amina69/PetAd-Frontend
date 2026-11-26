@@ -4,7 +4,7 @@ import { useApiQuery } from "./useApiQuery";
 import type { DisputeDetail, DisputeResolution } from "../pages/disputes/types";
 import { STALE_TIME } from "../lib/staleTime";
 
-interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
+export interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
   resolution?: {
     type?: string;
     adminNote?: string;

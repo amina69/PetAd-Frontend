@@ -4,6 +4,7 @@ import {useMutateAdminStatusOverride} from "../useMutateAdminStatusOverride"
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook as baseRenderHook, type RenderHookOptions, act } from "@testing-library/react";
+import { queryKeys } from "../../lib/queryKeys";
 
 interface WrapperWithClient {
   ({ children }: { children: React.ReactNode }): React.ReactElement;
@@ -91,7 +92,7 @@ describe("useMutateAdminStatusOverride", () => {
     expect(mockEditStatus).toHaveBeenCalledWith(otherId, STATUS_PAYLOAD);
   });
  
-  it("invalidates the ['adoption', adoptionId] query on success", async () => {
+  it("invalidates the adoption detail query on success", async () => {
     mockEditStatus.mockResolvedValueOnce([]);
  
     const { result, queryClient } = renderHook(
@@ -104,7 +105,7 @@ describe("useMutateAdminStatusOverride", () => {
     await act(() => result.current.mutateAsync(STATUS_PAYLOAD));
  
     expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: ["adoption", ADOPTION_ID],
+      queryKey: queryKeys.adoptions.detail(ADOPTION_ID),
     });
   });
  
@@ -145,7 +146,7 @@ describe("useMutateAdminStatusOverride", () => {
     });
  
     expect(invalidateSpy).not.toHaveBeenCalledWith({
-      queryKey: ["adoption", ADOPTION_ID],
+      queryKey: queryKeys.adoptions.detail(ADOPTION_ID),
     });
   });
 });

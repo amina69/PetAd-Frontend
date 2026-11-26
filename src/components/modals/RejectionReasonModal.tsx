@@ -157,7 +157,7 @@ export function RejectionReasonModal({
           ref={closeButtonRef}
           onClick={handleClose}
           disabled={isSubmitting}
-          className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute top-4 end-4 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Close modal"
         >
           <svg

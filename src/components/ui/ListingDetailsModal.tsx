@@ -56,7 +56,7 @@ export function ListingDetailsModal({
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-1 -mr-1 text-[#98A2B3] hover:text-[#667085] transition-colors"
+                        className="p-1 -me-1 text-[#98A2B3] hover:text-[#667085] transition-colors"
                         aria-label="Close"
                     >
                         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.9} stroke="currentColor">
@@ -71,7 +71,7 @@ export function ListingDetailsModal({
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`flex-1 px-4 py-3 text-[14px] leading-6 border-r border-[#E4E7EC] last:border-r-0 transition-colors ${
+                                className={`flex-1 px-4 py-3 text-[14px] leading-6 border-r border-[#E4E7EC] last:border-e-0 transition-colors ${
                                     activeTab === tab
                                         ? "text-[#0F2236] bg-[#EAEAEA] font-medium"
                                         : "text-[#667085] bg-white hover:bg-[#F9FAFB] font-medium"
@@ -129,7 +129,7 @@ export function ListingDetailsModal({
                                         <button
                                             type="button"
                                             onClick={() => onAdopterClick(data.adopter.profileId!)}
-                                            className="text-left text-[15px] leading-6 font-semibold text-[#0F2236] hover:text-[#0F2236]"
+                                            className="text-start text-[15px] leading-6 font-semibold text-[#0F2236] hover:text-[#0F2236]"
                                         >
                                             {data.adopter.location}
                                         </button>

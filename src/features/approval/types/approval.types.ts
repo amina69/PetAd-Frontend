@@ -8,6 +8,8 @@ export interface ApprovalListParams {
   search?: string;
   shelter?: string;
   overdueOnly?: boolean;
+  /** Sort order requested from the API (e.g. `date_desc`, `status_asc`). */
+  sort?: string;
   [key: string]: unknown;
 }
 

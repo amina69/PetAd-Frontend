@@ -2,7 +2,10 @@ import { apiClient } from "../lib/api-client";
 import { type Document } from "../types/documents";
 import { ApiError, ValidationApiError } from "../lib/api-errors";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+const isMockServiceWorkerEnabled = import.meta.env.VITE_MSW === "true";
+const API_URL =
+    import.meta.env.VITE_API_URL ??
+    (isMockServiceWorkerEnabled ? "/api" : "http://localhost:3000/api");
 
 function getToken(): string | null {
     if (typeof window !== "undefined") {
@@ -199,6 +202,10 @@ export const documentService = {
 
             xhr.send(formData);
         });
+    },
+
+    deleteDocument: async (documentId: string): Promise<void> => {
+        await apiClient.delete(`/documents/${documentId}`);
     },
 
     getDocuments: async (adoptionId?: string, disputeId?: string): Promise<Document[]> => {

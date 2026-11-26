@@ -1,9 +1,71 @@
 import { http, HttpResponse, delay } from "msw";
 
-// Wildcard origin: these handlers must match both the Vitest/jsdom origin
-// (http://localhost:3000) and the Vite dev origin (http://localhost:4321),
-// because apiClient uses a relative "/api" base whenever VITE_MSW=true.
-const BASE_URL = "*/api";
+/**
+ * Origin-relative base path for the approval endpoints.
+ *
+ * The app talks to `/api` (relative) when MSW is enabled and to
+ * `http://localhost:3000/api` otherwise, so the handlers must be registered
+ * against the path only — an absolute origin would never match in the browser
+ * dev server. Same convention as the other mock handler modules.
+ */
+const BASE_URL = "/api";
+
+// ─── Admin approval queue data ────────────────────────────────────────────
+// NOTE: Real backend contract for approval endpoints pending final confirmation per Epic A.
+const ADMIN_APPROVALS = [
+	{
+		id: "adoption-101",
+		shelter: "Happy Paws Shelter",
+		pet: "Buddy (Golden Retriever)",
+		adopter: "John Doe",
+		submitted: new Date(Date.now() - 86400000 * 4).toISOString(),
+		shelterApproved: true,
+		daysWaiting: 4,
+		isOverdue: true,
+		type: "ADOPTION",
+		status: "PENDING",
+		flaggedRisk: false,
+	},
+	{
+		id: "adoption-102",
+		shelter: "Rescue League",
+		pet: "Luna (Siamese Cat)",
+		adopter: "Jane Smith",
+		submitted: new Date(Date.now() - 86400000).toISOString(),
+		shelterApproved: true,
+		daysWaiting: 1,
+		isOverdue: false,
+		type: "ADOPTION",
+		status: "PENDING",
+		flaggedRisk: true,
+	},
+	{
+		id: "custody-103",
+		shelter: "Happy Paws Shelter",
+		pet: "Max (German Shepherd)",
+		adopter: "Robert Brown",
+		submitted: new Date(Date.now() - 86400000 * 5).toISOString(),
+		shelterApproved: false,
+		daysWaiting: 5,
+		isOverdue: true,
+		type: "CUSTODY",
+		status: "SHELTER_APPROVED",
+		flaggedRisk: false,
+	},
+	{
+		id: "custody-104",
+		shelter: "City Animal Center",
+		pet: "Bella (Beagle)",
+		adopter: "Emily White",
+		submitted: new Date(Date.now() - 3600000 * 12).toISOString(),
+		shelterApproved: false,
+		daysWaiting: 0,
+		isOverdue: false,
+		type: "CUSTODY",
+		status: "PENDING",
+		flaggedRisk: false,
+	},
+];
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 // NOTE: Real backend contract for approval endpoints pending final confirmation per Epic A.
@@ -56,52 +118,23 @@ export const approvalHandlers = [
 		const url = new URL(request.url);
 		const overdueOnly = url.searchParams.get("overdueOnly") === "true";
 		const shelter = url.searchParams.get("shelter");
-		
-		let items = [
-			{
-				id: "adoption-101",
-				shelter: "Happy Paws Shelter",
-				pet: "Buddy (Golden Retriever)",
-				adopter: "John Doe",
-				submitted: new Date(Date.now() - 86400000 * 4).toISOString(), // 4 days ago
-				shelterApproved: true,
-				daysWaiting: 4,
-				isOverdue: true
-			},
-			{
-				id: "adoption-102",
-				shelter: "Rescue League",
-				pet: "Luna (Siamese Cat)",
-				adopter: "Jane Smith",
-				submitted: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 day ago
-				shelterApproved: true,
-				daysWaiting: 1,
-				isOverdue: false
-			},
-			{
-				id: "adoption-103",
-				shelter: "Happy Paws Shelter",
-				pet: "Max (German Shepherd)",
-				adopter: "Robert Brown",
-				submitted: new Date(Date.now() - 86400000 * 5).toISOString(), // 5 days ago
-				shelterApproved: false,
-				daysWaiting: 5,
-				isOverdue: true
-			},
-			{
-				id: "adoption-104",
-				shelter: "City Animal Center",
-				pet: "Bella (Beagle)",
-				adopter: "Emily White",
-				submitted: new Date(Date.now() - 3600000 * 12).toISOString(), // 12 hours ago
-				shelterApproved: false,
-				daysWaiting: 0,
-				isOverdue: false
-			}
-		];
+		const type = url.searchParams.get("type");
+		const statuses = url.searchParams.get("status")?.split(",").filter(Boolean);
+		const olderThanDays = Number(url.searchParams.get("olderThanDays"));
+
+		let items = [...ADMIN_APPROVALS];
 
 		if (overdueOnly) {
 			items = items.filter(item => item.isOverdue);
+		}
+		if (type) {
+			items = items.filter(item => item.type === type);
+		}
+		if (statuses?.length) {
+			items = items.filter(item => statuses.includes(item.status));
+		}
+		if (Number.isFinite(olderThanDays) && olderThanDays > 0) {
+			items = items.filter(item => item.daysWaiting > olderThanDays);
 		}
 		if (shelter && shelter !== "") {
 			// Simulating filtering
@@ -112,6 +145,15 @@ export const approvalHandlers = [
 			items,
 			nextCursor: null
 		});
+	}),
+
+	http.post(`${BASE_URL}/admin/approvals/:id/:decision`, async ({ params }) => {
+		const item = ADMIN_APPROVALS.find(candidate => candidate.id === params.id);
+		if (!item || (params.decision !== "approve" && params.decision !== "reject")) {
+			return HttpResponse.json({ message: "Application not found" }, { status: 404 });
+		}
+		item.status = params.decision === "approve" ? "ADMIN_APPROVED" : "REJECTED";
+		return HttpResponse.json({ id: item.id, status: item.status });
 	}),
 
 	// GET /api/approvals — list approvals with filtering and pagination

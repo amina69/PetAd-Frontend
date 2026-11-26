@@ -96,7 +96,7 @@ export function AdoptionCompletionModal({
         {/* Close button */}
         <button
           onClick={handleCancel}
-          className="absolute top-5 right-5 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+          className="absolute top-5 end-5 p-1 rounded-lg hover:bg-gray-100 transition-colors"
           aria-label="Close modal"
         >
           <svg
