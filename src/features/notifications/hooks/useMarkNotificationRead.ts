@@ -2,6 +2,7 @@ import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useApiMutation } from "../../../hooks/useApiMutation";
 import { notificationService } from "../../../api/notificationService";
 import type { NotificationsPage } from "../../../types/notifications";
+import { queryKeys } from "../../../lib/queryKeys";
 
 /**
  * Cache shapes that hold notifications:
@@ -60,16 +61,16 @@ export function useMarkNotificationRead() {
     void,
     string | number
   >((id) => notificationService.markAsRead(id), {
-    invalidates: [["notifications"]],
+    invalidates: [queryKeys.notifications.list()],
 
     onOptimisticUpdate: (id) => {
       // Snapshot every notifications cache so we can restore it on failure.
       const snapshot = queryClient.getQueriesData<NotificationCacheEntry>({
-        queryKey: ["notifications"],
+        queryKey: queryKeys.notifications.list(),
       });
 
       queryClient.setQueriesData<NotificationCacheEntry>(
-        { queryKey: ["notifications"] },
+        { queryKey: queryKeys.notifications.list() },
         (old) => setReadFlag(old, id, true),
       );
 

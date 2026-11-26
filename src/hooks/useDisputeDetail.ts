@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import { apiClient } from "../lib/api-client";
 import { useApiQuery } from "./useApiQuery";
 import type { DisputeDetail, DisputeResolution } from "../pages/disputes/types";
+import { STALE_TIME } from "../lib/staleTime";
 
-interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
+export interface DisputeDetailApiResponse extends Omit<DisputeDetail, "resolution"> {
   resolution?: {
     type?: string;
     adminNote?: string;
@@ -44,7 +45,7 @@ export function useDisputeDetail(disputeId: string) {
     {
       enabled: Boolean(disputeId),
       // Dispute status can change during review, so keep detail views fresh.
-      staleTime: 15000,
+      staleTime: STALE_TIME.DISPUTES,
     },
   );
 

@@ -1,9 +1,15 @@
-export type DisputeStatus =
-  | 'OPEN'
-  | 'UNDER_REVIEW'
-  | 'RESOLVED'
-  | 'CLOSED'
-  | 'SLA_BREACHED';
+import type { DisputeStatusCode } from '../../../types/dispute';
+
+/**
+ * Dispute statuses handled by the disputes feature.
+ *
+ * Derived from the canonical codes in `src/types/dispute.ts` so the shared
+ * status config stays exhaustive for this feature.
+ */
+export type DisputeStatus = Extract<
+  DisputeStatusCode,
+  'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'CLOSED' | 'SLA_BREACHED'
+>;
 
 /**
  * Reason a dispute was filed.

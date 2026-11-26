@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { documentService } from '../../api/documentService';
 import { DocumentUploadModal } from '../modals/DocumentUploadModal';
 import { ApiError, ValidationApiError } from '../../lib/api-errors';
+import { queryKeys } from '../../lib/queryKeys';
 
 interface DocumentReUploadFlowProps {
   documentId: string;
@@ -29,7 +30,7 @@ export function DocumentReUploadFlow({
       });
 
       // Invalidate documents list
-      await queryClient.invalidateQueries({ queryKey: ['documents'] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.documents.list() });
 
       // Show success toast
       toast.success('Document updated');

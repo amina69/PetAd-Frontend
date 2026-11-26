@@ -10,6 +10,7 @@ import {
   type CreateDisputePayload,
 } from "../api/disputeService";
 import type { DisputeRecord } from "../types/dispute.types";
+import { queryKeys } from "../../../lib/queryKeys";
 
 /**
  * Variables accepted by `useCreateDispute`.
@@ -44,7 +45,7 @@ export function useCreateDispute() {
   const mutation = useApiMutation<DisputeRecord, CreateDisputePayload>(
     (payload) => disputeService.createDispute(payload),
     {
-      invalidates: [["disputes"]],
+      invalidates: [queryKeys.disputes.list()],
       onSuccess: (dispute) => {
         navigate(`/disputes/${dispute.id}`);
       },

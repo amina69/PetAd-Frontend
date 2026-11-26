@@ -7,6 +7,7 @@ import { DocumentIntegrityBadge } from './DocumentIntegrityBadge';
 import { DocumentExpiryBadge } from './DocumentExpiryBadge';
 import { DocumentReUploadFlow } from './DocumentReUploadFlow';
 import { documentService } from '../../api/documentService';
+import { logger } from "../../lib/logger";
 
 interface DocumentRowProps {
   document: Document;
@@ -61,7 +62,7 @@ export function DocumentRow({
             hash: result.hash,
           });
         } catch (error) {
-          console.error('Failed to verify document:', error);
+          logger.error('Failed to verify document:', error);
           setVerificationResult({
             verified: false,
             hash: null,

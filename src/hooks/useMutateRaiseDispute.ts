@@ -2,6 +2,7 @@ import { useApiMutation } from "./useApiMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "../lib/api-errors";
 import toast from "react-hot-toast";
+import { queryKeys } from "../lib/queryKeys";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
 
@@ -149,10 +150,10 @@ export function useMutateRaiseDispute(options?: RaiseDisputeOptions) {
   return useApiMutation<{ adoptionId: string }, RaiseDisputePayload>(
     (payload) => uploadWithProgress(payload, options?.onProgress) as Promise<{ adoptionId: string }>,
     {
-      invalidates: [["disputes"]],
+      invalidates: [queryKeys.disputes.list()],
       onSuccess: (_data, variables) => {
         toast.success("Dispute raised successfully");
-        queryClient.invalidateQueries({ queryKey: ["adoption", variables.adoptionId] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.adoptions.detail(variables.adoptionId) });
       },
       onSettled: (_data, error) => {
         if (error) {

@@ -1,14 +1,15 @@
-
-import { STATUS_META, type EscrowStatusBadgeProps } from "./escrowBadgeConstants";
+import { getStatusMeta } from "../../lib/statusConfig";
+import type { EscrowStatus } from "./types";
 import { StatusBadge } from "../ui/StatusBadge";
 
-export function EscrowStatusBadge({ status }: EscrowStatusBadgeProps) {
-  const meta = STATUS_META[status];
+export interface EscrowStatusBadgeProps {
+  status: EscrowStatus;
+}
 
+export function EscrowStatusBadge({ status }: EscrowStatusBadgeProps) {
   return (
     <StatusBadge
-      color={meta.color}
-      label={meta.label}
+      meta={getStatusMeta("escrow", status)}
       data-testid="escrow-status-badge"
     />
   );

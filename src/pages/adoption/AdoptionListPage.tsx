@@ -3,6 +3,28 @@ import { useSearchParams } from "react-router-dom";
 import { StatusFilterChips } from "../../components/filters/StatusFilterChips";
 import { useAdoptionList, type AdoptionStatus } from "../../hooks/useAdoptionList";
 import { getStatusesFromParams, setStatusesInParams } from "../../utils/queryParams";
+import {
+  getStatusMeta,
+  STATUS_COLOR_CLASSES,
+} from "../../lib/statusConfig";
+
+/**
+ * Adoption request status pill.
+ *
+ * Label, colour and icon come from the shared status config.
+ */
+function AdoptionStatusPill({ status }: { status: AdoptionStatus }) {
+  const meta = getStatusMeta("approval", status);
+  const tokenClasses = STATUS_COLOR_CLASSES[meta.color];
+
+  return (
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tokenClasses.bg} ${tokenClasses.text}`}
+    >
+      {meta.label}
+    </span>
+  );
+}
 
 export const AdoptionListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,9 +95,7 @@ export const AdoptionListPage: React.FC = () => {
                       <p className="text-sm text-gray-500">Applicant: {adoption.applicantName}</p>
                     </div>
                     <div className="flex flex-col items-end">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize bg-gray-100 text-gray-800">
-                        {adoption.status.toLowerCase()}
-                      </span>
+                      <AdoptionStatusPill status={adoption.status} />
                       <p className="text-xs text-gray-400 mt-1">{adoption.date}</p>
                     </div>
                   </div>

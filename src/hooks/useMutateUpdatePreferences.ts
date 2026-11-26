@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getApiClient } from "../lib/api-client";
 import type { NotificationPreferences } from "../types/notifications";
+import { queryKeys } from "../lib/queryKeys";
 
 export const useMutateUpdatePreferences = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export const useMutateUpdatePreferences = () => {
     },
     onMutate: async (newPreferences) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ["notificationPreferences"] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.notifications.preferences() });
 
       // Snapshot the previous value
       const previousPreferences = queryClient.getQueryData<NotificationPreferences>([
@@ -19,7 +20,7 @@ export const useMutateUpdatePreferences = () => {
       ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["notificationPreferences"], newPreferences);
+      queryClient.setQueryData(queryKeys.notifications.preferences(), newPreferences);
 
       // Return a context object with the snapshotted value
       return { previousPreferences };
@@ -28,14 +29,14 @@ export const useMutateUpdatePreferences = () => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousPreferences) {
         queryClient.setQueryData(
-          ["notificationPreferences"],
+          queryKeys.notifications.preferences(),
           context.previousPreferences
         );
       }
     },
     onSettled: () => {
       // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ["notificationPreferences"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.preferences() });
     },
   });
 };

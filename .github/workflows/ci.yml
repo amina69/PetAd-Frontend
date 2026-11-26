@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -21,19 +25,90 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --maxsockets 1 --retry 3
+        run: npm ci --maxsockets 1 --retry 3
+
+      - name: Dependency vulnerability audit
+        run: npm audit --audit-level=high
+
+      - name: Verify dependency lockfiles are unchanged
+        run: git diff --exit-code -- package-lock.json pnpm-lock.yaml
 
       - name: Lint check
         run: npm run lint
 
       - name: Build check
         run: npm run build
+        env:
+          VITE_MSW: "false"
 
-      - name: Run unit tests
-        run: npm test
+      - name: Reject MSW in the production bundle
+        run: node scripts/check-prod-bundle.mjs
+        env:
+          VITE_MSW: "false"
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage
+
+      - name: Comment coverage diff
+        # Fork PRs get a read-only token, so commenting would fail with
+        # 'Resource not accessible by integration'.
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = 'coverage/coverage-summary.json';
+            if (!fs.existsSync(summaryPath)) {
+              core.warning('coverage summary missing');
+              return;
+            }
+            const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+            const total = summary.total || {};
+            const line = (metric) => {
+              const item = total[metric] || { pct: 0 };
+              return `${metric}: ${item.pct}%`;
+            };
+            const listed = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            const rows = listed.data
+              .map((file) => file.filename)
+              .filter((file) => summary[file])
+              .map((file) => `| \`${file}\` | ${summary[file].lines.pct}% |`)
+              .join('\n');
+            const body = [
+              '### Coverage',
+              line('lines'),
+              line('statements'),
+              line('functions'),
+              line('branches'),
+              '',
+              'Thresholds: 75% global, 80% for `src/features/**`. A pull request that drops below those thresholds fails this job.',
+              rows ? `\n| File | Lines |\n| --- | --- |\n${rows}` : '',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
 
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
 
     steps:
       - name: Checkout repository
@@ -46,18 +121,20 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --maxsockets 1 --retry 3
+        run: npm ci --maxsockets 1 --retry 3
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run E2E tests
         run: npm run test:e2e
+        env:
+          E2E_BROWSERS: ${{ matrix.browser }}
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 7

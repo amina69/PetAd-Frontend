@@ -146,7 +146,7 @@ export default function ProfilePage() {
                         <div className="w-36 h-36 rounded-full overflow-hidden border border-[#EBEDF0]">
                             <img src={ownerImg} alt="Profile" loading="lazy" className="w-full h-full object-cover" />
                         </div>
-                        <button aria-label="Edit profile photo" className="absolute bottom-1 right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center border border-[#D6DAE0] text-[#4A5568] hover:text-[#0D162B] transition-colors">
+                        <button aria-label="Edit profile photo" className="absolute bottom-1 end-1 w-8 h-8 bg-white rounded-full flex items-center justify-center border border-[#D6DAE0] text-[#4A5568] hover:text-[#0D162B] transition-colors">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 2.625a1.5 1.5 0 113 3L12 15l-4 1 1-4 9.375-9.375z" />
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setAdoptionDetailsId(record.id)}
-                                                className="text-left text-[14px] leading-6 font-medium text-[#1D2939] hover:text-[#0F1728] underline underline-offset-2 shrink-0 md:justify-self-start"
+                                                className="text-start text-[14px] leading-6 font-medium text-[#1D2939] hover:text-[#0F1728] underline underline-offset-2 shrink-0 md:justify-self-start"
                                             >
                                                 View Details
                                             </button>
@@ -299,7 +299,7 @@ export default function ProfilePage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setListingDetailsId(record.id)}
-                                                className="text-left text-[14px] leading-6 font-medium text-[#1D2939] hover:text-[#0F1728] underline underline-offset-2 shrink-0 md:justify-self-start"
+                                                className="text-start text-[14px] leading-6 font-medium text-[#1D2939] hover:text-[#0F1728] underline underline-offset-2 shrink-0 md:justify-self-start"
                                             >
                                                 View Details
                                             </button>

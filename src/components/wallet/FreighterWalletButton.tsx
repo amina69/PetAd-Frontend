@@ -49,7 +49,7 @@ export function FreighterWalletButton() {
         <span>{isConnecting ? "Connecting..." : "Connect wallet"}</span>
       </button>
       {error ? (
-        <p className="absolute right-0 top-full z-10 mt-2 w-64 rounded-lg border border-red-100 bg-white p-3 text-xs text-red-600 shadow-lg dark:border-red-900 dark:bg-gray-900">
+        <p className="absolute end-0 top-full z-10 mt-2 w-64 rounded-lg border border-red-100 bg-white p-3 text-xs text-red-600 shadow-lg dark:border-red-900 dark:bg-gray-900">
           {error}
         </p>
       ) : null}

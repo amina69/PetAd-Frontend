@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useDisputeCount } from "../useDisputeCount";
+import { queryKeys } from "../../queryKeys";
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
@@ -167,7 +168,7 @@ describe("useDisputeCount", () => {
 
     const queryClient = createTestQueryClient();
     // Pre-populate cache so the reset effect has something to clear
-    queryClient.setQueryData(["dispute-count", "user"], 5);
+    queryClient.setQueryData(queryKeys.disputes.count("user"), 5);
 
     const { result } = renderHook(() => useDisputeCount(), {
       wrapper: createWrapper(queryClient, "/disputes"),
@@ -188,7 +189,7 @@ describe("useDisputeCount", () => {
     mockGet.mockResolvedValue({ data: [] });
 
     const queryClient = createTestQueryClient();
-    queryClient.setQueryData(["dispute-count", "admin"], 7);
+    queryClient.setQueryData(queryKeys.disputes.count("admin"), 7);
 
     const { result } = renderHook(() => useDisputeCount(), {
       wrapper: createWrapper(queryClient, "/admin/disputes"),
@@ -210,7 +211,7 @@ describe("useDisputeCount", () => {
     mockGet.mockResolvedValue({ data: [] });
 
     const queryClient = createTestQueryClient();
-    queryClient.setQueryData(["dispute-count", "user"], 3);
+    queryClient.setQueryData(queryKeys.disputes.count("user"), 3);
 
     const { result } = renderHook(() => useDisputeCount(), {
       wrapper: createWrapper(queryClient, "/home"),

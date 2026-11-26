@@ -1,0 +1,28 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --maxsockets 1 --retry 3
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Lighthouse CI (gates on lighthouserc.cjs assertions)
+        run: npx --yes @lhci/cli@0.14.x autorun --config=./lighthouserc.cjs

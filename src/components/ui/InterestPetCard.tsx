@@ -1,3 +1,4 @@
+import { ResponsiveImage } from '../shared/ResponsiveImage';
 export interface Pet {
   id: string;
   name: string;
@@ -59,13 +60,14 @@ export function InterestPetCard({
   const showStatusIcon = status === "awaiting" || status === "in-progress";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.2fr_1.2fr_1.5fr] items-center gap-4 lg:gap-6 bg-white rounded-2xl border border-[#EAEAEA] p-4 lg:p-0 lg:pr-5 hover:shadow-md transition-shadow">
+    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.2fr_1.2fr_1.5fr] items-center gap-4 lg:gap-6 bg-white rounded-2xl border border-[#EAEAEA] p-4 lg:p-0 lg:pe-5 hover:shadow-md transition-shadow">
       <div className="flex items-center gap-4 lg:gap-0">
         <div className="w-14 h-14 rounded-xl lg:w-38 lg:h-25 lg:rounded-t-xl lg:rounded-bl-xl lg:rounded-tr-none lg:rounded-br-none overflow-hidden bg-white shrink-0">
-          <img
+          <ResponsiveImage
             src={pet.imageUrl}
             alt={pet.name}
-            loading="lazy"
+            width={128}
+            height={100}
             className=" w-full h-full lg:w-32 lg:h-25 object-center"
           />
         </div>
@@ -157,7 +159,7 @@ export function InterestPetCard({
             <span className="truncate">{label}</span>
           </span>
           <svg
-            className="w-4 h-4 ml-3 shrink-0 cursor-pointer"
+            className="w-4 h-4 ms-3 shrink-0 cursor-pointer"
             width="18"
             height="18"
             viewBox="0 0 18 18"

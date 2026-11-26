@@ -170,7 +170,7 @@ export default function CustodyTimelinePage() {
                     <div className="h-px flex-1 bg-slate-200" />
                   </div>
 
-                  <ol className="space-y-6 border-l border-slate-200 pl-8">
+                  <ol className="space-y-6 border-l border-slate-200 ps-8">
                     {group.events.map((event, eventIdx) => {
                       const latest = isLatestEvent(groupIdx, eventIdx);
                       const Icon = getEventIcon(event.type);
@@ -191,7 +191,7 @@ export default function CustodyTimelinePage() {
                           key={`${event.type}-${event.timestamp}`}
                         >
                           <div
-                            className={`absolute -left-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border ${iconClasses}`}
+                            className={`absolute -start-4 top-0 flex h-8 w-8 items-center justify-center rounded-full border ${iconClasses}`}
                             aria-hidden="true"
                           >
                             <Icon size={16} />

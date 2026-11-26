@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { useRoleGuard } from '../../../hooks/useRoleGuard';
 import { useAdoptionApprovals } from '../../../hooks/useAdoptionApprovals';
 import { RejectionReasonModal } from '../../modals/RejectionReasonModal';
+import { logger } from "../../../lib/logger";
 
 export interface ApproveRejectButtonsProps {
   adoptionId: string;
@@ -25,7 +26,7 @@ export function ApproveRejectButtons({ adoptionId }: ApproveRejectButtonsProps) 
       await mutateApprovalDecision();
       toast.success("Your approval has been recorded");
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       toast.error("Failed to record approval");
     }
   };
