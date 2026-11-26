@@ -224,7 +224,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={contextValue}>
       {children}
       <div
-        className="pointer-events-none fixed right-4 top-4 z-[100] flex w-full max-w-sm flex-col gap-3"
+        className="pointer-events-none fixed end-4 top-4 z-[100] flex w-full max-w-sm flex-col gap-3"
         data-testid="toast-viewport"
       >
         {state.visible.map((item) => (

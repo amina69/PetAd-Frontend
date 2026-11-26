@@ -89,7 +89,7 @@ export function ApprovalPagination({
         onClick={() => onPageChange(currentPage - 1)}
         className={`${baseButtonClasses} border-gray-200 bg-white text-gray-600 hover:bg-gray-50`}
       >
-        <ChevronLeft size={16} aria-hidden="true" />
+        <ChevronLeft className="rtl-mirror" size={16} aria-hidden="true" />
         <span className="hidden sm:inline">Prev</span>
       </button>
 
@@ -135,7 +135,7 @@ export function ApprovalPagination({
         className={`${baseButtonClasses} border-gray-200 bg-white text-gray-600 hover:bg-gray-50`}
       >
         <span className="hidden sm:inline">Next</span>
-        <ChevronRight size={16} aria-hidden="true" />
+        <ChevronRight className="rtl-mirror" size={16} aria-hidden="true" />
       </button>
     </nav>
   );

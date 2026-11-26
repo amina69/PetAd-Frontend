@@ -75,7 +75,7 @@ function DocumentVerificationQueue() {
                 id="shortcut-help"
                 role="region"
                 aria-label="Keyboard shortcuts"
-                className="absolute right-0 z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-3 text-sm shadow-lg"
+                className="absolute end-0 z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-3 text-sm shadow-lg"
               >
                 <ul className="space-y-1">
                   <li><kbd>J</kbd> Next document</li>

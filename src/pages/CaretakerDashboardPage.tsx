@@ -736,7 +736,7 @@ export default function CaretakerDashboardPage() {
                         <ArrowRight
                           size={16}
                           aria-hidden="true"
-                          className="text-gray-300 transition-colors group-hover:text-[#E84D2A]"
+                          className="rtl-mirror text-gray-300 transition-colors group-hover:text-[#E84D2A]"
                         />
                       </span>
                     </Link>
@@ -840,7 +840,7 @@ export default function CaretakerDashboardPage() {
                         to {arrangement.ownerName} · {arrangement.location}
                       </p>
                     </div>
-                    <span className="shrink-0 text-right text-xs font-semibold text-[#0D162B]">
+                    <span className="shrink-0 text-end text-xs font-semibold text-[#0D162B]">
                       {formatDateTime(arrangement.endDate)}
                     </span>
                   </li>

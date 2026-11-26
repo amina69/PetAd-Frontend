@@ -44,8 +44,8 @@ function PaymentRowSkeleton() {
   return (
     <div className="grid grid-cols-3 gap-4 px-4 py-3 items-center">
       <Skeleton variant="text" width="60%" />
-      <Skeleton variant="text" width="50%" className="ml-auto" />
-      <Skeleton variant="text" width="40%" className="ml-auto" />
+      <Skeleton variant="text" width="50%" className="ms-auto" />
+      <Skeleton variant="text" width="40%" className="ms-auto" />
     </div>
   );
 }
@@ -222,8 +222,8 @@ export function SettlementSummaryPage({
               <div className="grid grid-cols-3 px-4 py-2 bg-gray-50
                               text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <span>Recipient</span>
-                <span className="text-right">Amount</span>
-                <span className="text-right">Share</span>
+                <span className="text-end">Amount</span>
+                <span className="text-end">Share</span>
               </div>
 
               <div className="divide-y divide-gray-100">
@@ -241,7 +241,7 @@ export function SettlementSummaryPage({
                     </span>
 
                     {/* Amount in XLM/asset */}
-                    <span className="text-sm font-semibold text-gray-900 text-right">
+                    <span className="text-sm font-semibold text-gray-900 text-end">
                       {payment.amount.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 7,
@@ -250,7 +250,7 @@ export function SettlementSummaryPage({
                     </span>
 
                     {/* Percentage of total */}
-                    <span className="text-sm text-gray-500 text-right">
+                    <span className="text-sm text-gray-500 text-end">
                       {formatPercentage(payment.amount, totalAmount)}
                     </span>
                   </div>
@@ -293,7 +293,7 @@ export function SettlementSummaryPage({
                   disabled={isSigning}
                   className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {isSigning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isSigning && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                   {isSigning ? "Submitting Signature..." : "Sign & Approve Escrow"}
                 </button>
               </div>

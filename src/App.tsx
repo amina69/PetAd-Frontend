@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useNotificationDeepLink } from "./hooks/useNotificationDeepLink";
 import { MainLayout } from "./components/layout/MainLayout";
@@ -9,6 +9,7 @@ import { AuthGateProvider } from "./context/AuthGateContext";
 import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
 import { AccountPage } from "./features/auth/AccountPage";
 import ListingsPage from "./pages/ListingsPage";
+import { useInstallPrompt } from "./hooks/useInstallPrompt";
 
 const FavouritePage = lazy(() => import("./pages/FavouritePage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -57,6 +58,11 @@ const DocumentVerificationPage = lazy(() => import("./pages/admin/DocumentVerifi
 const UsersPage = lazy(() => import("./pages/admin/UsersPage"));
 const AuditLogPage = lazy(() => import("./pages/admin/AuditLogPage"));
 const CaretakerDashboardPage = lazy(() => import("./pages/CaretakerDashboardPage"));
+const SavedSearchesPage = lazy(() =>
+  import("./features/pets/components/SavedSearchesPage").then(({ SavedSearchesPage }) => ({
+    default: SavedSearchesPage,
+  })),
+);
 
 function RouteLoadingFallback() {
   return (
@@ -68,6 +74,12 @@ function RouteLoadingFallback() {
 
 function App() {
   useNotificationDeepLink();
+  const installPrompt = useInstallPrompt();
+  const [isRtl, setIsRtl] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dir = isRtl ? "rtl" : "ltr";
+  }, [isRtl]);
 
   return (
     /**
@@ -76,6 +88,16 @@ function App() {
      */
     <AuthGateProvider>
       <Suspense fallback={<RouteLoadingFallback />}>
+        {import.meta.env.DEV && (
+          <button
+            type="button"
+            onClick={() => setIsRtl((current) => !current)}
+            aria-pressed={isRtl}
+            className="fixed bottom-4 end-4 z-[100] rounded-full bg-[#0D162B] px-4 py-2 text-sm font-semibold text-white shadow-lg"
+          >
+            RTL: {isRtl ? "On" : "Off"}
+          </button>
+        )}
         <Routes>
         {/* ── Root redirect ─────────────────────────────────────────────── */}
         <Route path="/" element={<Navigate to="/home" replace />} />
@@ -97,6 +119,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/saved-searches" element={<SavedSearchesPage />} />
             <Route path="/listings" element={<ListingsPage />} />
             <Route path="/listings/:id" element={<PetListingDetailsPage />} />
           </Route>
@@ -119,7 +142,7 @@ function App() {
             />
             <Route
               path="/settings/notifications"
-              element={<NotificationsPage />}
+              element={<NotificationsPage installPrompt={installPrompt} />}
             />
             <Route path="/list-for-adoption" element={<EditAdoptionListing />} />
             <Route path="/my-listings/:id" element={<ListingDetailsPage />} />

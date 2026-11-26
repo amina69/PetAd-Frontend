@@ -64,14 +64,14 @@ export function NotificationBell({ onClick, className }: NotificationBellProps) 
       {/* Connection state indicator dot */}
         <span
           data-testid="connection-indicator"
-          className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${indicatorColor} ${connectionState === "reconnecting" ? "animate-pulse" : ""}`}
+          className={`absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${indicatorColor} ${connectionState === "reconnecting" ? "animate-pulse" : ""}`}
           aria-label={`Notification connection: ${connectionState}`}
         />
 
         {count > 0 ? (
           <span
             data-testid="notification-bell-badge"
-            className="absolute -top-1 -right-1 flex min-w-5 h-5 px-1 items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white"
+            className="absolute -top-1 -end-1 flex min-w-5 h-5 px-1 items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white"
             aria-hidden="true"
           >
             {badgeText}

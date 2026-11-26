@@ -109,7 +109,7 @@ export default function FavouritePage() {
                     <div className="flex flex-wrap items-center gap-3">
                         {/* Location Filter */}
                         <div className="relative w-full sm:w-[220px]">
-                            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <div className="absolute inset-y-0 start-4 flex items-center pointer-events-none">
                                 <svg className="w-[18px] h-[18px] text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -121,7 +121,7 @@ export default function FavouritePage() {
                                 placeholder="filter by Location"
                                 value={locationFilter}
                                 onChange={(e) => setLocationFilter(e.target.value)}
-                                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
+                                className="w-full ps-11 pe-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] outline-none focus:border-[#0D162B] transition-colors"
                             />
                         </div>
 

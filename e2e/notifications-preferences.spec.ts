@@ -50,7 +50,7 @@ test.describe("Notification preferences persistence", () => {
     expect(body.ESCROW_FUNDED).toBe(false);
 
     // Saved indicator confirms the mutation resolved.
-    await expect(page.getByText("Saved")).toBeVisible();
+    await expect(page.getByText("Saved", { exact: true })).toBeVisible();
     await expect(knob).not.toHaveClass(/translate-x-4/);
 
     // ── Real reload, not a component remount ──────────────────────────────
@@ -68,7 +68,7 @@ test.describe("Notification preferences persistence", () => {
     await page.getByRole("button", { name: "Reset to defaults" }).click();
     // exact: true — otherwise this also matches "Reset to defaults" (strict mode violation).
     await page.getByRole("button", { name: "Reset", exact: true }).click();
-    await expect(page.getByText("Saved")).toBeVisible();
+    await expect(page.getByText("Saved", { exact: true })).toBeVisible();
 
     const knobAfterReset = toggleKnob(page, "Escrow Funded");
     await expect(knobAfterReset).toHaveClass(/translate-x-4/);

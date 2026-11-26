@@ -24,16 +24,16 @@ export function DisputeStatusBadge({ status, className = '' }: DisputeStatusBadg
       aria-label={`${config.label}: ${config.description}`}
       data-testid={`dispute-badge-${status}`}
     >
-      <Icon className="h-3 w-3 mr-1" aria-hidden="true" />
+      <Icon className="h-3 w-3 me-1" aria-hidden="true" />
       {config.label}
 
       {/* Tooltip */}
       <span
-        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
+        className="absolute bottom-full start-1/2 -translate-x-1/2 mb-2 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none z-10 text-center whitespace-normal"
         role="tooltip"
       >
         {config.description}
-        <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+        <span className="absolute top-full start-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
       </span>
     </span>
   );

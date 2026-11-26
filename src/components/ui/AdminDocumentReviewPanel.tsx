@@ -42,7 +42,7 @@ function DocumentReviewStatusPill({
       <Icon className="h-3 w-3" aria-hidden="true" />
       {meta.label}
       {status === 'REJECTED' && rejectionReason && (
-        <span className="ml-1 opacity-80">- {rejectionReason}</span>
+        <span className="ms-1 opacity-80">- {rejectionReason}</span>
       )}
     </span>
   );
