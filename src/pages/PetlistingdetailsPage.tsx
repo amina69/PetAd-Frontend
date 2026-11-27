@@ -4,6 +4,8 @@ import { ResponsiveImage } from "../components/shared/ResponsiveImage";
 import dogImage from "../assets/dog.png";
 import dog1Image from "../assets/dog_1.png";
 import goldenRetriever from "../assets/golden_retriever.png";
+import { useDocumentMeta } from "../lib/useDocumentMeta";
+import { SharePetButton } from "../components/ui/SharePetButton";
 
 
 interface PetListing {
@@ -121,7 +123,14 @@ const RelatedCard = ({ listing, onClick }: { listing: typeof relatedListings[0];
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function PetListingDetailsPage() {
   const navigate = useNavigate();
-  const pet = mockPet; 
+  const pet = mockPet;
+
+  useDocumentMeta({
+    title: `${pet.name} — ${pet.breed} | PetAd`,
+    description: pet.description.slice(0, 160),
+    ogImage: pet.images[0],
+    ogType: "article",
+  });
 
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<"owner" | "description">("owner");
@@ -428,6 +437,7 @@ export default function PetListingDetailsPage() {
                   {isInterested ? "Interested ✓" : "Show Interest"}
                 </button>
               </div>
+              <SharePetButton petName={pet.name} description={pet.description.slice(0, 100)} />
 
               <button className="pld-terms">Adoption, Terms & Condition</button>
             </div>
