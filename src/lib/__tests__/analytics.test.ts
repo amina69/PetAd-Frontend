@@ -5,6 +5,7 @@ import {
   reportError,
   sanitizeEvent,
   trackEvent,
+  trackTiming,
 } from "../analytics";
 
 describe("analytics", () => {
@@ -33,6 +34,7 @@ describe("analytics", () => {
 
         initAnalytics();
         trackEvent("page_view", { route: "/home" });
+        trackTiming("custom_timing", 150);
         reportError(new Error("boom"));
 
         expect(sendBeacon).not.toHaveBeenCalled();
@@ -58,6 +60,18 @@ describe("analytics", () => {
       trackEvent("user_typed_something", { text: "hello" });
       expect(sendBeacon).not.toHaveBeenCalled();
       warn.mockRestore();
+    });
+
+    it("sends custom timings to the timings endpoint", () => {
+      trackTiming("adoption:submit", 145.4, { flow: "adoption" });
+      expect(sendBeacon).toHaveBeenCalledWith(
+        "https://collector.example.com/v1/timings",
+        JSON.stringify({
+          name: "adoption:submit",
+          duration: 145,
+          flow: "adoption",
+        }),
+      );
     });
 
     it("scrubs error reports", () => {

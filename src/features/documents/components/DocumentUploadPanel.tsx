@@ -32,6 +32,7 @@ export function DocumentUploadPanel() {
   }
 
   async function startUpload(target: File) {
+    const endPerf = startPerfMeasure(PERF_MEASURES.DOCUMENT_UPLOAD);
     const controller = new AbortController();
     abortRef.current = controller;
     setIsUploading(true);
@@ -61,6 +62,7 @@ export function DocumentUploadPanel() {
     } finally {
       setIsUploading(false);
       abortRef.current = null;
+      endPerf();
     }
   }
 

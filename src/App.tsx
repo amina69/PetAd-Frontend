@@ -7,6 +7,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { AuthGateProvider } from "./context/AuthGateContext";
 import { AdminRouteGuard } from "./features/admin/components/AdminRouteGuard";
+import { PerfDevOverlay } from "./components/dev";
 import ListingsPage from "./pages/ListingsPage";
 import { useInstallPrompt } from "./hooks/useInstallPrompt";
 
@@ -202,6 +203,7 @@ function App() {
         <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </Suspense>
+      <PerfDevOverlay />
     </AuthGateProvider>
   );
 }

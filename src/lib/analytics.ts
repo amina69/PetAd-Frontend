@@ -28,6 +28,8 @@ export const EVENT_ALLOW_LIST = {
   dispute_raised: ["type"],
   document_uploaded: ["kind", "sizeBucket"],
   notification_opened: ["type"],
+  custom_timing: ["name", "duration", "flow"],
+  performance_measure: ["name", "duration"],
 } as const satisfies Record<string, readonly string[]>;
 
 export type AnalyticsEvent = keyof typeof EVENT_ALLOW_LIST;
@@ -109,6 +111,21 @@ export function trackEvent(name: string, props?: Record<string, unknown>): void 
     return;
   }
   send("events", event);
+}
+
+/** Sends a consent-gated custom timing measurement to the analytics sink. */
+export function trackTiming(
+  name: string,
+  duration: number,
+  props: Record<string, unknown> = {},
+): void {
+  if (!isAnalyticsEnabled()) return;
+  const safeDuration = Number.isFinite(duration) ? Math.max(0, Math.round(duration)) : 0;
+  send("timings", {
+    name: scrubString(name),
+    duration: safeDuration,
+    ...props,
+  });
 }
 
 /** Sends a PII-scrubbed error report (name, message, stack only). */

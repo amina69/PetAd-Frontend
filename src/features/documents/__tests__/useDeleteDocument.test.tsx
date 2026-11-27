@@ -7,6 +7,7 @@ import type { Document } from "../../../types/documents";
 import { documentService } from "../../../api/documentService";
 import { DocumentList } from "../components/DocumentList";
 import { deletionErrorMessage, isConflictError } from "../hooks/useDeleteDocument";
+import { queryKeys } from "../../../lib/queryKeys";
 
 vi.mock("../../../api/documentService", () => ({
   documentService: {
