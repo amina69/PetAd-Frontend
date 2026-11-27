@@ -2,7 +2,6 @@ import { useMutation, useQueryClient, type QueryKey } from "@tanstack/react-quer
 import { queryKeys } from "../../../lib/queryKeys";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
-import { queryKeys } from "../../../lib/queryKeys";
 import type { Document } from "../../../types/documents";
 
 const IN_REVIEW_MESSAGE =
