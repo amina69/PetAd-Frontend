@@ -1,3 +1,6 @@
+import { z } from 'zod'
+import { en } from 'zod/locales'
+import { activeLocale, localise } from './i18n'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -15,6 +18,18 @@ import { loadEnv } from './lib/env'
 import { logger } from './lib/logger'
 
 loadEnv()
+
+document.documentElement.lang = activeLocale
+if (activeLocale === 'en-XA') {
+  const englishError = en().localeError
+  z.config({
+    customError: (issue) => {
+      const result = englishError(issue)
+      const message = typeof result === 'string' ? result : result?.message
+      return message ? localise(message) : undefined
+    },
+  })
+}
 
 const STALE_SW_RELOAD_KEY = 'petad:stale-sw-reload'
 

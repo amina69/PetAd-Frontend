@@ -51,28 +51,34 @@ export function DocumentRow({
   });
 
   useEffect(() => {
-    // Only verify if not already verified or if explicitly unverified (null means unknown)
-    if (document.onChainVerified === null) {
-      const verify = async () => {
-        setIsVerifying(true);
-        try {
-          const result = await documentService.verifyDocument(document.id);
-          setVerificationResult({
-            verified: result.verified,
-            hash: result.hash,
-          });
-        } catch (error) {
-          logger.error('Failed to verify document:', error);
-          setVerificationResult({
-            verified: false,
-            hash: null,
-          });
-        } finally {
-          setIsVerifying(false);
-        }
-      };
-      verify();
+    if (document.onChainVerified !== null) {
+      setIsVerifying(false);
+      return;
     }
+
+    let cancelled = false;
+    setIsVerifying(true);
+
+    const verify = async () => {
+      try {
+        const result = await documentService.verifyDocument(document.id);
+        if (!cancelled) {
+          setVerificationResult({ verified: result.verified, hash: result.hash });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          logger.error('Failed to verify document:', error);
+          setVerificationResult({ verified: false, hash: null });
+        }
+      } finally {
+        if (!cancelled) setIsVerifying(false);
+      }
+    };
+
+    void verify();
+    return () => {
+      cancelled = true;
+    };
   }, [document.id, document.onChainVerified]);
 
   const canDelete =
