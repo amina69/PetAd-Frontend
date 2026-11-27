@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0D162B" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      (function () {
+        try {
+          var key = "petad-ui-theme";
+          var stored = window.localStorage.getItem(key);
+          var theme =
+            stored === "light" || stored === "dark" || stored === "system"
+              ? stored
+              : "system";
+          var resolved =
+            theme === "system"
+              ? window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          var root = document.documentElement;
+          root.setAttribute("data-theme", resolved);
+          root.classList.remove("light", "dark");
+          root.classList.add(resolved);
+          root.style.colorScheme = resolved;
+        } catch {
+          // Storage or matchMedia unavailable; keep default light theme.
+        }
+      })();
+    </script>
     <title>PetAd - Pet Adoption Platform</title>
   </head>
   <body>
