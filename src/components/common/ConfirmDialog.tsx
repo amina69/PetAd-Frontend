@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
+import { useRef, type ReactNode, type RefObject } from "react";
+import { Modal } from "../ui/Modal";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -16,6 +17,9 @@ export interface ConfirmDialogProps {
  * Confirmation dialog. The destructive variant uses the danger token.
  * Closing the dialog returns focus to `triggerRef` when one is provided,
  * otherwise to the element that was focused when it opened.
+ *
+ * Rendering, focus trapping/restoration, scroll locking and Escape handling
+ * come from the shared `Modal` primitive.
  *
  * @example
  * <ConfirmDialog
@@ -38,37 +42,28 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const titleId = useId();
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
-  const previouslyFocused = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    previouslyFocused.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const trigger = triggerRef?.current ?? null;
-    cancelButtonRef.current?.focus();
-    return () => {
-      const target = trigger ?? previouslyFocused.current;
-      target?.focus();
-    };
-  }, [open, triggerRef]);
-
-  if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" role="presentation">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
-      >
-        <h2 id={titleId} className="text-lg font-semibold text-slate-900">
-          {title}
-        </h2>
-        {description ? <div className="mt-2 text-sm text-slate-600">{description}</div> : null}
-        <div className="mt-6 flex justify-end gap-2">
-          <button ref={cancelButtonRef} type="button" className="rounded-lg px-3 py-2 text-sm" onClick={onCancel}>
+    <Modal
+      open={open}
+      onClose={onCancel}
+      title={title}
+      description={description}
+      role="dialog"
+      size="md"
+      showCloseButton={false}
+      initialFocusRef={cancelButtonRef}
+      returnFocusRef={triggerRef}
+      data-testid="confirm-dialog"
+      footer={
+        <>
+          <button
+            ref={cancelButtonRef}
+            type="button"
+            className="rounded-lg px-3 py-2 text-sm"
+            onClick={onCancel}
+          >
             {cancelLabel}
           </button>
           <button
@@ -83,8 +78,8 @@ export function ConfirmDialog({
           >
             {confirmLabel}
           </button>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }

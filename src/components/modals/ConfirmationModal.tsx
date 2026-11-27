@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useId } from "react";
+import { useRef } from "react";
+import { Modal } from "../ui/Modal";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -11,6 +12,12 @@ interface ConfirmationModalProps {
   isDangerous?: boolean;
 }
 
+/**
+ * Destructive confirmation dialog. Behaviour (focus trap, Escape, backdrop
+ * dismissal, focus restoration and scroll lock) comes from the shared `Modal`
+ * primitive; this component only supplies the copy and the confirm/cancel
+ * actions.
+ */
 export function ConfirmationModal({
   isOpen,
   title,
@@ -21,103 +28,45 @@ export function ConfirmationModal({
   onCancel,
   isDangerous = false,
 }: ConfirmationModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
-  const titleId = useId();
-
-
-  useEffect(() => {
-    if (isOpen) {
-      confirmButtonRef.current?.focus();
-    }
-  }, [isOpen]);
-
-  const trapFocus = useCallback((e: KeyboardEvent) => {
-    if (!modalRef.current) return;
-
-    const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (e.shiftKey && document.activeElement === firstElement) {
-      e.preventDefault();
-      lastElement?.focus();
-    } else if (!e.shiftKey && document.activeElement === lastElement) {
-      e.preventDefault();
-      firstElement?.focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onCancel();
-      }
-      if (e.key === "Tab" && isOpen) {
-        trapFocus(e);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onCancel, trapFocus]);
-
-  if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      onClick={onCancel}
+    <Modal
+      open={isOpen}
+      onClose={onCancel}
+      title={title}
+      role="alertdialog"
+      size="md"
+      initialFocusRef={confirmButtonRef}
+      showCloseButton={false}
+      data-testid="confirmation-modal"
+      overlayClassName="bg-black/60 backdrop-blur-sm"
+      bodyClassName="pt-2"
+      footer={
+        <>
+          <button
+            type="button"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            onClick={onCancel}
+          >
+            {cancelLabel}
+          </button>
+          <button
+            ref={confirmButtonRef}
+            type="button"
+            className={
+              isDangerous
+                ? "rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+                : "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+            }
+            onClick={onConfirm}
+          >
+            {confirmLabel}
+          </button>
+        </>
+      }
     >
-      <div
-        ref={modalRef}
-        className="relative w-full max-w-[400px] rounded-2xl bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-      >
-        <div className="space-y-6 p-8">
-          <div>
-            <h2
-              id={titleId}
-              className="mb-2 text-[24px] font-bold text-[#0D162B]"
-            >
-              {title}
-            </h2>
-            <p className="text-[14px] leading-relaxed text-gray-500">{body}</p>
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={onCancel}
-              className="flex-1 rounded-xl border-2 border-gray-800 py-3 text-[14px] font-semibold text-gray-800 transition-colors hover:bg-gray-50"
-              type="button"
-            >
-              {cancelLabel}
-            </button>
-            <button
-              ref={confirmButtonRef}
-              onClick={onConfirm}
-              className={`flex-1 rounded-xl py-3 text-[14px] font-semibold text-white transition-colors ${
-                isDangerous
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-[#E84D2A] hover:bg-[#d4431f]"
-              }`}
-              type="button"
-            >
-              {confirmLabel}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <p className="text-sm text-slate-600">{body}</p>
+    </Modal>
   );
 }

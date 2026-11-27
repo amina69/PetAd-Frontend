@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { Breadcrumbs } from "../../../components/ui/Breadcrumbs";
 
 const navigation = [
   { label: "Overview", to: "/admin", end: true },
@@ -37,7 +38,17 @@ export default function AdminLayout() {
         </header>
         {menuOpen && <nav id="admin-mobile-nav" aria-label="Administration navigation" className="space-y-1 border-b border-slate-200 bg-white p-3 md:hidden">{links(true)}</nav>}
         <main id="admin-content" className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
-          <nav aria-label="Breadcrumb" className="mb-5 text-sm text-slate-500"><ol className="flex items-center gap-2"><li><NavLink className="hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-600" to="/admin">Administration</NavLink></li>{activeSection !== "Overview" && <><li aria-hidden="true">/</li><li aria-current="page" className="font-medium text-slate-800">{activeSection}</li></>}</ol></nav>
+          <Breadcrumbs
+            className="mb-5"
+            items={
+              activeSection === "Overview"
+                ? [{ label: "Administration" }]
+                : [
+                    { label: "Administration", href: "/admin" },
+                    { label: activeSection },
+                  ]
+            }
+          />
           <Outlet />
         </main>
       </div>

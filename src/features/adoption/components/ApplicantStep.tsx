@@ -14,8 +14,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FormInput } from "../../../components/ui/formInput";
-import { InlineError } from "../../../components/ui/InlineError";
+import { Input, Textarea } from "../../../components/ui/forms";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import {
   adoptionFieldSchemas,
@@ -157,7 +156,7 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
           </div>
         )}
 
-        <FormInput
+        <Input
           id="applicant-fullName"
           name="fullName"
           label="Full Name"
@@ -170,7 +169,7 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
           onBlur={() => handleBlur("fullName")}
         />
 
-        <FormInput
+        <Input
           id="applicant-email"
           name="email"
           label="Email"
@@ -183,7 +182,7 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
           onBlur={() => handleBlur("email")}
         />
 
-        <FormInput
+        <Input
           id="applicant-phone"
           name="phone"
           label="Phone (E.164)"
@@ -196,28 +195,18 @@ export function ApplicantStep({ onSubmit }: ApplicantStepProps) {
           onBlur={() => handleBlur("phone")}
         />
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="applicant-reason" className="text-sm font-medium text-gray-700">
-            Reason for adoption
-          </label>
-          <textarea
-            id="applicant-reason"
-            name="reason"
-            rows={4}
-            placeholder="Please provide more details (at least 50 characters)"
-            value={values.reason}
-            aria-invalid={Boolean(errors.reason)}
-            aria-describedby={errors.reason ? "applicant-reason-error" : undefined}
-            onChange={(event) => handleChange("reason", event.target.value)}
-            onBlur={() => handleBlur("reason")}
-            className={`w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-all
-              focus:border-[#E84D2A] focus:ring-2 focus:ring-[#E84D2A]/20
-              ${errors.reason ? "border-red-400 focus:border-red-400 focus:ring-red-400/20" : ""}`}
-          />
-          {errors.reason && (
-            <InlineError field="applicant-reason" message={errors.reason} />
-          )}
-        </div>
+        <Textarea
+          id="applicant-reason"
+          name="reason"
+          label="Reason for adoption"
+          rows={4}
+          placeholder="Please provide more details (at least 50 characters)"
+          value={values.reason}
+          error={errors.reason}
+          onChange={(event) => handleChange("reason", event.target.value)}
+          onBlur={() => handleBlur("reason")}
+          className="resize-none"
+        />
 
         <div className="flex justify-end gap-3">
           <button

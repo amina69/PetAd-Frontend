@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Modal } from "./Modal";
 
 interface ConfirmDialogProps {
   title: string;
@@ -9,6 +10,14 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
+/**
+ * Confirmation dialog used by dispute resolution.
+ *
+ * The dialog is rendered through the shared `Modal`, so it gains a focus trap,
+ * focus restoration, background scroll locking and Escape/backdrop dismissal
+ * without changing the caller's markup. While `isPending` is true both actions
+ * are disabled and the dialog cannot be dismissed.
+ */
 export function ConfirmDialog({
   title,
   description,
@@ -18,18 +27,19 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4">
-      <section
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
-      >
-        <h2 id="confirm-dialog-title" className="text-lg font-bold text-gray-900">
-          {title}
-        </h2>
-        <div className="mt-3 text-sm text-gray-600">{description}</div>
-        <div className="mt-6 flex justify-end gap-3">
+    <Modal
+      open
+      onClose={onCancel}
+      role="alertdialog"
+      title={title}
+      size="md"
+      showCloseButton={false}
+      closeOnEscape={!isPending}
+      closeOnBackdropClick={!isPending}
+      data-testid="confirm-dialog"
+      bodyClassName="pt-2"
+      footer={
+        <>
           <button
             type="button"
             onClick={onCancel}
@@ -46,8 +56,10 @@ export function ConfirmDialog({
           >
             {isPending ? "Saving…" : confirmLabel}
           </button>
-        </div>
-      </section>
-    </div>
+        </>
+      }
+    >
+      <div className="text-sm text-gray-600">{description}</div>
+    </Modal>
   );
 }
