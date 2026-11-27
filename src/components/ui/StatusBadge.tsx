@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import type { StatusColorToken, StatusMeta } from "../../lib/statusConfig";
+import { Badge } from "./Badge";
 
 export type StatusBadgeColor = StatusColorToken;
 
@@ -39,20 +40,16 @@ export function StatusBadge({
   const resolvedPulse = meta ? (meta.pulse ?? false) : pulse;
   const resolvedIcon = icon ?? (Icon ? <Icon className="h-3.5 w-3.5" aria-hidden="true" /> : null);
 
-  const badgeClassName = [
-    "status-badge",
-    `status-badge--${resolvedColor}`,
-    resolvedPulse ? "status-badge--pulse" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
   const badge = (
-    <span className={badgeClassName} {...spanProps}>
-      {resolvedIcon ? <span className="status-badge__icon">{resolvedIcon}</span> : null}
+    <Badge
+      tone={resolvedColor}
+      pulse={resolvedPulse}
+      icon={resolvedIcon}
+      className={className}
+      {...spanProps}
+    >
       <span>{resolvedLabel}</span>
-    </span>
+    </Badge>
   );
 
   if (!resolvedTooltip) {
