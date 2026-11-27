@@ -27,6 +27,7 @@
     "axios": "^1.16.1",
     "date-fns": "^4.1.0",
     "graphql": "^16.13.2",
+    "intl-messageformat": "^12.2.1",
     "lucide-react": "^0.575.0",
     "react": "^19.2.4",
     "react-copy-to-clipboard": "^5.1.1",
@@ -51,7 +52,9 @@
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.1.1",
     "eslint": "^9.39.4",
+    "eslint-plugin-i18next": "^6.1.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
@@ -61,8 +64,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
     "vite": "^7.3.1",
-    "vitest": "^4.1.1",
-    "@vitest/coverage-v8": "^4.1.1"
+    "vitest": "^4.1.1"
   },
   "msw": {
     "workerDirectory": [
