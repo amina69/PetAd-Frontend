@@ -1,6 +1,7 @@
 import { t } from "../i18n";
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
 import { PetListingSection } from "../components/home/PetListingSection";
+import { RecentlyViewed } from "../components/home/RecentlyViewed";
 import { PetOwnerModal } from "../components/ui/PetOwnerModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -45,6 +46,8 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
+
+            <RecentlyViewed />
 
             {/* ── Available For Adoption Listing ── */}
             <PetListingSection onOwnerClick={() => setShowOwnerModal(true)} />
