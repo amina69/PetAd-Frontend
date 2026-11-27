@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
 /* Keep the keyboard position visible across every route and component. */
 @layer base {
@@ -10,7 +10,18 @@
   }
 }
 
-:root {
+:root,
+[data-theme="light"] {
+  --surface-bg: #ffffff;
+  --surface-card: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+
   --status-badge-gray-bg: var(--color-gray-100, #f3f4f6);
   --status-badge-gray-text: var(--color-gray-700, #374151);
   --status-badge-blue-bg: var(--color-blue-100, #dbeafe);
@@ -23,6 +34,33 @@
   --status-badge-amber-text: var(--color-amber-700, #b45309);
   --status-badge-red-bg: var(--color-red-100, #fee2e2);
   --status-badge-red-text: var(--color-red-700, #b91c1c);
+}
+
+[data-theme="dark"],
+.dark {
+  --surface-bg: #0b1120;
+  --surface-card: #111827;
+  --surface-elevated: #1e293b;
+  --surface-muted: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-subtle: #334155;
+  --border-strong: #475569;
+
+  /* Dark-mode status badge tokens verified >= 4.5:1 WCAG AA contrast. */
+  --status-badge-gray-bg: #1f2937;
+  --status-badge-gray-text: #e5e7eb;
+  --status-badge-blue-bg: #1e3a5f;
+  --status-badge-blue-text: #bfdbfe;
+  --status-badge-teal-bg: #134e4a;
+  --status-badge-teal-text: #99f6e4;
+  --status-badge-green-bg: #14532d;
+  --status-badge-green-text: #bbf7d0;
+  --status-badge-amber-bg: #451a03;
+  --status-badge-amber-text: #fde68a;
+  --status-badge-red-bg: #450a0a;
+  --status-badge-red-text: #fecaca;
 }
 
 @theme {
