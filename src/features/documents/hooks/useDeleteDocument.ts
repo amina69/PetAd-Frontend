@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { queryKeys } from "../../../lib/queryKeys";
 import { documentService } from "../../../api/documentService";
 import { ApiError } from "../../../lib/api-errors";
 import { queryKeys } from "../../../lib/queryKeys";
@@ -31,7 +32,7 @@ export function useDeleteDocument() {
   return useMutation({
     mutationFn: (documentId: string) => documentService.deleteDocument(documentId),
     onMutate: async (documentId) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.documents.list() });
+await queryClient.cancelQueries({ queryKey: queryKeys.documents.list() });
       const previous = queryClient.getQueriesData<Document[]>({
         queryKey: queryKeys.documents.list(),
       });
