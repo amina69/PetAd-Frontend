@@ -50,6 +50,7 @@ export default defineConfig(({ mode }) => ({
       : []),
   ],
   build: {
+    manifest: true,
     rollupOptions: {
       output: {
         manualChunks: {

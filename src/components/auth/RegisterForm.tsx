@@ -7,6 +7,7 @@ import { AuthModal } from "../ui/authModal";
 import { IdentityVerificationModal } from "../ui/IdentityVerificationModal";
 import { authService } from "../../api/authService";
 import { ApiError } from "../../lib/api-errors";
+import { LiveRegion } from "../common/LiveRegion";
 
 // ─── Reusable: FormInput ──────────────────────────────────────────────────────
 
@@ -337,7 +338,12 @@ export function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+      });
+      return;
+    }
     setIsLoading(true);
     setSubmitError(null);
     try {
@@ -373,6 +379,12 @@ export function RegisterForm() {
       </h2>
 
       <div className="flex flex-col gap-5">
+        <LiveRegion assertive>
+          {submitError ??
+            (Object.keys(errors).length > 0
+              ? "Please correct the highlighted fields."
+              : "")}
+        </LiveRegion>
         <GoogleButton
           label="Create account with Google"
           onClick={handleGoogle}
@@ -385,7 +397,7 @@ export function RegisterForm() {
           className="flex flex-col gap-4"
         >
           {submitError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+            <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
               {submitError}
             </div>
           )}
