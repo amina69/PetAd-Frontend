@@ -7,6 +7,7 @@ import { ApiError } from "../../lib/api-errors";
 import { clearUnauthenticatedSession } from "../../lib/session";
 import { logger } from "../../lib/logger";
 import { CURRENT_USER_STORAGE_KEY } from "../../hooks/useCurrentUser";
+import { AUTH_TOKEN_KEY, establishSession } from "../../features/auth/session";
 
 interface SignInFormData {
     email: string;
@@ -79,7 +80,6 @@ export function SignInForm() {
                 email: formData.email.trim(),
                 password: formData.password,
             });
-            localStorage.setItem("auth_token", response.token);
             clearUnauthenticatedSession();
             // Persist the profile so forms (e.g. the adoption applicant step)
             // can prefill the signed-in user's details.
@@ -87,6 +87,8 @@ export function SignInForm() {
                 CURRENT_USER_STORAGE_KEY,
                 JSON.stringify(response.user),
             );
+            establishSession(response.user.role.toLowerCase());
+            localStorage.setItem(AUTH_TOKEN_KEY, response.token);
 
             const returnTo = getReturnTo(searchParams);
             sessionStorage.removeItem("petad_return_to");
