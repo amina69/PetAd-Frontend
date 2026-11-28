@@ -51,7 +51,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 py-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-y-2">
       <Link to="/home" className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A] focus-visible:ring-offset-2">
         <img src={logo} alt="Logo" className="w-8 h-8" />
         <div>
@@ -88,7 +88,7 @@ export function Navbar() {
         })}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4">
         <Link
           to="/favourites"
           className="relative rounded-full bg-gray-50 p-2.5 text-gray-700 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E84D2A] focus-visible:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -113,7 +113,7 @@ export function Navbar() {
 
         <DeferredNotificationCentreDropdown />
 
-        <div className="flex items-center gap-3 ms-2 cursor-pointer group">
+<div className="flex items-center gap-1 sm:gap-3 sm:ms-2 cursor-pointer group">
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100">
             <img src={owner} alt="User Avatar" loading="lazy" className="w-full h-full object-cover" />
           </div>

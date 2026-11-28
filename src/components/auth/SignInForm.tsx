@@ -1,3 +1,4 @@
+import { t } from "../../i18n";
 import React, { useState } from "react";
 import { FormInput, PasswordInput, GoogleButton, OrDivider, SubmitButton } from "./RegisterForm";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
@@ -118,7 +119,7 @@ export function SignInForm() {
     return (
         <div className="w-full">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-                Welcome Pet Lover!
+                {t("signIn", "welcome")}
             </h2>
 
             {/* Pending-action hint banner */}
@@ -127,7 +128,7 @@ export function SignInForm() {
                     role="status"
                     className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-sm text-orange-700 text-center"
                 >
-                    Sign in to continue: <strong>{pendingActionHint}</strong>
+                    {t("signIn", "continue")} <strong>{pendingActionHint}</strong>
                 </div>
             )}
 
@@ -139,7 +140,7 @@ export function SignInForm() {
                             : "")}
                 </LiveRegion>
                 <GoogleButton
-                    label="Continue with Google"
+                    label={t("signIn", "google")}
                     onClick={handleGoogleSignIn}
                 />
 
@@ -158,9 +159,9 @@ export function SignInForm() {
 
                     <FormInput
                         id="email"
-                        label="Email Address"
+                        label={t("signIn", "email")}
                         type="email"
-                        placeholder="Enter your email address"
+                        placeholder={t("signIn", "emailPlaceholder")}
                         autoComplete="email"
                         value={formData.email}
                         onChange={(e) => handleChange("email", e.target.value)}
@@ -170,8 +171,8 @@ export function SignInForm() {
                     <div className="flex flex-col gap-1">
                         <PasswordInput
                             id="password"
-                            label="Password"
-                            placeholder="Create your password"
+                            label={t("signIn", "password")}
+                            placeholder={t("signIn", "passwordPlaceholder")}
                             value={formData.password}
                             onChange={(value) => handleChange("password", value)}
                             error={errors.password}
@@ -181,21 +182,21 @@ export function SignInForm() {
                                 to="/forgot-password"
                                 className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
                             >
-                                Forget Password?
+                                {t("signIn", "forgot")}
                             </Link>
                         </div>
                     </div>
 
-                    <SubmitButton label="Sign In" isLoading={isLoading} />
+                    <SubmitButton label={t("signIn", "submit")} isLoading={isLoading} />
                 </form>
 
                 <p className="text-center text-sm text-gray-600 mt-2">
-                    Don&apos;t have an account?{" "}
+                    {t("signIn", "noAccount")}{" "}
                     <Link
                         to="/register"
                         className="font-semibold text-[#E84D2A] hover:underline"
                     >
-                        Create Account
+                        {t("signIn", "register")}
                     </Link>
                 </p>
             </div>

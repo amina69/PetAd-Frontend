@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { HeroBackgroundPaws } from "../components/home/HeroBackgroundPaws";
 import { PetListingSection } from "../components/home/PetListingSection";
 import { PetOwnerModal } from "../components/ui/PetOwnerModal";
@@ -21,24 +22,24 @@ export default function HomePage() {
                 <div className="max-w-[1240px] w-full mx-auto px-6 lg:px-12 py-16 lg:py-24 relative z-10 flex flex-col justify-center">
                     <div className="max-w-[540px]">
                         <h1 className="text-[36px] lg:text-[44px] font-black leading-[1.15] tracking-[0.04em] text-[#0D162B] mb-5">
-                            WELCOME PET LOVER!
+                            {t("home", "welcome")}
                         </h1>
                         <p className="text-[20px] leading-[1.6] text-gray-700 font-medium mb-10 max-w-[480px]">
-                            Research has shown that - those who keep pets for emotional support or companionship tend to live a longer life.
+                            {t("home", "description")}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
                             <button
                                 onClick={() => navigate("/list-for-adoption")}
-                                className="bg-[#E84D2A] text-white font-semibold py-3.5 px-8 rounded-lg hover:bg-[#d4431f] transition-colors focus:ring-4 focus:ring-[#E84D2A]/20 active:scale-[0.98] whitespace-nowrap"
+                                className="bg-[#E84D2A] text-white font-semibold py-3.5 px-8 rounded-lg hover:bg-[#d4431f] transition-colors focus:ring-4 focus:ring-[#E84D2A]/20 active:scale-[0.98] [overflow-wrap:anywhere]"
                             >
-                                List For Adoption
+                                {t("home", "list")}
                             </button>
                             <button
                                 onClick={() => navigate("/listings")}
-                                className="bg-[#0D1B2A] text-white font-semibold py-3.5 px-8 rounded-lg hover:bg-gray-900 transition-colors focus:ring-4 focus:ring-gray-900/20 active:scale-[0.98] whitespace-nowrap"
+                                className="bg-[#0D1B2A] text-white font-semibold py-3.5 px-8 rounded-lg hover:bg-gray-900 transition-colors focus:ring-4 focus:ring-gray-900/20 active:scale-[0.98] [overflow-wrap:anywhere]"
                             >
-                                I Want To Adopt
+                                {t("home", "adopt")}
                             </button>
                         </div>
                     </div>

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useApprovalList } from "../features/approval/hooks/useApprovalList";
+import { Pagination } from "../components/ui/Pagination";
 import type { ApprovalItem } from "../features/approval/types/approval.types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/emptyState";
@@ -14,9 +15,6 @@ import { ApprovalStatusPill } from "../components/approval/ApprovalStatusWidget"
  * loading state does not visually jump when the real data arrives.
  */
 const PAGE_SIZE = 12;
-
-/** Maximum number of page buttons rendered in the pagination control. */
-const MAX_VISIBLE_PAGES = 5;
 
 /** Query-string keys owned by this page. */
 const STATUS_PARAM = "status";
@@ -106,20 +104,6 @@ function parsePage(raw: string | null): number {
   const page = Number.parseInt(value, 10);
 
   return Number.isFinite(page) && page > 0 ? page : 1;
-}
-
-/** Builds the window of page numbers shown in the pagination control. */
-function buildPageNumbers(current: number, totalPages: number): number[] {
-  if (totalPages <= MAX_VISIBLE_PAGES) {
-    return Array.from({ length: totalPages }, (_, index) => index + 1);
-  }
-
-  const start = Math.max(
-    1,
-    Math.min(current - Math.floor(MAX_VISIBLE_PAGES / 2), totalPages - MAX_VISIBLE_PAGES + 1),
-  );
-
-  return Array.from({ length: MAX_VISIBLE_PAGES }, (_, index) => start + index);
 }
 
 // ─── Sorting helpers ─────────────────────────────────────────────────────────
@@ -215,70 +199,6 @@ function ApprovalErrorState({ onRetry }: { onRetry: () => void }) {
         Retry
       </button>
     </div>
-  );
-}
-
-/** Prev/next + page-number pagination control driven by the `page` query param. */
-function ApprovalPagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}) {
-  const pages = buildPageNumbers(currentPage, totalPages);
-
-  const buttonClass =
-    "inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40";
-
-  return (
-    <nav
-      aria-label="Approval list pagination"
-      data-testid="approval-pagination"
-      className="mt-6 flex flex-wrap items-center justify-center gap-2"
-    >
-      <button
-        type="button"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
-        data-testid="pagination-prev"
-        aria-label="Previous page"
-        className={buttonClass}
-      >
-        <ChevronLeft className="rtl-mirror" size={16} aria-hidden="true" />
-      </button>
-
-      {pages.map((page) => (
-        <button
-          key={page}
-          type="button"
-          onClick={() => onPageChange(page)}
-          data-testid={`pagination-page-${page}`}
-          aria-current={page === currentPage ? "page" : undefined}
-          className={[
-            buttonClass,
-            page === currentPage
-              ? "border-orange-600 bg-orange-600 text-white hover:bg-orange-700"
-              : "",
-          ].join(" ")}
-        >
-          {page}
-        </button>
-      ))}
-
-      <button
-        type="button"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
-        data-testid="pagination-next"
-        aria-label="Next page"
-        className={buttonClass}
-      >
-        <ChevronRight className="rtl-mirror" size={16} aria-hidden="true" />
-      </button>
-    </nav>
   );
 }
 
@@ -538,10 +458,13 @@ export default function ApprovalListPage() {
           {/* ── Pagination ── */}
           {!isLoading && !isError && totalPages > 1 && (
             <div className="border-t border-gray-100 bg-gray-50 px-4 py-4">
-              <ApprovalPagination
-                currentPage={currentPage}
+              <Pagination
+                page={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
+                ariaLabel="Approval list pagination"
+                data-testid="approval-pagination"
+                className="mt-6"
               />
             </div>
           )}

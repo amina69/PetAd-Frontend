@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { DisputeDetail } from '../../pages/disputes/types';
+import type { EnrichedDisputeDetail } from '../../hooks/useDisputeDetail';
 import { DisputeStatusBadge } from '../badges/DisputeStatusBadge';
 import { DisputeSLABadge } from '../badges/DisputeSLABadge';
 import { EscrowStatusBadge } from '../badges/EscrowStatusBadge';
@@ -7,12 +7,12 @@ import { StellarTxLink } from '../blockchain/StellarTxLink';
 import { EvidenceList } from './EvidenceList';
 import { AddEvidenceButton } from './AddEvidenceButton';
 import { EvidenceUploadModal } from '../modals/EvidenceUploadModal';
-
-// TODO: Implement DisputeThread component as specified in B10
+import { DisputeThread } from './DisputeThread';
+import type { DisputeThreadComment } from './DisputeThread';
 
 interface Props {
-  dispute: DisputeDetail;
-}
+  dispute: EnrichedDisputeDetail;
+  comments?: DisputeThreadComment[];}
 
 export function DisputeInfoSection({ dispute }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,6 +66,8 @@ export function DisputeInfoSection({ dispute }: Props) {
           </div>
           <EvidenceList evidence={dispute.evidence} />
         </div>
+
+        <DisputeThread comments={dispute.comments ?? []} />
       </div>
 
       <EvidenceUploadModal

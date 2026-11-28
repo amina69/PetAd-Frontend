@@ -3,8 +3,8 @@ import {
   useRef,
   useEffect,
   useCallback,
-  useId,
   useMemo,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
@@ -16,8 +16,8 @@ import { notificationRouter } from "../../lib/notificationRouter";
 import { useNotificationSocket } from "../../context/NotificationSocketContext";
 import type { Notification, NotificationsPage } from "../../types/notifications";
 import { queryKeys } from "../../lib/queryKeys";
-import { useDialogFocus } from "../../hooks/useDialogFocus";
 import { STALE_TIME } from "../../lib/staleTime";
+import { Popover } from "../ui/Popover";
 
 
 const DROPDOWN_LIMIT = 20;
@@ -62,13 +62,9 @@ export function NotificationCentreDropdown({
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const navigate = useNavigate();
-  const dialogId = useId();
 
   const { markRead, isPending: isMarkingRead } = useMutateMarkRead();
   const { markAllRead, isPending: isMarkingAll } = useMutateMarkAllRead();
@@ -88,41 +84,23 @@ export function NotificationCentreDropdown({
   const showUnreadDot = hasUnread || unreadCount > 0;
 
 
-  const open = useCallback(() => {
-    setIsOpen(true);
+  /**
+   * The bell panel is a popover: the primitive owns outside-click dismissal,
+   * Escape handling, focus restoration and viewport collision detection. The
+   * component keeps the query, keyboard list navigation and read mutations.
+   */
+  const handleOpenChange = useCallback((nextOpen: boolean) => {
+    setIsOpen(nextOpen);
     setFocusedIndex(-1);
   }, []);
 
   const close = useCallback(() => {
-    setIsOpen(false);
-    setFocusedIndex(-1);
-    triggerRef.current?.focus();
-  }, []);
-
-  useDialogFocus(isOpen, dialogRef, close);
-
-  const toggle = useCallback(() => {
-    if (isOpen) close();
-    else open();
-  }, [isOpen, open, close]);
-
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        close();
-      }
-    };
-
-    document.addEventListener("mousedown", handleMouseDown);
-    return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [isOpen, close]);
+    handleOpenChange(false);
+  }, [handleOpenChange]);
 
 
   const handleListKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (e: ReactKeyboardEvent<HTMLDivElement>) => {
       if (notifications.length === 0) return;
 
       if (e.key === "ArrowDown") {
@@ -165,165 +143,159 @@ export function NotificationCentreDropdown({
 
 
   return (
-    <div ref={containerRef} className="relative" data-testid="notification-centre">
-      {/* Bell trigger */}
-      <button
-        ref={triggerRef}
-        type="button"
-        data-testid="bell-button"
-        aria-label="Open notifications"
-        aria-expanded={isOpen}
-        aria-haspopup="dialog"
-        aria-controls={dialogId}
-        onClick={toggle}
-        className="relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+    <div data-testid="notification-centre">
+      <Popover
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+        placement="bottom-end"
+        role="dialog"
+        ariaLabel="Notifications"
+        ariaModal
+        containerClassName="relative"
+        className="w-80 overflow-hidden rounded-2xl border border-gray-100 shadow-xl sm:w-96"
+        data-testid="notification-dropdown"
+        trigger={
+          /* Bell trigger */
+          <button
+            type="button"
+            data-testid="bell-button"
+            aria-label="Open notifications"
+            className="relative p-2.5 bg-gray-50 rounded-full text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+          >
+            <Bell size={20} aria-hidden="true" />
+            {showUnreadDot && (
+              <span
+                data-testid="unread-dot"
+                aria-label={unreadCount > 0 ? `${unreadCount} unread notifications` : "Unread notifications"}
+                className="absolute top-2.5 end-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
+              />
+            )}
+          </button>
+        }
       >
-        <Bell size={20} aria-hidden="true" />
-        {showUnreadDot && (
-          <span
-            data-testid="unread-dot"
-            aria-label={unreadCount > 0 ? `${unreadCount} unread notifications` : "Unread notifications"}
-            className="absolute top-2.5 end-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
-          />
-        )}
-      </button>
-
-      {/* Dropdown panel */}
-      {isOpen && (
-        <div
-          ref={dialogRef}
-          id={dialogId}
-          role="dialog"
-          aria-label="Notifications"
-          aria-modal="true"
-          tabIndex={-1}
-          data-testid="notification-dropdown"
-          className="absolute end-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 z-[60] overflow-hidden"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-gray-900">Notifications</h2>
-              {unreadCount > 0 && (
-                <span
-                  data-testid="unread-badge"
-                  className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-orange-500 text-white text-[10px] font-bold"
-                >
-                  {unreadCount}
-                </span>
-              )}
-            </div>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-gray-900">Notifications</h2>
             {unreadCount > 0 && (
+              <span
+                data-testid="unread-badge"
+                className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-orange-500 text-white text-[10px] font-bold"
+              >
+                {unreadCount}
+              </span>
+            )}
+          </div>
+          {unreadCount > 0 && (
+            <button
+              type="button"
+              data-testid="mark-all-read-button"
+              onClick={handleMarkAllRead}
+              disabled={isMarkingAll}
+              className="text-xs text-orange-600 hover:text-orange-700 font-medium transition-colors disabled:opacity-50"
+            >
+              Mark all read
+            </button>
+          )}
+        </div>
+
+        {/* Connection state banner */}
+        {connectionState !== "connected" && (
+          <div
+            data-testid="connection-banner"
+            className={`px-4 py-2 text-xs font-medium flex items-center justify-between ${
+              connectionState === "reconnecting"
+                ? "bg-amber-50 text-amber-700 border-b border-amber-100"
+                : "bg-red-50 text-red-700 border-b border-red-100"
+            }`}
+          >
+            <span className="flex items-center gap-1.5">
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  connectionState === "reconnecting" ? "bg-amber-500 animate-pulse" : "bg-red-500"
+                }`}
+              />
+              {connectionState === "reconnecting"
+                ? "Reconnecting... notifications may be delayed"
+                : "Disconnected — notifications paused"}
+            </span>
+            {connectionState === "disconnected" && (
               <button
                 type="button"
-                data-testid="mark-all-read-button"
-                onClick={handleMarkAllRead}
-                disabled={isMarkingAll}
-                className="text-xs text-orange-600 hover:text-orange-700 font-medium transition-colors disabled:opacity-50"
+                data-testid="reconnect-button"
+                onClick={reconnect}
+                className="text-red-600 hover:text-red-800 underline font-semibold"
               >
-                Mark all read
+                Reconnect
               </button>
             )}
           </div>
+        )}
 
-          {/* Connection state banner */}
-          {connectionState !== "connected" && (
+        {/* Body */}
+        <div
+          ref={listRef}
+          onKeyDown={handleListKeyDown}
+          className="max-h-80 overflow-y-auto scrollbar-minimal"
+        >
+          {isLoading ? (
+            <DropdownSkeleton />
+          ) : isError ? (
+            <div className="px-4 py-8 text-center">
+              <p className="text-sm font-medium text-gray-900">Failed to load</p>
+              <p className="text-xs text-gray-500 mt-1">Please try again later.</p>
+            </div>
+          ) : notifications.length === 0 ? (
             <div
-              data-testid="connection-banner"
-              className={`px-4 py-2 text-xs font-medium flex items-center justify-between ${
-                connectionState === "reconnecting"
-                  ? "bg-amber-50 text-amber-700 border-b border-amber-100"
-                  : "bg-red-50 text-red-700 border-b border-red-100"
-              }`}
+              data-testid="empty-state"
+              className="px-4 py-8 text-center"
             >
-              <span className="flex items-center gap-1.5">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    connectionState === "reconnecting" ? "bg-amber-500 animate-pulse" : "bg-red-500"
-                  }`}
-                />
-                {connectionState === "reconnecting"
-                  ? "Reconnecting... notifications may be delayed"
-                  : "Disconnected — notifications paused"}
-              </span>
-              {connectionState === "disconnected" && (
-                <button
-                  type="button"
-                  data-testid="reconnect-button"
-                  onClick={reconnect}
-                  className="text-red-600 hover:text-red-800 underline font-semibold"
-                >
-                  Reconnect
-                </button>
-              )}
+              <p className="text-sm font-medium text-gray-900">You're all caught up!</p>
+              <p className="text-xs text-gray-500 mt-1">No new notifications.</p>
             </div>
-          )}
-
-          {/* Body */}
-          <div
-            ref={listRef}
-            onKeyDown={handleListKeyDown}
-            className="max-h-80 overflow-y-auto scrollbar-minimal"
-          >
-            {isLoading ? (
-              <DropdownSkeleton />
-            ) : isError ? (
-              <div className="px-4 py-8 text-center">
-                <p className="text-sm font-medium text-gray-900">Failed to load</p>
-                <p className="text-xs text-gray-500 mt-1">Please try again later.</p>
-              </div>
-            ) : notifications.length === 0 ? (
+          ) : (
+            notifications.map((notif, index) => (
               <div
-                data-testid="empty-state"
-                className="px-4 py-8 text-center"
+                key={notif.id}
+                data-notification-item
+                data-testid={`dropdown-item-${notif.id}`}
+                tabIndex={focusedIndex === index ? 0 : -1}
+                className={[
+                  "outline-none",
+                  focusedIndex === index ? "ring-2 ring-inset ring-orange-300" : "",
+                ].join(" ")}
               >
-                <p className="text-sm font-medium text-gray-900">You're all caught up!</p>
-                <p className="text-xs text-gray-500 mt-1">No new notifications.</p>
+                <NotificationItem
+                  notification={notif}
+                  isRead={notif.isRead ?? false}
+                  onRead={(id) => {
+                    handleItemRead(id);
+                    close();
+                    navigate(notificationRouter(notif));
+                  }}
+                />
               </div>
-            ) : (
-              notifications.map((notif, index) => (
-                <div
-                  key={notif.id}
-                  data-notification-item
-                  data-testid={`dropdown-item-${notif.id}`}
-                  tabIndex={focusedIndex === index ? 0 : -1}
-                  className={[
-                    "outline-none",
-                    focusedIndex === index ? "ring-2 ring-inset ring-orange-300" : "",
-                  ].join(" ")}
-                >
-                  <NotificationItem
-                    notification={notif}
-                    isRead={notif.isRead ?? false}
-                    onRead={(id) => {
-                      handleItemRead(id);
-                      close();
-                      navigate(notificationRouter(notif));
-                    }}
-                  />
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Footer */}
-          {!isLoading && !isError && (
-            <div className="border-t border-gray-100">
-              <Link
-                to="/notifications"
-                data-testid="view-all-link"
-                onClick={close}
-                className="flex items-center justify-center w-full py-3 text-sm font-medium text-orange-600 hover:text-orange-700 hover:bg-orange-50 transition-colors"
-              >
-                View all notifications
-                {isMarkingRead && (
-                  <span className="ms-2 w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-                )}
-              </Link>
-            </div>
+            ))
           )}
         </div>
-      )}
+
+        {/* Footer */}
+        {!isLoading && !isError && (
+          <div className="border-t border-gray-100">
+            <Link
+              to="/notifications"
+              data-testid="view-all-link"
+              onClick={close}
+              className="flex items-center justify-center w-full py-3 text-sm font-medium text-orange-600 hover:text-orange-700 hover:bg-orange-50 transition-colors"
+            >
+              View all notifications
+              {isMarkingRead && (
+                <span className="ms-2 w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+              )}
+            </Link>
+          </div>
+        )}
+      </Popover>
     </div>
   );
 }
