@@ -3,16 +3,22 @@ name: Deploy
 on:
   push:
     branches: [staging]
-    tags: ['v*']
 
 permissions:
   contents: read
 
 jobs:
   deploy-staging:
-    if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     environment: staging
+    env:
+      # Shared by the build and the runtime SDK, so uploaded maps match events.
+      # Production releases use .github/workflows/release.yml.
+      VITE_RELEASE: ${{ github.sha }}
+      VITE_APP_ENV: staging
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,7 +26,7 @@ jobs:
           node-version: 20.x
       - name: Install Vercel CLI
         run: npm install --global vercel
-      - name: Build and deploy staging
+      - name: Build, upload source maps and deploy staging
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
@@ -28,37 +34,32 @@ jobs:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
           VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
           VITE_ENABLE_ANALYTICS: ${{ vars.VITE_ENABLE_ANALYTICS }}
+          VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
         run: |
           vercel pull --yes --environment=preview --git-branch=staging --token="$VERCEL_TOKEN"
           vercel build --token="$VERCEL_TOKEN" \
             --build-env "VITE_API_URL=$VITE_API_URL" \
             --build-env "VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL" \
-            --build-env "VITE_ENABLE_ANALYTICS=$VITE_ENABLE_ANALYTICS"
-          vercel deploy --prebuilt --token="$VERCEL_TOKEN"
+            --build-env "VITE_ENABLE_ANALYTICS=$VITE_ENABLE_ANALYTICS" \
+            --build-env "VITE_SENTRY_DSN=$VITE_SENTRY_DSN" \
+            --build-env "VITE_RELEASE=$VITE_RELEASE" \
+            --build-env "VITE_APP_ENV=$VITE_APP_ENV"
 
-  deploy-production:
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Install Vercel CLI
-        run: npm install --global vercel
-      - name: Build and deploy production
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
-          VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
-          VITE_ENABLE_ANALYTICS: ${{ vars.VITE_ENABLE_ANALYTICS }}
-        run: |
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-          vercel build --prod --token="$VERCEL_TOKEN" \
-            --build-env "VITE_API_URL=$VITE_API_URL" \
-            --build-env "VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL" \
-            --build-env "VITE_ENABLE_ANALYTICS=$VITE_ENABLE_ANALYTICS"
-          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          # The Sentry Vite plugin uploads the hidden .map files under
+          # VITE_RELEASE during the build. Remove anything left behind (builds
+          # without Sentry credentials generate maps but cannot upload them) so
+          # source maps are never served from the deployed site.
+          map_files=$(find dist .vercel/output -type f -name '*.map' 2>/dev/null || true)
+          if [ -n "$map_files" ]; then
+            echo "$map_files"
+            # shellcheck disable=SC2086
+            rm -f $map_files
+          fi
+          remaining=$(find .vercel/output -type f -name '*.map' 2>/dev/null || true)
+          if [ -n "$remaining" ]; then
+            echo "::error::Source maps are still present in the deployable artifact:"
+            echo "$remaining"
+            exit 1
+          fi
+
+          vercel deploy --prebuilt --token="$VERCEL_TOKEN"

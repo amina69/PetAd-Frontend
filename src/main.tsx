@@ -10,6 +10,8 @@ import { ToastProvider } from './components/toast/ToastProvider'
 import { ThemeProvider } from './components/theme-provider'
 import { NotificationSocketProvider } from './context/NotificationSocketContext'
 import { initAnalytics } from './lib/analytics'
+import { initErrorTracking } from './lib/errorTracking'
+import { ErrorBoundary } from './components/common/ErrorBoundary'
 import './index.css'
 import App from './App.tsx'
 import { loadEnv } from './lib/env'
@@ -74,6 +76,8 @@ async function cleanupServiceWorkers() {
 async function bootstrap() {
   // No-op unless VITE_ENABLE_ANALYTICS === 'true'.
   initAnalytics()
+  // Also requires VITE_SENTRY_DSN; otherwise no client and no network calls.
+  initErrorTracking()
 
   if (import.meta.env.DEV) {
     const reloadingAfterCleanup = await cleanupServiceWorkers()
@@ -121,18 +125,20 @@ async function bootstrap() {
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
-          <ToastProvider>
-            {/* Navbar's NotificationCentreDropdown consumes this context. */}
-            <NotificationSocketProvider>
-              <BrowserRouter> {/* 2. Wrap your App */}
-                <App />
-              </BrowserRouter>
-            </NotificationSocketProvider>
-          </ToastProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="system" storageKey="petad-ui-theme">
+            <ToastProvider>
+              {/* Navbar's NotificationCentreDropdown consumes this context. */}
+              <NotificationSocketProvider>
+                <BrowserRouter> {/* 2. Wrap your App */}
+                  <App />
+                </BrowserRouter>
+              </NotificationSocketProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
     </StrictMode>,
   )
 }
