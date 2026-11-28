@@ -167,6 +167,7 @@ function App() {
               element={<ShelterApprovalQueuePage />}
             />
             <Route path="/disputes" element={<MyDisputesPage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
             <Route
               path="/caretaker/dashboard"
               element={<CaretakerDashboardPage />}

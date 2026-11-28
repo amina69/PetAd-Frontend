@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import ApprovalBanner from "./ApprovalBanner";
 import { GuestBanner } from "./GuestBanner";
 import { AuthGateModal } from "../auth/AuthGateModal";
+import { AppErrorBoundary } from "../common/ErrorBoundary";
 
 export function MainLayout({ children }: PropsWithChildren) {
   return (
@@ -23,7 +24,9 @@ export function MainLayout({ children }: PropsWithChildren) {
       <Navbar />
 
       <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-        {children ?? <Outlet />}
+        <AppErrorBoundary variant="route">
+          {children ?? <Outlet />}
+        </AppErrorBoundary>
       </main>
 
       <Footer />

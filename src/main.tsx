@@ -12,6 +12,7 @@ import { NotificationSocketProvider } from './context/NotificationSocketContext'
 import { initAnalytics } from './lib/analytics'
 import './index.css'
 import App from './App.tsx'
+import { AppErrorBoundary } from './components/common/ErrorBoundary'
 import { loadEnv } from './lib/env'
 import { logger } from './lib/logger'
 
@@ -127,7 +128,9 @@ async function bootstrap() {
             {/* Navbar's NotificationCentreDropdown consumes this context. */}
             <NotificationSocketProvider>
               <BrowserRouter> {/* 2. Wrap your App */}
-                <App />
+                <AppErrorBoundary>
+                  <App />
+                </AppErrorBoundary>
               </BrowserRouter>
             </NotificationSocketProvider>
           </ToastProvider>
